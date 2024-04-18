@@ -59,11 +59,12 @@ namespace our {
             //TODO: (Req 11) Create a color and a depth texture and attach them to the framebuffer
             // Hints: The color format can be (Red, Green, Blue and Alpha components with 8 bits for each channel).
             // The depth format can be (Depth component with 24 bits).
-            colorTarget = our::texture_utils::empty(GL_RGBA8, windowSize);
+            colorTarget = our::texture_utils::empty(GL_RGBA, windowSize);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTarget->getOpenGLName(), 0);
 
-            depthTarget = our::texture_utils::empty(GL_DEPTH_COMPONENT24, windowSize);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depthTarget->getOpenGLName(), 0);
+            //TODO: add stensil
+            depthTarget = our::texture_utils::empty(GL_DEPTH_COMPONENT, windowSize);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTarget->getOpenGLName(), 0);
 
             if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
                 std::cerr << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
