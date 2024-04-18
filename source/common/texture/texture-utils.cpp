@@ -12,7 +12,7 @@ our::Texture2D* our::texture_utils::empty(GLenum format, glm::ivec2 size){
     //*: it won't work if send it RGBA8 or GL_DEPTH_COMPONENT24 need to optimize later 
     glTexImage2D(GL_TEXTURE_2D, 0, format, size.x, size.y, 0, format, GL_UNSIGNED_BYTE, NULL);  
 
-    texture->unbind();
+    // texture->unbind();
     return texture;
 }
 

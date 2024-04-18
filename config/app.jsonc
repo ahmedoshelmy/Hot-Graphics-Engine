@@ -11,32 +11,32 @@
     },
     "scene": {
         "renderer":{
-            "sky": "../assets/textures/sky.jpg",
-            "postprocess": "../assets/shaders/postprocess/vignette.frag"
+            "sky": "assets/textures/sky.jpg",
+            "postprocess": "assets/shaders/postprocess/vignette.frag"
         },
         "assets":{
             "shaders":{
                 "tinted":{
-                    "vs":"../assets/shaders/tinted.vert",
-                    "fs":"../assets/shaders/tinted.frag"
+                    "vs":"assets/shaders/tinted.vert",
+                    "fs":"assets/shaders/tinted.frag"
                 },
                 "textured":{
-                    "vs":"../assets/shaders/textured.vert",
-                    "fs":"../assets/shaders/textured.frag"
+                    "vs":"assets/shaders/textured.vert",
+                    "fs":"assets/shaders/textured.frag"
                 }
             },
             "textures":{
-                "moon": "../assets/textures/moon.jpg",
-                "grass": "../assets/textures/grass_ground_d.jpg",
-                "wood": "../assets/textures/wood.jpg",
-                "glass": "../assets/textures/glass-panels.png",
-                "monkey": "../assets/textures/monkey.png"
+                "moon": "assets/textures/moon.jpg",
+                "grass": "assets/textures/grass_ground_d.jpg",
+                "wood": "assets/textures/wood.jpg",
+                "glass": "assets/textures/glass-panels.png",
+                "monkey": "assets/textures/monkey.png"
             },
             "meshes":{
-                "cube": "../assets/models/cube.obj",
-                "monkey": "../assets/models/monkey.obj",
-                "plane": "../assets/models/plane.obj",
-                "sphere": "../assets/models/sphere.obj"
+                "cube": "assets/models/cube.obj",
+                "monkey": "assets/models/monkey.obj",
+                "plane": "assets/models/plane.obj",
+                "sphere": "assets/models/sphere.obj"
             },
             "samplers":{
                 "default":{},
