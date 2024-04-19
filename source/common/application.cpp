@@ -179,12 +179,16 @@ int our::Application::run(int run_for_frames) {
 
     gladLoadGL(glfwGetProcAddress);         // Load the OpenGL functions from the driver
 
+    int width, height;
+    glfwGetWindowSize(window, &width, &height);
     // Print information about the OpenGL context
     std::cout << "VENDOR          : " << glGetString(GL_VENDOR) << std::endl;
     std::cout << "RENDERER        : " << glGetString(GL_RENDERER) << std::endl;
     std::cout << "VERSION         : " << glGetString(GL_VERSION) << std::endl;
     std::cout << "GLSL VERSION    : " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-
+    std::cout << "WIDTH           : " <<     width << std::endl;
+    std::cout << "HEIGHT          : " <<     height << std::endl;
+    
 #if defined(ENABLE_OPENGL_DEBUG_MESSAGES)
     // if we have OpenGL debug messages enabled, set the message callback
     glDebugMessageCallback(opengl_callback, nullptr);
