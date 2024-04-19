@@ -21,10 +21,10 @@ struct Button {
     // This function returns true if the given vector v is inside the button. Otherwise, false is returned.
     // This is used to check if the mouse is hovering over the button.
     bool isInside(const glm::vec2& v) const {
-        // return position.x <= v.x && position.y <= v.y &&
-        //     v.x <= position.x + size.x &&
-        //     v.y <= position.y + size.y;
-        return true;
+        return position.x <= v.x && position.y <= v.y &&
+            v.x <= position.x + size.x &&
+            v.y <= position.y + size.y;
+        // return true;
     }
 
     // This function returns the local to world matrix to transform a rectangle of size 1x1
@@ -54,15 +54,10 @@ class Menustate: public our::State {
     // An array of the button that we can interact with
     std::array<Button, 4> buttons;
 
-    GLuint frameBuffer;
-
     void onInitialize() override {
         // First, we create a material for the menu's background
         menuMaterial = new our::TexturedMaterial();
 
-        glGenFramebuffers(1, &frameBuffer);
-        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-        
         // Here, we load the shader that will be used to draw the background
         menuMaterial->shader = new our::ShaderProgram();
         menuMaterial->shader->attach("assets/shaders/textured.vert", GL_VERTEX_SHADER);
@@ -86,7 +81,7 @@ class Menustate: public our::State {
         // and set the factors to be one for both the source and the destination. 
         highlightMaterial->pipelineState.blending.enabled = true;
         highlightMaterial->pipelineState.blending.equation = GL_FUNC_SUBTRACT;
-        highlightMaterial->pipelineState.blending.sourceFactor = GL_ZERO;
+        highlightMaterial->pipelineState.blending.sourceFactor = GL_SRC_ALPHA;
         highlightMaterial->pipelineState.blending.destinationFactor = GL_ONE;
 
         // Then we create a rectangle whose top-left corner is at the origin and its size is 1x1.
