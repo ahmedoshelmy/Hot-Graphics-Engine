@@ -11,6 +11,8 @@
 #include <array>
 
 #include<string>
+#include "../miniaudio_wrapper.hpp"
+
 // This struct is used to store the location and size of a button and the code it should execute when clicked
 struct Button {
     // The position (of the top-left corner) of the button and its size in pixels
@@ -53,8 +55,10 @@ class Menustate: public our::State {
     float time;
     // An array of the button that we can interact with
     std::array<Button, 4> buttons;
+    aaa::MiniAudioWrapper player;
 
     void onInitialize() override {
+        player.playSong("assets/music/1- Midnight Dreams.mp3");
         // First, we create a material for the menu's background
         menuMaterial = new our::TexturedMaterial();
 
@@ -195,6 +199,7 @@ class Menustate: public our::State {
 
     void onDestroy() override {
         // Delete all the allocated resources
+        player.stopSong();
         delete rectangle;
         delete menuMaterial->texture;
         delete menuMaterial->shader;

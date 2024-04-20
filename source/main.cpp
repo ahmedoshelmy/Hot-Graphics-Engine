@@ -18,7 +18,7 @@
 #include "states/renderer-test-state.hpp"
 
 int main(int argc, char** argv) {
-    
+
     flags::args args(argc, argv); // Parse the command line arguments
     // config_path is the path to the json file containing the application configuration
     // Default: "config/app.json"
