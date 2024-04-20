@@ -41,12 +41,9 @@ struct Button {
 class Menustate: public our::State {
     //* DEBUG Hole
     bool showGUI = true;
-    glm::vec2 highlightCenter = glm::vec2(72.0, 240.0f);
-    float highlightRadius = 250.0;
-    float highlightIntensity = 2.0;
-    float alpha = 1.0;
+    float edge0 = .0, edge1 = .5;
     // A meterial holding the menu shader and the menu texture to draw
-    our::TexturedMaterial* menuMaterial;
+    our::TexturedMaterial* menuMaterial, *menuTextMaterial;
     // A material to be used to highlight hovered buttons (we will use blending to create a negative effect).
     our::TintedMaterial * highlightMaterial;
     // A rectangle mesh on which the menu material will be drawn
@@ -72,11 +69,22 @@ class Menustate: public our::State {
         // Initially, the menu material will be black, then it will fade in
         menuMaterial->tint = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
+        // Here, we load the shader that will be used to draw the background
+        menuTextMaterial = new our::TexturedMaterial();
+        menuTextMaterial->shader = new our::ShaderProgram();
+        menuTextMaterial->shader->attach("assets/shaders/textured.vert", GL_VERTEX_SHADER);
+        menuTextMaterial->shader->attach("assets/shaders/textured.frag", GL_FRAGMENT_SHADER);
+        menuTextMaterial->shader->link();
+        menuTextMaterial->texture = our::texture_utils::loadImage("assets/textures/menu_text.png");
+        menuTextMaterial->tint = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+
+        menuTextMaterial->pipelineState.blending.enabled = true;
+
         // Second, we create a material to highlight the hovered buttons
         highlightMaterial = new our::TintedMaterial();
         // Since the highlight is not textured, we used the tinted material shaders
         highlightMaterial->shader = new our::ShaderProgram();
-        highlightMaterial->shader->attach("assets/shaders/highlight-menu.vert", GL_VERTEX_SHADER);
+        highlightMaterial->shader->attach("assets/shaders/tinted.vert", GL_VERTEX_SHADER);
         highlightMaterial->shader->attach("assets/shaders/highlight-menu.frag", GL_FRAGMENT_SHADER);
         highlightMaterial->shader->link();
         // The tint is white since we will subtract the background color from it to create a negative effect.
@@ -84,9 +92,6 @@ class Menustate: public our::State {
         // To create a negative effect, we enable blending, set the equation to be subtract,
         // and set the factors to be one for both the source and the destination. 
         highlightMaterial->pipelineState.blending.enabled = true;
-        highlightMaterial->pipelineState.blending.equation = GL_FUNC_SUBTRACT;
-        highlightMaterial->pipelineState.blending.sourceFactor = GL_SRC_ALPHA;
-        highlightMaterial->pipelineState.blending.destinationFactor = GL_ONE;
 
         // Then we create a rectangle whose top-left corner is at the origin and its size is 1x1.
         // Note that the texture coordinates at the origin is (0.0, 1.0) since we will use the 
@@ -175,6 +180,7 @@ class Menustate: public our::State {
         // First, we apply the fading effect.
         time += (float)deltaTime;
         menuMaterial->tint = glm::vec4(glm::smoothstep(0.00f, 2.00f, time));
+        menuTextMaterial->tint = glm::vec4(glm::smoothstep(0.00f, 2.00f, time));
         // Then we render the menu background
         // Notice that I don't clear the screen first, since I assume that the menu rectangle will draw over the whole
         // window anyway.
@@ -186,14 +192,17 @@ class Menustate: public our::State {
             if(button.isInside(mousePosition)){
                 highlightMaterial->setup();
                 highlightMaterial->shader->set("transform", VP*button.getLocalToWorld());
-                highlightMaterial->shader->set("center", button.center);
-            // highlightMaterial->shader->set("highlightRadius",  button.size.y/2.0f);
-            //     highlightMaterial->shader->set("highlightIntensity", highlightIntensity);
-                highlightMaterial->shader->set("size", button.size);      
-            //     highlightMaterial->shader->set("alpha", alpha);
+                highlightMaterial->shader->set("center", button.center); // send center of button to shader 
+                highlightMaterial->shader->set("edge0", edge0);          // controlling glowing based on two edge : on better world woulrd be Radius, Intensity
+                highlightMaterial->shader->set("edge1", edge1);
+                highlightMaterial->shader->set("size", button.size);     // to normallize glow on size of button
                 rectangle->draw();
             }
         }
+        // draw text above highlight
+        menuTextMaterial->setup();
+        menuTextMaterial->shader->set("transform", VP*M);
+        rectangle->draw();
         
     }
 
@@ -220,10 +229,9 @@ class Menustate: public our::State {
                 ImGui::SliderFloat2(sizeName.c_str() , glm::value_ptr(buttons[i].size), 0.0f, 1000.0f, "%.2f", 0 );
                 ImGui::SliderFloat2(centerName.c_str() , glm::value_ptr(buttons[i].center), 0.0f, 1000.0f, "%.2f", 0 );
             }
-            ImGui::SliderFloat2("highlightCenter", glm::value_ptr( highlightCenter ),  0.0f, 500.0f, "%.2f", 0  );
-            ImGui::SliderFloat("highlightRadius", &highlightRadius, 0.0, 500.0, "%.3f", 0 );
-            ImGui::SliderFloat("highlightIntensity", &highlightIntensity, 0.0, 10.0, "%.3f", 0 );
-            // ImGui::SliderFloat("alpha", &alpha, 0.01f, 0.1f, 2, 0 );
+            ImGui::Text("Glow Edge");
+            ImGui::SliderFloat("edge0", &edge0, 0.01f, 1.f, "%.2f", 0 );
+            ImGui::SliderFloat("edge1", &edge1, 0.01f, 1.f, "%.2f", 0 );
         }
         
     } 
