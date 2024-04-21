@@ -10,7 +10,8 @@ namespace aaa {
             return;
         }
 
-        ma_decoder_read_pcm_frames(pDecoder, pOutput, frameCount, NULL);
+        /* Reading PCM frames will loop based on what we specified when called ma_data_source_set_looping(). */
+        ma_data_source_read_pcm_frames(pDecoder, pOutput, frameCount, NULL);
 
         (void)pInput;
     };
