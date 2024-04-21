@@ -43,7 +43,8 @@ our::Texture2D* our::texture_utils::loadImage(const std::string& filename, bool 
     texture->bind();
     // Upload the image data to the GPU
     // This specifies that the texture will be a 2D texture, with 0 mipmap level, RGBA format, RGBA data type, and the actual image data
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, (void*)pixels);
+    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, (void*)pixels);
 
     // Generate mipmaps if needed
     if(generate_mipmap)
