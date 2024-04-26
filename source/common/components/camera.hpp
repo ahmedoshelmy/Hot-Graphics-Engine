@@ -4,6 +4,7 @@
 
 #include <glm/mat4x4.hpp>
 
+
 namespace our {
 
     // An enum that defines the type of the camera (ORTHOGRAPHIC or PERSPECTIVE) 

@@ -5,6 +5,8 @@ project(GFX-LAB VERSION 0.1.0)          # Here we select the project name and ve
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64")
+
 
 # These are the options we select for building GLFW as a library
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)        # Don't build Documentation
@@ -24,7 +26,7 @@ set(IMGUI_SOURCES
         vendor/imgui/imgui_widgets.cpp
         vendor/imgui/imgui_impl/imgui_impl_glfw.cpp
         vendor/imgui/imgui_impl/imgui_impl_opengl3.cpp
-        )
+)
 
 # Combine all vendor source files together into a single variable
 set(VENDOR_SOURCES ${GLAD_SOURCE} ${IMGUI_SOURCES})
@@ -87,6 +89,10 @@ set(COMMON_SOURCES
         source/common/systems/free-camera-controller.hpp
         source/common/systems/fps-camera-controller.hpp
         source/common/systems/movement.hpp
+
+        source/miniaudio_wrapper.hpp
+        source/miniaudio_wrapper.cpp
+        # source/states/miniaudio_wrapper.cpp
 )
 
 # Define the directories in which to search for the included headers
@@ -116,6 +122,7 @@ set(STATES_SOURCES
         source/states/material-test-state.hpp
         source/states/entity-test-state.hpp
         source/states/renderer-test-state.hpp
+        
 )
 
 # For each example, we add an executable target

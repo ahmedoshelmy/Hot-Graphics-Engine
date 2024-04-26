@@ -1,0 +1,82 @@
+# Blender 4.0.2 MTL File: 'None'
+# www.blender.org
+
+newmtl Cabet_Table
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Cabet_Table_baseColor.png
+
+newmtl Chair
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/Chair_baseColor.png
+map_d C:/Chair_baseColor.png
+
+newmtl LivingRoom
+Ns 63.999992
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/LivingRoom.Alt_baseColor.png
+map_d C:/LivingRoom.Alt_baseColor.png
+
+newmtl LivingRoom.Alt
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/LivingRoom.Alt_baseColor.png
+map_d C:/LivingRoom.Alt_baseColor.png
+
+newmtl LivingRoomLamp
+Ns 63.999992
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/LivingRoomLamp_baseColor.png
+map_Ke C:/LivingRoomLamp_baseColor.png
+
+newmtl OldLady
+Ns 63.999992
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/OldLady_baseColor.png
+map_d C:/OldLady_baseColor.png
+
+newmtl Table_Stuff
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/Table_Stuff_baseColor.png
+map_d C:/Table_Stuff_baseColor.png
+
+newmtl WallsRoofFloorExtras
+Ns 38.399990
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/WallsRoofFloorExtras_baseColor.png
+map_d C:/WallsRoofFloorExtras_baseColor.png
