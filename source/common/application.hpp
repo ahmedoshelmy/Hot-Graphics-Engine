@@ -12,6 +12,8 @@
 
 #include "input/keyboard.hpp"
 #include "input/mouse.hpp"
+#include "../miniaudio_wrapper.hpp"
+
 
 namespace our {
 
@@ -62,6 +64,7 @@ namespace our {
         std::unordered_map<std::string, State*> states;   // This will store all the states that the application can run
         State * currentState = nullptr;         // This will store the current scene that is being run
         State * nextState = nullptr;            // If it is requested to go to another scene, this will contain a pointer to that scene
+        aaa::MiniAudioWrapper player;
 
         
         // Virtual functions to be overrode and change the default behaviour of the application
@@ -75,7 +78,7 @@ namespace our {
         // Create an application with following configuration
         Application(const nlohmann::json& app_config) : app_config(app_config) {}
         // On destruction, delete all the states
-        ~Application(){ for (auto &it : states) delete it.second; }
+        ~Application(){ for (auto &it : states) delete it.second; player.stopSong(); }
 
         // This is the main class function that run the whole application (Initialize, Game loop, House cleaning).
         int run(int run_for_frames = 0);

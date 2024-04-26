@@ -8,9 +8,13 @@
 #include <systems/fps-camera-controller.hpp>
 #include <systems/movement.hpp>
 #include <asset-loader.hpp>
+#include <material/material.hpp>
 
 // This state shows how to use the ECS framework and deserialization.
+
 class Playstate: public our::State {
+    //* DEBUG Hole
+    bool showGUI = true;
 
     our::World world;
     our::ForwardRenderer renderer;
@@ -34,7 +38,9 @@ class Playstate: public our::State {
         // We initialize the camera controller system since it needs a pointer to the app
         cameraControllerFree.enter(getApp());
         cameraControllerFps.enter(getApp());
+        // initalize lighting constants
         // Then we initialize the renderer
+
         auto size = getApp()->getFrameBufferSize();
         renderer.initialize(size, config["renderer"]);
     }
@@ -57,7 +63,25 @@ class Playstate: public our::State {
     }
 
     void onImmediateGui(){ 
-        // ImGui::ShowDemoWindow(&showDemoWindow);
+        if(showGUI) {
+            
+            ImGui::Text("Directional Light");
+            ImGui::InputFloat3("ambient directional direction", glm::value_ptr(our::LightMaterial::directionalLightDir), "%.3f", 0 );
+            ImGui::SliderFloat3("ambient directional light", glm::value_ptr(our::LightMaterial::ambientDirLight), 0.0, 1.0, "%.3f", 0 );
+            ImGui::SliderFloat3("diffuse directional light", glm::value_ptr(our::LightMaterial::diffuseDirLight), 0.0, 1.0, "%.3f", 0 );
+            ImGui::SliderFloat3("specular directional light", glm::value_ptr(our::LightMaterial::specDirLight), 0.0, 1.0, "%.3f", 0 );
+            ImGui::Text("Spot Light");
+            ImGui::SliderFloat3("ambient spot light", glm::value_ptr(our::LightMaterial::ambientSpotLight), 0.0, 1.0, "%.3f", 0 );
+            ImGui::SliderFloat3("diffuse spot light", glm::value_ptr(our::LightMaterial::diffuseSpotLight), 0.0, 1.0, "%.3f", 0 );
+            ImGui::SliderFloat3("specular spot light", glm::value_ptr(our::LightMaterial::specSpotLight), 0.0, 1.0, "%.3f", 0 );
+
+            ImGui::SliderFloat("spot light cutoff", &our::LightMaterial::cutOff, 0.0, 180.f, "%.2f", 0 );
+            ImGui::SliderFloat("spot light outer cutoff", &our::LightMaterial::outerCutOff, 0.0, 180.f, "%.2f", 0 );
+
+            ImGui::SliderFloat("spot light linear", &our::LightMaterial::spot_linear, 0.0, 1.f, "%.4f", 0 );
+            ImGui::SliderFloat("spot light quadratic", &our::LightMaterial::spot_quadratic, 0.0, 1.f, "%.4f", 0 );
+            // ImGui::SliderFloat("edge1", &edge1, 0.01f, 1.f, "%.2f", 0 );
+        }
     }      
 
     void onDestroy() override {

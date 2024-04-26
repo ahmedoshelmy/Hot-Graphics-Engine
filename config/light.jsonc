@@ -1,0 +1,149 @@
+{
+    "start-scene": "menu",
+    "window":
+    {
+        "title":"Locked Away",
+        "size":{
+            "width":1920,
+            "height":1080
+        },
+        "fullscreen": true
+    },
+    "scene": {
+        "renderer":{
+            "sky": "assets/textures/sky.jpg",
+            "postprocess": "assets/shaders/postprocess/vignette.frag"
+        },
+        "assets":{
+            "shaders":{
+                "tinted":{
+                    "vs":"assets/shaders/tinted.vert",
+                    "fs":"assets/shaders/tinted.frag"
+                },
+                "textured":{
+                    "vs":"assets/shaders/textured.vert",
+                    "fs":"assets/shaders/textured.frag"
+                },
+                "light":{
+                    "vs":"assets/shaders/all_light.vert",
+                    "fs":"assets/shaders/all_light.frag"
+                }
+            },
+            "textures":{
+                "lady": "assets/textures/OldLady_baseColor.png",
+                "home": "assets/textures/WallsRoofFloorExtras_baseColor.png"
+            },
+            "meshes":{
+                "cube": "assets/models/cube.obj",
+                "lady": "assets/models/lady.obj",
+                "home": "assets/models/home.obj"
+            },
+            "samplers":{
+                "default":{},
+                "pixelated":{
+                    "MAG_FILTER": "GL_NEAREST"
+                }
+            },
+            "materials":{
+                "metal":{
+                    "type": "tinted",
+                    "shader": "tinted",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [0.45, 0.4, 0.5, 1]
+                },
+                "lady":{
+                    "type": "light",
+                    "shader": "light",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": true
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "diffuse_texture": "lady",
+                    "specular_texture": "lady",
+                    "sampler": "default"
+                },
+                "home":{
+                    "type": "light",
+                    "shader": "light",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    // "tint": [1, 1, 1, 1],
+                    "diffuse_texture": "home",
+                    "specular_texture": "home",
+                    "sampler": "default"
+                }
+                
+            }
+        },
+        "world":[
+            {
+                "position": [0, 0, 10],
+                "components": [
+                    {
+                        "type": "Camera"
+                    },
+                    {
+                        "type": "FPS Camera Controller"
+                    }
+                ],
+                "children": [
+                    {
+                        "position": [1, -1, -1],
+                        "rotation": [45, 45, 0],
+                        "scale": [0.1, 0.1, 1.0],
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "cube",
+                                "material": "metal"
+                            }
+                        ]
+                    }
+                ]
+            },
+
+            {
+                "position": [0, 10, 0],
+                "rotation": [0, 0, 0],
+                "scale": [100, 100, 100],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "lady",
+                        "material": "lady"
+                    }
+                ]
+            },
+            {
+                "position": [0, 0, 0],
+                "rotation": [0, 0, 0],
+                "scale": [100, 100, 100],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "home",
+                        "material": "home"
+                    }
+                ]
+            }
+        ]
+    }
+}

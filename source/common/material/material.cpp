@@ -62,4 +62,79 @@ namespace our {
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
     }
 
+
+    // -------------------- directional light -----------------
+    glm::vec3   LightMaterial::directionalLightDir = glm::vec3(-2.0f, -2.0f, -2.0f);
+    glm::vec3   LightMaterial::ambientDirLight = glm::vec3(0.1f, 0.1f, 0.1f), 
+                LightMaterial::diffuseDirLight = glm::vec3(0.05f, 0.05f, 0.05), 
+                LightMaterial::specDirLight    = glm::vec3(0.2f, 0.2f, 0.2f);
+    // -------------------- spot light -----------------
+    glm::vec3   LightMaterial::ambientSpotLight = glm::vec3( 0.0f, 0.0f, 0.0f), 
+                LightMaterial::diffuseSpotLight = glm::vec3(0.5f, 0.5f, 0.5f), 
+                LightMaterial::specSpotLight    = glm::vec3(.02f, .02f, .02f);
+    float LightMaterial::cutOff = 10.0f, LightMaterial::outerCutOff = 30.0f;
+    float LightMaterial::spot_constant = 1.0f, LightMaterial::spot_linear = 0.007f, LightMaterial::spot_quadratic = 0.0002f;
+
+    void LightMaterial::setup() const {
+        Material::setup();
+        shader->set("material.diffuse", 0);
+        shader->set("material.specular", 1);
+        // shader->set("material.emission", 2);
+        shader->set("material.shininess", shininess); 
+
+        // ==============================================================================
+        shader->set("dirLight.direction", directionalLightDir);
+        shader->set("dirLight.ambient", ambientDirLight);
+        shader->set("dirLight.diffuse", diffuseDirLight);
+        shader->set("dirLight.specular", specDirLight);
+        // ==============================================================================
+        // shader->set("spotLight.position", camera.GetPosition());
+        // shader->set("spotLight.direction", camera.GetFront());
+        
+        shader->set("spotLight.ambient", ambientSpotLight);
+        shader->set("spotLight.diffuse", diffuseSpotLight);
+        shader->set("spotLight.specular", specSpotLight);
+
+        shader->set("spotLight.cutOff", glm::cos(glm::radians(cutOff)));
+        shader->set("spotLight.outerCutOff", glm::cos(glm::radians(outerCutOff)));
+
+        shader->set("spotLight.constant", spot_constant);
+        shader->set("spotLight.linear", spot_linear);
+        shader->set("spotLight.quadratic", spot_quadratic);
+        // ==============================================================================
+        // for(int i = 0;i < 4;i++) {
+        //     shader->set("pointLights[" + std::to_string(i) + "].position", pointLightPositions[i]);
+
+        //     shader->set("pointLights[" + std::to_string(i) + "].ambient", pointLightColors[i] * 0.1f);
+        //     shader->set("pointLights[" + std::to_string(i) + "].diffuse", pointLightColors[i]);
+        //     shader->set("pointLights[" + std::to_string(i) + "].specular", pointLightColors[i]);
+
+        //     shader->set("pointLights[" + std::to_string(i) + "].constant", point_constant);
+        //     shader->set("pointLights[" + std::to_string(i) + "].linear", point_linear);
+        //     shader->set("pointLights[" + std::to_string(i) + "].quadratic", point_quadratic);
+        // }
+    
+
+        glActiveTexture(GL_TEXTURE0);
+        diffuse_texture->bind();
+        sampler->bind(0);
+        glActiveTexture(GL_TEXTURE1);
+        specular_texture->bind();
+        sampler->bind(1);
+        // glActiveTexture(GL_TEXTURE2);
+        // emission_texture->bind();
+        
+
+    }
+
+    // This function read the material data from a json object
+    void LightMaterial::deserialize(const nlohmann::json& data){
+        Material::deserialize(data);
+        if(!data.is_object()) return;
+        // alphaThreshold = data.value("alphaThreshold", 0.0f);
+        diffuse_texture = AssetLoader<Texture2D>::get(data.value("diffuse_texture", ""));
+        specular_texture = AssetLoader<Texture2D>::get(data.value("specular_texture", ""));
+        sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
+    }
+
 }

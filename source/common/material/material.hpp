@@ -53,12 +53,49 @@ namespace our {
         void deserialize(const nlohmann::json& data) override;
     };
 
+
+    class LightMaterial : public Material {
+    public:
+        Texture2D* diffuse_texture, *specular_texture;
+        Sampler* sampler;
+        float shininess = 32.0f;
+        // -------------------- directional light -----------------
+        static glm::vec3 directionalLightDir;
+        static glm::vec3 ambientDirLight, diffuseDirLight, specDirLight;
+        // -------------------- spot light -----------------
+        static glm::vec3 ambientSpotLight, diffuseSpotLight, specSpotLight;
+        static float cutOff, outerCutOff;
+        static float spot_constant, spot_linear, spot_quadratic;
+        // -------------------- 4 point lights -----------------
+        // positions of the point lights
+        // TODO: adding spotlight
+        glm::vec3 pointLightPositions[4] = {
+            glm::vec3( 0.7f,  0.2f,  2.0f),
+            glm::vec3( 2.3f, -3.3f, -4.0f),
+            glm::vec3(-4.0f,  2.0f, -12.0f),
+            glm::vec3( 0.0f,  0.0f, -3.0f)
+        };
+
+        glm::vec3 pointLightColors[4] = {
+            glm::vec3(0.1f, 0.1f, 0.1f),
+            glm::vec3(0.1f, 0.1f, 0.1f),
+            glm::vec3(0.1f, 0.1f, 0.1f),
+            glm::vec3(0.3f, 0.1f, 0.1f)
+        };
+        float point_constant = 1.0f, point_linear = 0.14f, point_quadratic = 0.07f;
+
+        void setup() const override;
+        void deserialize(const nlohmann::json& data) override;
+    };
+
     // This function returns a new material instance based on the given type
     inline Material* createMaterialFromType(const std::string& type){
         if(type == "tinted"){
             return new TintedMaterial();
         } else if(type == "textured"){
             return new TexturedMaterial();
+        } else if(type == "light"){
+            return new LightMaterial();
         } else {
             return new Material();
         }

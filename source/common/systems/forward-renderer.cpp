@@ -150,6 +150,7 @@ namespace our {
 
         //TODO: (Req 9) Modify the following line such that "cameraForward" contains a vector pointing the camera forward direction
         // HINT: See how you wrote the CameraComponent::getViewMatrix, it should help you solve this one
+        glm::vec3 cameraPosition = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 1.0f, 1.0f);
         glm::vec3 cameraForward = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, -1.0f, 0.0f);
         std::sort(transparentCommands.begin(), transparentCommands.end(), [cameraForward](const RenderCommand& first, const RenderCommand& second){
             //TODO: (Req 9) Finish this function
@@ -183,7 +184,15 @@ namespace our {
         // Don't forget to set the "transform" uniform to be equal the model-view-projection matrix for each render command
         for(auto command : opaqueCommands) {
             command.material->setup();
-            command.material->shader->set("transform", VP * command.localToWorld);
+            if(dynamic_cast<LightMaterial*>(command.material) != nullptr) {
+                command.material->shader->set("spotLight.position", cameraPosition);
+                command.material->shader->set("spotLight.direction", cameraForward);
+                command.material->shader->set("u_Model", command.localToWorld);
+                command.material->shader->set("u_View",  camera->getViewMatrix());
+                command.material->shader->set("u_Projection", camera->getProjectionMatrix(windowSize));
+            } else {
+                command.material->shader->set("transform", VP * command.localToWorld);
+            }
             command.mesh->draw();
         }
         // If there is a sky material, draw the sky
