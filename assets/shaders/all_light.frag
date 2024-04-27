@@ -137,7 +137,7 @@ void main()
     vec3 viewDir = normalize(cameraPos - FragPos);
     vec3 result = vec3(0.0);
 
-    // result += calcDirectionLight(dirLight, norm, viewDir);
+    result += calcDirectionLight(dirLight, norm, viewDir);
     // for(int i = 0;i < NR_POINT_LIGHTS;i++) {
     //     result += calcPointLight(pointLights[i], norm, FragPos, viewDir);
     // }

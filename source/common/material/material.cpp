@@ -64,16 +64,16 @@ namespace our {
 
 
     // -------------------- directional light -----------------
-    glm::vec3   LightMaterial::directionalLightDir = glm::vec3(-2.0f, -2.0f, -2.0f);
-    glm::vec3   LightMaterial::ambientDirLight = glm::vec3(0.1f, 0.1f, 0.1f), 
+    glm::vec3   LightMaterial::directionalLightDir = glm::vec3(-15.0f, 15.0f, -25.0f);
+    glm::vec3   LightMaterial::ambientDirLight = glm::vec3(.2f, 0.2f, .2f), 
                 LightMaterial::diffuseDirLight = glm::vec3(0.05f, 0.05f, 0.05), 
                 LightMaterial::specDirLight    = glm::vec3(0.2f, 0.2f, 0.2f);
     // -------------------- spot light -----------------
     glm::vec3   LightMaterial::ambientSpotLight = glm::vec3( 0.0f, 0.0f, 0.0f), 
-                LightMaterial::diffuseSpotLight = glm::vec3(0.5f, 0.5f, 0.5f), 
-                LightMaterial::specSpotLight    = glm::vec3(.02f, .02f, .02f);
-    float LightMaterial::cutOff = 10.0f, LightMaterial::outerCutOff = 30.0f;
-    float LightMaterial::spot_constant = 1.0f, LightMaterial::spot_linear = 0.007f, LightMaterial::spot_quadratic = 0.0002f;
+                LightMaterial::diffuseSpotLight = glm::vec3(0.6f, 0.4f, 0.4f), 
+                LightMaterial::specSpotLight    = glm::vec3(.1f, .1f, .1f);
+    float LightMaterial::cutOff = 15.0f, LightMaterial::outerCutOff = 20.0f;
+    float LightMaterial::spot_constant = 1.0f, LightMaterial::spot_linear = 0.014f, LightMaterial::spot_quadratic = 0.0007f;
 
     void LightMaterial::setup() const {
         Material::setup();

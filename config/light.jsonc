@@ -11,7 +11,7 @@
     },
     "scene": {
         "renderer":{
-            "sky": "assets/textures/sky.jpg",
+            "sky": "assets/textures/sky_forest_real.jpg",
             "postprocess": "assets/shaders/postprocess/vignette.frag"
         },
         "assets":{
@@ -31,7 +31,9 @@
             },
             "textures":{
                 "lady": "assets/textures/OldLady_baseColor.png",
-                "home": "assets/textures/WallsRoofFloorExtras_baseColor.png"
+                "home": "assets/textures/WallsRoofFloorExtras_baseColor.png",
+                "white": "assets/textures/white.png",
+                "black": "assets/textures/black.png"
             },
             "meshes":{
                 "cube": "assets/models/cube.obj",
@@ -87,7 +89,7 @@
                     },
                     // "tint": [1, 1, 1, 1],
                     "diffuse_texture": "home",
-                    "specular_texture": "home",
+                    "specular_texture": "white",
                     "sampler": "default"
                 }
                 
@@ -101,7 +103,7 @@
                         "type": "Camera"
                     },
                     {
-                        "type": "FPS Camera Controller"
+                        "type": "Free Camera Controller"
                     }
                 ],
                 "children": [
@@ -121,7 +123,7 @@
             },
 
             {
-                "position": [0, 10, 0],
+                "position": [0, 0, 0],
                 "rotation": [0, 0, 0],
                 "scale": [100, 100, 100],
                 "components": [
@@ -135,7 +137,7 @@
             {
                 "position": [0, 0, 0],
                 "rotation": [0, 0, 0],
-                "scale": [100, 100, 100],
+                "scale": [120, 120, 120],
                 "components": [
                     {
                         "type": "Mesh Renderer",

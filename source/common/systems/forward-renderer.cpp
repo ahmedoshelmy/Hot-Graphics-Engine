@@ -26,7 +26,7 @@ namespace our {
             PipelineState skyPipelineState{};
             skyPipelineState.depthTesting.enabled = true;
 
-            skyPipelineState.faceCulling.enabled = true;
+            skyPipelineState.faceCulling.enabled = false;
             skyPipelineState.faceCulling.culledFace = GL_FRONT;
 
             // Load the sky texture (note that we don't need mipmaps since we want to avoid any unnecessary blurring while rendering the sky)
@@ -50,7 +50,17 @@ namespace our {
             this->skyMaterial->alphaThreshold = 1.0f;
             this->skyMaterial->transparent = false;
         }
+        if(this->showWhiteBox) {
+            this->whiteBoxMesh = our::mesh_utils::loadOBJ("assets/models/cube.obj");
+            ShaderProgram* dirLightShader = new our::ShaderProgram();
+            dirLightShader->attach("assets/shaders/tinted.vert", GL_VERTEX_SHADER);
+            dirLightShader->attach("assets/shaders/color.frag", GL_FRAGMENT_SHADER);
+            dirLightShader->link();
 
+            whiteBoxMaterial = new TintedMaterial();
+            whiteBoxMaterial->tint = glm::vec4(1.0f);
+            whiteBoxMaterial->shader = dirLightShader;
+        }
         // Then we check if there is a postprocessing shader in the configuration
         if(config.contains("postprocess")){
             //TODO: (Req 11) Create a framebuffer
@@ -195,6 +205,15 @@ namespace our {
             }
             command.mesh->draw();
         }
+        if(showWhiteBox) {
+            glm::mat4 lightModel(1.0f);
+            lightModel = glm::translate(lightModel, LightMaterial::directionalLightDir);
+            this->whiteBoxMaterial->setup();
+            this->whiteBoxMaterial->shader->set("bgcolor", glm::vec3(1.0f));
+            this->whiteBoxMaterial->shader->set("transform", VP * lightModel);
+            this->whiteBoxMesh->draw();
+        }
+
         // If there is a sky material, draw the sky
         if(this->skyMaterial){
             //TODO: (Req 10) setup the sky material
@@ -217,6 +236,7 @@ namespace our {
             //TODO: (Req 10) draw the sky sphere
             this->skySphere->draw();
         }
+        
         //TODO: (Req 9) Draw all the transparent commands
         // Don't forget to set the "transform" uniform to be equal the model-view-projection matrix for each render command
         for(auto command : transparentCommands) {
