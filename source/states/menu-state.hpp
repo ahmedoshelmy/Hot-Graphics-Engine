@@ -52,7 +52,7 @@ class Menustate: public our::State {
     float time;
     // An array of the button that we can interact with
     std::array<Button, 4> buttons;
-    // aaa::MiniAudioWrapper player;
+    // audio_wrapper::MiniAudioWrapper player;
 
     void onInitialize() override {
         // player.playSong("assets/music/1- Midnight Dreams.mp3");

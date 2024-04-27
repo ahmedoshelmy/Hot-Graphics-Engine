@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include  "miniaudio/miniaudio.h"
 
-namespace aaa {
+namespace audio_wrapper {
      void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount) ;
 
     class MiniAudioWrapper{
