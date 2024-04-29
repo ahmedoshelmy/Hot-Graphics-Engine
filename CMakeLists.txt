@@ -28,6 +28,10 @@ set(IMGUI_SOURCES
         vendor/imgui/imgui_impl/imgui_impl_opengl3.cpp
 )
 
+# ReactPhysics3D
+add_subdirectory(vendor/reactphysics3D)
+
+
 # Combine all vendor source files together into a single variable
 set(VENDOR_SOURCES ${GLAD_SOURCE} ${IMGUI_SOURCES})
 
@@ -41,7 +45,7 @@ set(COMMON_SOURCES
         source/common/asset-loader.cpp
         source/common/asset-loader.hpp
         source/common/deserialize-utils.hpp
-        
+
         source/common/shader/shader.hpp
         source/common/shader/shader.cpp
 
@@ -71,6 +75,18 @@ set(COMMON_SOURCES
         source/common/ecs/world.hpp
         source/common/ecs/world.cpp
 
+
+        source/miniaudio_wrapper.hpp
+        source/miniaudio_wrapper.cpp
+
+        # source/states/miniaudio_wrapper.cpp
+
+
+)
+
+
+# A variable with all components
+set(COMMON_COMPONENTS_SOURCES
         source/common/components/camera.hpp
         source/common/components/camera.cpp
         source/common/components/mesh-renderer.hpp
@@ -82,18 +98,30 @@ set(COMMON_SOURCES
         source/common/components/movement.hpp
         source/common/components/movement.cpp
         source/common/components/component-deserializer.hpp
+        source/common/components/light.cpp
+        source/common/components/light.hpp
+        #        source/common/components/player.cpp
+        #        source/common/components/player.hpp
+        source/common/components/rigid-body.cpp
+        source/common/components/rigid-body.hpp
 
+)
+
+# A variable with all systems
+set(COMMON_SYSTEMS_SOURCES
         source/common/systems/forward-renderer.hpp
         source/common/systems/forward-renderer.cpp
         source/common/systems/camera-controller.hpp
         source/common/systems/free-camera-controller.hpp
         source/common/systems/fps-camera-controller.hpp
         source/common/systems/movement.hpp
-
-        source/miniaudio_wrapper.hpp
-        source/miniaudio_wrapper.cpp
-        # source/states/miniaudio_wrapper.cpp
+        source/common/systems/physics.hpp
+        source/common/systems/locked-away.cpp
+        source/common/systems/locked-away.hpp
+        source/common/systems/physics.cpp
+#        source/common/systems/movement.cpp
 )
+
 
 # Define the directories in which to search for the included headers
 include_directories(
@@ -103,6 +131,7 @@ include_directories(
         vendor/glm
         vendor/imgui
         vendor/utils
+        vendor/reactphysics3D/include
 )
 
 
@@ -122,11 +151,13 @@ set(STATES_SOURCES
         source/states/material-test-state.hpp
         source/states/entity-test-state.hpp
         source/states/renderer-test-state.hpp
-        
+
 )
 
 # For each example, we add an executable target
 # Each target compiles one example source file and the common & vendor source files
 # Then we link GLFW with each target
-add_executable(GAME_APPLICATION source/main.cpp ${STATES_SOURCES} ${COMMON_SOURCES} ${VENDOR_SOURCES})
+add_executable(GAME_APPLICATION source/main.cpp ${STATES_SOURCES} ${COMMON_SOURCES} ${VENDOR_SOURCES} ${COMMON_SYSTEMS_SOURCES}
+        ${COMMON_COMPONENTS_SOURCES})
 target_link_libraries(GAME_APPLICATION glfw)
+target_link_libraries(GAME_APPLICATION reactphysics3d)
