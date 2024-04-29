@@ -56,8 +56,9 @@ namespace our {
 
     class LightMaterial : public Material {
     public:
-        Texture2D* diffuse_texture, *specular_texture;
+        Texture2D* diffuse_texture, *specular_texture, *normal_map;
         Sampler* sampler;
+        bool isNormalMap = false;
         float shininess = 32.0f;
         // -------------------- directional light -----------------
         static glm::vec3 directionalLightDir;

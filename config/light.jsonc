@@ -26,12 +26,14 @@
                 },
                 "light":{
                     "vs":"assets/shaders/all_light.vert",
-                    "fs":"assets/shaders/all_light.frag"
+                    "fs":"assets/shaders/all_light.frag",
+                    "gs":"assets/shaders/all_light.geom"
                 }
             },
             "textures":{
                 "lady": "assets/textures/OldLady_baseColor.png",
-                "home": "assets/textures/WallsRoofFloorExtras_baseColor.png",
+                "home": "assets/textures/House_exterior/House_exterior_d.png",
+                "home_normal": "assets/textures/House_exterior/House_exterior_n.png",
                 "table-home": "assets/textures/Cabet_Table_baseColor.png",
                 "white": "assets/textures/white.png",
                 "black": "assets/textures/black.png"
@@ -39,7 +41,7 @@
             "meshes":{
                 "cube": "assets/models/cube.obj",
                 "lady": "assets/models/lady.obj",
-                "home": "assets/models/home.obj",
+                "home": "assets/models/real_home.obj",
                 "table-home": "assets/models/home_table.obj"
             },
             "samplers":{
@@ -92,7 +94,9 @@
                     // "tint": [1, 1, 1, 1],
                     "diffuse_texture": "home",
                     "specular_texture": "white",
-                    "sampler": "default"
+                    "sampler": "default",
+                    "isNormalMap": true,
+                    "normal_map": "home_normal"
                 },
                 "table-home":{
                     "type": "light",
@@ -155,7 +159,7 @@
             {
                 "position": [0, 0, 0],
                 "rotation": [0, 0, 0],
-                "scale": [120, 120, 120],
+                "scale": [200, 200, 200],
                 "components": [
                     {
                         "type": "Mesh Renderer",
@@ -163,19 +167,19 @@
                         "material": "home"
                     }
                 ]
-            },
-            {
-                "position": [10, 0, 0],
-                "rotation": [0, 0, 0],
-                "scale": [100, 100, 100],
-                "components": [
-                    {
-                        "type": "Mesh Renderer",
-                        "mesh": "table-home",
-                        "material": "table-home"
-                    }
-                ]
-            }
+            }// ,
+            // {
+            //     "position": [10, 0, 0],
+            //     "rotation": [0, 0, 0],
+            //     "scale": [100, 100, 100],
+            //     "components": [
+            //         {
+            //             "type": "Mesh Renderer",
+            //             "mesh": "table-home",
+            //             "material": "table-home"
+            //         }
+            //     ]
+            // }
         ]
     }
 }

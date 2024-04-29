@@ -65,12 +65,12 @@ namespace our {
 
     // -------------------- directional light -----------------
     glm::vec3   LightMaterial::directionalLightDir = glm::vec3(-15.0f, 15.0f, -25.0f);
-    glm::vec3   LightMaterial::ambientDirLight = glm::vec3(.2f, 0.2f, .2f), 
+    glm::vec3   LightMaterial::ambientDirLight = glm::vec3(0.2f, 0.3f, 0.2f), 
                 LightMaterial::diffuseDirLight = glm::vec3(0.05f, 0.05f, 0.05), 
                 LightMaterial::specDirLight    = glm::vec3(0.2f, 0.2f, 0.2f);
     // -------------------- spot light -----------------
-    glm::vec3   LightMaterial::ambientSpotLight = glm::vec3( 0.0f, 0.0f, 0.0f), 
-                LightMaterial::diffuseSpotLight = glm::vec3(0.6f, 0.4f, 0.4f), 
+    glm::vec3   LightMaterial::ambientSpotLight = glm::vec3( 0.3f, 0.3f, 0.3f), 
+                LightMaterial::diffuseSpotLight = glm::vec3(0.4f, 0.4f, 0.4f), 
                 LightMaterial::specSpotLight    = glm::vec3(.1f, .1f, .1f);
     float LightMaterial::cutOff = 15.0f, LightMaterial::outerCutOff = 20.0f;
     float LightMaterial::spot_constant = 1.0f, LightMaterial::spot_linear = 0.014f, LightMaterial::spot_quadratic = 0.0007f;
@@ -81,7 +81,11 @@ namespace our {
         shader->set("material.specular", 1);
         // shader->set("material.emission", 2);
         shader->set("material.shininess", shininess); 
-
+        // ==============================================================================
+        shader->set("isNormalMap", isNormalMap);
+        if(isNormalMap) {
+            shader->set("normalMap", 2);
+        }
         // ==============================================================================
         shader->set("dirLight.direction", directionalLightDir);
         shader->set("dirLight.ambient", ambientDirLight);
@@ -121,6 +125,12 @@ namespace our {
         glActiveTexture(GL_TEXTURE1);
         specular_texture->bind();
         sampler->bind(1);
+        if(isNormalMap) {
+            glActiveTexture(GL_TEXTURE2);
+            normal_map->bind();
+            sampler->bind(2);
+        }
+        
         // glActiveTexture(GL_TEXTURE2);
         // emission_texture->bind();
         
@@ -134,7 +144,10 @@ namespace our {
         // alphaThreshold = data.value("alphaThreshold", 0.0f);
         diffuse_texture = AssetLoader<Texture2D>::get(data.value("diffuse_texture", ""));
         specular_texture = AssetLoader<Texture2D>::get(data.value("specular_texture", ""));
+        normal_map = AssetLoader<Texture2D>::get(data.value( "normal_map", ""));
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
+
+        isNormalMap = data.value("isNormalMap", isNormalMap);
     }
 
 }

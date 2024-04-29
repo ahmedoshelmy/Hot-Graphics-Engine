@@ -20,9 +20,13 @@ namespace our {
             for(auto& [name, desc] : data.items()){
                 std::string vsPath = desc.value("vs", "");
                 std::string fsPath = desc.value("fs", "");
+                std::string gsPath = desc.value("gs", "");
                 auto shader = new ShaderProgram();
                 shader->attach(vsPath, GL_VERTEX_SHADER);
                 shader->attach(fsPath, GL_FRAGMENT_SHADER);
+                if(gsPath != "") {
+                    shader->attach(gsPath, GL_GEOMETRY_SHADER);
+                }
                 shader->link();
                 assets[name] = shader;
             }

@@ -4,19 +4,21 @@ layout(location = 1) in vec4 color;
 layout(location = 2) in vec2 tex_coord;
 layout(location = 3) in vec3 normal;
 
-out vec3 FragPos;
-out vec3 Normal;
-out vec2 TexCoords;
-
+ 
 uniform mat4 u_Model;
-uniform mat4 u_View;
-uniform mat4 u_Projection;
+
+
+out DATA {
+    vec3 Normal;
+    vec2 TexCoords;
+    vec3 FragPos;
+} data_out;
+
 
 void main()
 {
-    FragPos = vec3(u_Model * vec4(position, 1.0));
-    Normal = mat3(transpose(inverse(u_Model))) * normal;  
-    TexCoords = tex_coord;
-    
-    gl_Position = u_Projection * u_View * vec4(FragPos, 1.0);
+    data_out.FragPos = vec3(u_Model * vec4(position, 1.0));
+    data_out.Normal = mat3(transpose(inverse(u_Model))) * normal;  
+    data_out.TexCoords = tex_coord;
+    gl_Position = vec4(data_out.FragPos, 1.0);
 }

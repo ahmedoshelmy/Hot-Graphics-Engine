@@ -66,6 +66,8 @@ our::Mesh* our::mesh_utils::loadOBJ(const std::string& filename) {
                     255
             };
 
+            
+
             // See if we already stored a similar vertex
             auto it = vertex_map.find(vertex);
             if (it == vertex_map.end()) {
