@@ -59,8 +59,11 @@ in vec3 Normal;
 in vec2 TexCoords;
 in mat3 TBN;
 uniform sampler2D normalMap;  
+uniform sampler2D u_colorMaskTexture;  
 uniform bool isNormalMap;
 uniform vec3 cameraPos;
+
+vec3 albedo_texture = vec3(0.0);
 
 
 vec3 calcDirectionLight(DirLight light, vec3 normal, vec3 viewDir) {
@@ -73,8 +76,8 @@ vec3 calcDirectionLight(DirLight light, vec3 normal, vec3 viewDir) {
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     // float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
 
-    vec3 ambient = light.ambient   * texture(material.albedo, TexCoords).rgb;
-    vec3 diffuse = light.diffuse   * diff * texture(material.albedo, TexCoords).rgb;  
+    vec3 ambient = light.ambient   * albedo_texture;
+    vec3 diffuse = light.diffuse   * diff * albedo_texture;  
     vec3 specular = light.specular * spec * texture(material.specular, TexCoords).rgb;  
         
     return (ambient + diffuse + specular);
@@ -93,8 +96,8 @@ vec3 calcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     // float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
     
 
-    vec3 ambient = light.ambient   * texture(material.albedo, TexCoords).rgb;
-    vec3 diffuse = light.diffuse   * diff * texture(material.albedo, TexCoords).rgb;  
+    vec3 ambient = light.ambient   * albedo_texture;
+    vec3 diffuse = light.diffuse   * diff * albedo_texture;  
     vec3 specular = light.specular * spec * texture(material.specular, TexCoords).rgb;  
 
     // attenuation
@@ -121,8 +124,8 @@ vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     // float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
 
 
-    vec3 ambient = light.ambient   * texture(material.albedo, TexCoords).rgb;
-    vec3 diffuse = light.diffuse   * diff * texture(material.albedo, TexCoords).rgb;  
+    vec3 ambient = light.ambient   * albedo_texture;
+    vec3 diffuse = light.diffuse   * diff * albedo_texture;  
     vec3 specular = light.specular * spec * texture(material.specular, TexCoords).rgb;  
     
     // spotlight (soft edges)
@@ -145,6 +148,21 @@ vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
 
 void main()
 {
+    albedo_texture = texture(material.albedo, TexCoords).rgb;
+    vec3 colorMaskTexture =  texture(u_colorMaskTexture, TexCoords).rgb;
+    vec3 color1 = vec3(0.970, 0.940, 0.877);
+    vec3 color2 = vec3(0.129, 0.163, 0.195);
+    vec3 color3 = vec3(0.645, 0.283, 0.072) ;
+    vec3 color4 = vec3(1);
+
+    vec3 colorOut = mix( mix( mix(
+                        albedo_texture * color4, 
+                        albedo_texture * color1, 
+        colorMaskTexture.r
+    ), albedo_texture * color2, colorMaskTexture.g 
+    ), albedo_texture * color3, colorMaskTexture.b);
+    albedo_texture = colorOut;
+
     vec3 normal = vec3(0.0);
     
     if(isNormalMap) {
@@ -166,7 +184,6 @@ void main()
     //     result += calcPointLight(pointLights[i], normal, FragPos, viewDir);
     // }
     result += calcSpotLight(spotLight, normal, FragPos, viewDir);
-
     FragColor = vec4(result, 1.0);
    
 } 

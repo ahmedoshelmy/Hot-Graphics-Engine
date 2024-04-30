@@ -65,19 +65,19 @@ namespace our {
 
     // -------------------- directional light -----------------
     glm::vec3   LightMaterial::directionalLightDir = glm::vec3(-15.0f, 15.0f, -25.0f);
-    glm::vec3   LightMaterial::ambientDirLight = glm::vec3(0.2f, 0.3f, 0.2f), 
-                LightMaterial::diffuseDirLight = glm::vec3(0.05f, 0.05f, 0.05), 
+    glm::vec3   LightMaterial::ambientDirLight = glm::vec3(0.0f, 0.0f, 0.0f), 
+                LightMaterial::diffuseDirLight = glm::vec3(0.0f, 0.0f, 0.0f), 
                 LightMaterial::specDirLight    = glm::vec3(0.2f, 0.2f, 0.2f);
     // -------------------- spot light -----------------
     glm::vec3   LightMaterial::ambientSpotLight = glm::vec3( 0.3f, 0.3f, 0.3f), 
-                LightMaterial::diffuseSpotLight = glm::vec3(0.4f, 0.4f, 0.4f), 
-                LightMaterial::specSpotLight    = glm::vec3(.1f, .1f, .1f);
+                LightMaterial::diffuseSpotLight = glm::vec3(0.1f, 0.2f, 0.2f), 
+                LightMaterial::specSpotLight    = glm::vec3(.2f, .2f, .2f);
     float LightMaterial::cutOff = 15.0f, LightMaterial::outerCutOff = 20.0f;
     float LightMaterial::spot_constant = 1.0f, LightMaterial::spot_linear = 0.014f, LightMaterial::spot_quadratic = 0.0007f;
 
     void LightMaterial::setup() const {
         Material::setup();
-        shader->set("material.diffuse", 0);
+        shader->set("material.albedo", 0);
         shader->set("material.specular", 1);
         // shader->set("material.emission", 2);
         shader->set("material.shininess", shininess); 
@@ -86,6 +86,7 @@ namespace our {
         if(isNormalMap) {
             shader->set("normalMap", 2);
         }
+        shader->set("u_colorMaskTexture", 3);
         // ==============================================================================
         shader->set("dirLight.direction", directionalLightDir);
         shader->set("dirLight.ambient", ambientDirLight);
@@ -120,17 +121,19 @@ namespace our {
     
 
         glActiveTexture(GL_TEXTURE0);
-        diffuse_texture->bind();
+        diffuseTexture->bind();
         sampler->bind(0);
         glActiveTexture(GL_TEXTURE1);
-        specular_texture->bind();
+        specularTexture->bind();
         sampler->bind(1);
         if(isNormalMap) {
             glActiveTexture(GL_TEXTURE2);
-            normal_map->bind();
+            normalMap->bind();
             sampler->bind(2);
         }
-        
+        glActiveTexture(GL_TEXTURE3);
+        maskTexture->bind();
+        sampler->bind(3);
         // glActiveTexture(GL_TEXTURE2);
         // emission_texture->bind();
         
@@ -142,9 +145,10 @@ namespace our {
         Material::deserialize(data);
         if(!data.is_object()) return;
         // alphaThreshold = data.value("alphaThreshold", 0.0f);
-        diffuse_texture = AssetLoader<Texture2D>::get(data.value("diffuse_texture", ""));
-        specular_texture = AssetLoader<Texture2D>::get(data.value("specular_texture", ""));
-        normal_map = AssetLoader<Texture2D>::get(data.value( "normal_map", ""));
+        diffuseTexture = AssetLoader<Texture2D>::get(data.value("diffuseTexture", ""));
+        specularTexture = AssetLoader<Texture2D>::get(data.value("specularTexture", ""));
+        normalMap = AssetLoader<Texture2D>::get(data.value( "normalMap", ""));
+        maskTexture = AssetLoader<Texture2D>::get(data.value( "colorMask", ""));
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
 
         isNormalMap = data.value("isNormalMap", isNormalMap);

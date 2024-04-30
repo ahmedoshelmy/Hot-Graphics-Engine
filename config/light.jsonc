@@ -26,7 +26,7 @@
                 },
                 "light":{
                     "vs":"assets/shaders/all_light.vert",
-                    "fs":"assets/shaders/all_light.frag",
+                    "fs":"assets/shaders/house_exterior.frag",
                     "gs":"assets/shaders/all_light.geom"
                 }
             },
@@ -34,7 +34,8 @@
                 "lady": "assets/textures/OldLady_baseColor.png",
                 "home": "assets/textures/House_exterior/House_exterior_d.png",
                 "home_normal": "assets/textures/House_exterior/House_exterior_n.png",
-                "table-home": "assets/textures/Cabet_Table_baseColor.png",
+                "home_mask": "assets/textures/House_exterior/House_exterior_mask.png",
+                "table_home": "assets/textures/Cabet_Table_baseColor.png",
                 "white": "assets/textures/white.png",
                 "black": "assets/textures/black.png"
             },
@@ -42,7 +43,7 @@
                 "cube": "assets/models/cube.obj",
                 "lady": "assets/models/lady.obj",
                 "home": "assets/models/real_home.obj",
-                "table-home": "assets/models/home_table.obj"
+                "table_home": "assets/models/home_table.obj"
             },
             "samplers":{
                 "default":{},
@@ -76,8 +77,8 @@
                         }
                     },
                     "tint": [1, 1, 1, 1],
-                    "diffuse_texture": "lady",
-                    "specular_texture": "lady",
+                    "diffuseTexture": "lady",
+                    "specularTexture": "lady",
                     "sampler": "default"
                 },
                 "home":{
@@ -92,13 +93,14 @@
                         }
                     },
                     // "tint": [1, 1, 1, 1],
-                    "diffuse_texture": "home",
-                    "specular_texture": "white",
+                    "diffuseTexture": "home",
+                    "specularTexture": "white",
+                    "colorMask": "home_mask", 
                     "sampler": "default",
                     "isNormalMap": true,
-                    "normal_map": "home_normal"
+                    "normalMap": "home_normal"
                 },
-                "table-home":{
+                "table_home":{
                     "type": "light",
                     "shader": "light",
                     "pipelineState": {
@@ -110,8 +112,8 @@
                         }
                     },
                     // "tint": [1, 1, 1, 1],
-                    "diffuse_texture": "table-home",
-                    "specular_texture": "white",
+                    "diffuseTexture": "table_home",
+                    "specularTexture": "white",
                     "sampler": "default"
                 }
                 
@@ -144,18 +146,18 @@
                 ]
             },
 
-            {
-                "position": [0, 0, 0],
-                "rotation": [0, 0, 0],
-                "scale": [100, 100, 100],
-                "components": [
-                    {
-                        "type": "Mesh Renderer",
-                        "mesh": "lady",
-                        "material": "lady"
-                    }
-                ]
-            },
+            // {
+            //     "position": [0, 0, 0],
+            //     "rotation": [0, 0, 0],
+            //     "scale": [100, 100, 100],
+            //     "components": [
+            //         {
+            //             "type": "Mesh Renderer",
+            //             "mesh": "lady",
+            //             "material": "lady"
+            //         }
+            //     ]
+            // },
             {
                 "position": [0, 0, 0],
                 "rotation": [0, 0, 0],
@@ -175,8 +177,8 @@
             //     "components": [
             //         {
             //             "type": "Mesh Renderer",
-            //             "mesh": "table-home",
-            //             "material": "table-home"
+            //             "mesh": "table_home",
+            //             "material": "table_home"
             //         }
             //     ]
             // }

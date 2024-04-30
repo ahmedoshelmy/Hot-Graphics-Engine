@@ -56,7 +56,7 @@ namespace our {
 
     class LightMaterial : public Material {
     public:
-        Texture2D* diffuse_texture, *specular_texture, *normal_map;
+        Texture2D* diffuseTexture, *specularTexture, *normalMap, *maskTexture;
         Sampler* sampler;
         bool isNormalMap = false;
         float shininess = 32.0f;
