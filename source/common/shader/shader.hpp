@@ -26,7 +26,7 @@ namespace our {
             glDeleteProgram(program);
         }
 
-        bool attach(const std::string &filename, GLenum type) const;
+        bool attach(const std::string &filename, GLenum type, std::string includeIndentifier = "#include ") const;
 
         bool link() const;
 

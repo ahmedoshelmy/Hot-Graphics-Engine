@@ -200,7 +200,17 @@ namespace our {
                 command.material->shader->set("u_Model", command.localToWorld);
                 command.material->shader->set("u_View",  camera->getViewMatrix());
                 command.material->shader->set("u_Projection", camera->getProjectionMatrix(windowSize));
-            } else {
+            }
+            else if(dynamic_cast<LitMaterial*>(command.material) != nullptr) {
+                command.material->shader->set("lightPositions[" + std::to_string(LitMaterial::MX_LIGHTS) + "]", cameraPosition);
+                command.material->shader->set("lightColors["    + std::to_string(LitMaterial::MX_LIGHTS) + "]", LightMaterial::ambientSpotLight);
+                command.material->shader->set("lightTypes["     + std::to_string(LitMaterial::MX_LIGHTS) + "]", SPOT_LIGHT);
+                command.material->shader->set("spotDirection", cameraForward);
+                command.material->shader->set("u_Model", command.localToWorld);
+                command.material->shader->set("u_View",  camera->getViewMatrix());
+                command.material->shader->set("u_Projection", camera->getProjectionMatrix(windowSize));
+            } 
+            else {
                 command.material->shader->set("transform", VP * command.localToWorld);
             }
             command.mesh->draw();

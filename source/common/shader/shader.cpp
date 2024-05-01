@@ -9,17 +9,35 @@
 std::string checkForShaderCompilationErrors(GLuint shader);
 std::string checkForLinkingErrors(GLuint program);
 
-bool our::ShaderProgram::attach(const std::string &filename, GLenum type) const {
+bool our::ShaderProgram::attach(const std::string &filename, GLenum type, std::string includeIndentifier) const {
     // Here, we open the file and read a string from it containing the GLSL code of our shader
     std::ifstream file(filename);
     if(!file){
         std::cerr << "ERROR: Couldn't open shader file: " << filename << std::endl;
         return false;
     }
-    std::string sourceString = std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+    std::string sourceString = "";
+    // std::string sourceString = std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+    std::string lineBuffer;
+    while(std::getline(file, lineBuffer)){
+        if (lineBuffer.find(includeIndentifier) != lineBuffer.npos) {
+            lineBuffer.erase(0, includeIndentifier.size()); //  remove #include to get the file name
+
+            std::string pathWithoutFileName = filename.substr(0, 1 + filename.find_last_of("/"));
+
+            lineBuffer.insert(0, pathWithoutFileName); // insert the path of the folder
+
+            std::ifstream includedFile(lineBuffer);
+            std::string includedSourceString = std::string(std::istreambuf_iterator<char>(includedFile), std::istreambuf_iterator<char>());
+            sourceString += includedSourceString + "\n";
+        } else {
+            sourceString += lineBuffer + "\n";
+        }
+    }
+    // ==================== allow includes =============
+
     const char* sourceCStr = sourceString.c_str();
     file.close();
-
     //TODO: Complete this function
     //Note: The function "checkForShaderCompilationErrors" checks if there is
     // an error in the given shader. You should use it to check if there is a

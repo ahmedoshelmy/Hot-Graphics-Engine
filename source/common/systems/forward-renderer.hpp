@@ -39,7 +39,7 @@ namespace our
         // Objects used for testing
         Mesh* whiteBoxMesh;
         TintedMaterial* whiteBoxMaterial;
-        bool showWhiteBox = true;
+        bool showWhiteBox = false;
         // Objects used for Postprocessing
         GLuint postprocessFrameBuffer, postProcessVertexArray;
         Texture2D *colorTarget, *depthTarget;

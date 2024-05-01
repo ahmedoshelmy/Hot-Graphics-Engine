@@ -73,7 +73,7 @@ namespace our {
                 LightMaterial::diffuseSpotLight = glm::vec3(0.1f, 0.2f, 0.2f), 
                 LightMaterial::specSpotLight    = glm::vec3(.2f, .2f, .2f);
     float LightMaterial::cutOff = 15.0f, LightMaterial::outerCutOff = 20.0f;
-    float LightMaterial::spot_constant = 1.0f, LightMaterial::spot_linear = 0.014f, LightMaterial::spot_quadratic = 0.0007f;
+    float LightMaterial::spot_constant = 1.0f, LightMaterial::spot_linear = 0.014f, LightMaterial::spot_quadratic = 1.0f;
 
     void LightMaterial::setup() const {
         Material::setup();
@@ -153,5 +153,68 @@ namespace our {
 
         isNormalMap = data.value("isNormalMap", isNormalMap);
     }
+
+
+
+    void LitMaterial::setup() const {
+        Material::setup();
+        shader->set("albedoMap", 0);
+        shader->set("colorMaskTexture", 1);
+        shader->set("r_ao_m_Map", 2);
+        shader->set("normalMap", 3);
+
+       shader->set("num_lights", MX_LIGHTS+1);
+
+        // shader->set("material.emission", 2);
+        // ==============================================================================
+
+        shader->set("cutOff", glm::cos(glm::radians(cutOff)));
+        shader->set("outerCutOff", glm::cos(glm::radians(outerCutOff)));
+
+        // ==============================================================================
+        for(int i = 0;i < MX_LIGHTS;i++) {
+            shader->set("lightPositions[" + std::to_string(i) + "]", lightPositions[i]);
+            shader->set("lightColors[" + std::to_string(i) + "]", lightColors[i]);
+            shader->set("lightTypes[" + std::to_string(i) + "]", lightTypes[i]);
+        }
+    
+        shader->set("lightLinear", LightMaterial::spot_linear);
+        shader->set("lightQuadratic", LightMaterial::spot_quadratic);
+
+        glActiveTexture(GL_TEXTURE0);
+        albedoMap->bind();
+        sampler->bind(0); 
+
+        glActiveTexture(GL_TEXTURE1);
+        colorMaskTexture->bind();
+        sampler->bind(1);
+
+
+        glActiveTexture(GL_TEXTURE2);
+        r_ao_m_Map->bind();
+        sampler->bind(2);
+
+        glActiveTexture(GL_TEXTURE3);
+        normalMap->bind();
+        sampler->bind(3);
+
+    }
+
+
+    void LitMaterial::deserialize(const nlohmann::json& data){
+        Material::deserialize(data);
+        if(!data.is_object()) return;
+        sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
+
+        albedoMap = AssetLoader<Texture2D>::get(data.value("albedoMap", ""));
+        colorMaskTexture = AssetLoader<Texture2D>::get(data.value("colorMaskTexture", ""));
+        normalMap = AssetLoader<Texture2D>::get(data.value( "normalMap", ""));
+        r_ao_m_Map = AssetLoader<Texture2D>::get(data.value( "r_ao_m_Map", ""));
+
+    }
+
+
+
+    
 
 }

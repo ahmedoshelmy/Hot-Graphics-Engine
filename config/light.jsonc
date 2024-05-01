@@ -25,16 +25,18 @@
                     "fs":"assets/shaders/textured.frag"
                 },
                 "light":{
-                    "vs":"assets/shaders/all_light.vert",
+                    "vs":"assets/shaders/lighting/all_light.vert",
                     "fs":"assets/shaders/house_exterior.frag",
-                    "gs":"assets/shaders/all_light.geom"
+                    "gs":"assets/shaders/lighting/all_light.geom"
                 }
             },
             "textures":{
                 "lady": "assets/textures/OldLady_baseColor.png",
-                "home": "assets/textures/House_exterior/House_exterior_d.png",
+                "home_albedo": "assets/textures/House_exterior/House_exterior_d.png",
                 "home_normal": "assets/textures/House_exterior/House_exterior_n.png",
                 "home_mask": "assets/textures/House_exterior/House_exterior_mask.png",
+                "home_r_ao_m": "assets/textures/House_exterior/House_exterior_r_ao_m.png",
+
                 "table_home": "assets/textures/Cabet_Table_baseColor.png",
                 "white": "assets/textures/white.png",
                 "black": "assets/textures/black.png"
@@ -65,22 +67,22 @@
                     },
                     "tint": [0.45, 0.4, 0.5, 1]
                 },
-                "lady":{
-                    "type": "light",
-                    "shader": "light",
-                    "pipelineState": {
-                        "faceCulling":{
-                            "enabled": true
-                        },
-                        "depthTesting":{
-                            "enabled": true
-                        }
-                    },
-                    "tint": [1, 1, 1, 1],
-                    "diffuseTexture": "lady",
-                    "specularTexture": "lady",
-                    "sampler": "default"
-                },
+                // "lady":{
+                //     "type": "light",
+                //     "shader": "light",
+                //     "pipelineState": {
+                //         "faceCulling":{
+                //             "enabled": true
+                //         },
+                //         "depthTesting":{
+                //             "enabled": true
+                //         }
+                //     },
+                //     "tint": [1, 1, 1, 1],
+                //     "diffuseTexture": "lady",
+                //     "specularTexture": "lady",
+                //     "sampler": "default"
+                // },
                 "home":{
                     "type": "light",
                     "shader": "light",
@@ -93,29 +95,28 @@
                         }
                     },
                     // "tint": [1, 1, 1, 1],
-                    "diffuseTexture": "home",
-                    "specularTexture": "white",
-                    "colorMask": "home_mask", 
                     "sampler": "default",
-                    "isNormalMap": true,
-                    "normalMap": "home_normal"
-                },
-                "table_home":{
-                    "type": "light",
-                    "shader": "light",
-                    "pipelineState": {
-                        "faceCulling":{
-                            "enabled": false
-                        },
-                        "depthTesting":{
-                            "enabled": true
-                        }
-                    },
-                    // "tint": [1, 1, 1, 1],
-                    "diffuseTexture": "table_home",
-                    "specularTexture": "white",
-                    "sampler": "default"
-                }
+                    "albedoMap": "home_albedo",
+                    "normalMap": "home_normal",
+                    "colorMaskTexture": "home_mask", 
+                    "r_ao_m_Map": "home_r_ao_m"
+                }//,
+                // "table_home":{
+                //     "type": "light",
+                //     "shader": "light",
+                //     "pipelineState": {
+                //         "faceCulling":{
+                //             "enabled": false
+                //         },
+                //         "depthTesting":{
+                //             "enabled": true
+                //         }
+                //     },
+                //     // "tint": [1, 1, 1, 1],
+                //     "diffuseTexture": "table_home",
+                //     "specularTexture": "white",
+                //     "sampler": "default"
+                // }
                 
             }
         },

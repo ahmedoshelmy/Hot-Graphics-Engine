@@ -8,6 +8,10 @@
 #include <glm/vec4.hpp>
 #include <json/json.hpp>
 
+#define DIRECTIONAL_LIGHT 0
+#define POINT_LIGHT 1
+#define SPOT_LIGHT 2
+
 namespace our {
 
     // This is the base class for all the materials
@@ -89,6 +93,42 @@ namespace our {
         void deserialize(const nlohmann::json& data) override;
     };
 
+    class LitMaterial : public Material {
+    public:
+        Texture2D* albedoMap, *colorMaskTexture, *normalMap, *r_ao_m_Map;
+        Sampler* sampler;
+        static const int MX_LIGHTS = 1;
+        // -------------------- 4 point lights + 1 directional light + 1 flashlight -----------------
+        // positions of the point lights
+
+        glm::vec3 lightPositions[MX_LIGHTS] = {
+            glm::vec3(-2.0f, -2.0f, -2.0f),
+            // glm::vec3( 0.7f,  0.2f,  2.0f),
+            // glm::vec3( 2.3f, -3.3f, -4.0f),
+            // glm::vec3(-4.0f,  2.0f, -12.0f),
+            // glm::vec3( 0.0f,  0.0f, -3.0f)
+        };
+
+        glm::vec3 lightColors[MX_LIGHTS] = {
+            glm::vec3(0.1f, 0.1f, 0.1f),
+            // glm::vec3(0.1f, 0.1f, 0.1f),
+            // glm::vec3(0.1f, 0.1f, 0.1f),
+            // glm::vec3(0.1f, 0.1f, 0.1f),
+            // glm::vec3(0.3f, 0.1f, 0.1f)
+        };
+        int lightTypes[MX_LIGHTS] = {
+            DIRECTIONAL_LIGHT,
+            // POINT_LIGHT,
+            // POINT_LIGHT,
+            // POINT_LIGHT,
+            // POINT_LIGHT
+        };
+        float cutOff = 5.0f, outerCutOff = 15.0f;
+
+        void setup() const override;
+        void deserialize(const nlohmann::json& data) override;
+    };
+
     // This function returns a new material instance based on the given type
     inline Material* createMaterialFromType(const std::string& type){
         if(type == "tinted"){
@@ -96,7 +136,7 @@ namespace our {
         } else if(type == "textured"){
             return new TexturedMaterial();
         } else if(type == "light"){
-            return new LightMaterial();
+            return new LitMaterial();
         } else {
             return new Material();
         }
