@@ -64,26 +64,7 @@ class Playstate: public our::State {
     }
 
     void onImmediateGui(){ 
-        if(showGUI) {
-            
-            ImGui::Text("Directional Light");
-            ImGui::SliderFloat3("direction", glm::value_ptr(our::LightMaterial::directionalLightDir), -25, 25, "%.3f", 0 );
-            ImGui::SliderFloat3("ambient directional light", glm::value_ptr(our::LightMaterial::ambientDirLight), 0.0, 1.0, "%.3f", 0 );
-            ImGui::SliderFloat3("diffuse directional light", glm::value_ptr(our::LightMaterial::diffuseDirLight), 0.0, 1.0, "%.3f", 0 );
-            ImGui::SliderFloat3("specular directional light", glm::value_ptr(our::LightMaterial::specDirLight), 0.0, 1.0, "%.3f", 0 );
-            ImGui::Text("Spot Light");
-            ImGui::SliderFloat3("ambient spot light", glm::value_ptr(our::LightMaterial::ambientSpotLight), 0.0, 1.0, "%.3f", 0 );
-            ImGui::SliderFloat3("diffuse spot light", glm::value_ptr(our::LightMaterial::diffuseSpotLight), 0.0, 1.0, "%.3f", 0 );
-            ImGui::SliderFloat3("specular spot light", glm::value_ptr(our::LightMaterial::specSpotLight), 0.0, 1.0, "%.3f", 0 );
-
-            ImGui::SliderFloat("spot light cutoff", &our::LightMaterial::cutOff, 0.0, 180.f, "%.2f", 0 );
-            ImGui::SliderFloat("spot light outer cutoff", &our::LightMaterial::outerCutOff, 0.0, 180.f, "%.2f", 0 );
-
-            ImGui::SliderFloat("spot light linear", &our::LightMaterial::spot_linear, 0.0, 1.f, "%.4f", 0 );
-            ImGui::SliderFloat("spot light quadratic", &our::LightMaterial::spot_quadratic, 0.0, 1.f, "%.4f", 0 );
-            ImGui::Text("Point Light");
-            // ImGui::SliderFloat("edge1", &edge1, 0.01f, 1.f, "%.2f", 0 );
-        }
+        
     }      
 
     void onDestroy() override {

@@ -38,6 +38,8 @@ set(COMMON_SOURCES
         source/common/input/keyboard.hpp
         source/common/input/mouse.hpp
 
+        source/common/light/light-utils.hpp
+
         source/common/asset-loader.cpp
         source/common/asset-loader.hpp
         source/common/deserialize-utils.hpp
@@ -75,6 +77,8 @@ set(COMMON_SOURCES
         source/common/components/camera.cpp
         source/common/components/mesh-renderer.hpp
         source/common/components/mesh-renderer.cpp
+        source/common/components/light-component.hpp
+        source/common/components/light-component.cpp
         source/common/components/free-camera-controller.hpp
         source/common/components/fps-camera-controller.hpp
         source/common/components/camera-controller.hpp

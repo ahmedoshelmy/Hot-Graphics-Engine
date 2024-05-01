@@ -18,23 +18,31 @@ in vec2 TexCoords;
 uniform vec3 cameraPos;
 uniform int num_lights;
 // material parameters
-uniform sampler2D  albedoMap;
-uniform sampler2D  colorMaskTexture;
-uniform sampler2D  normalMap;
-uniform sampler2D  r_ao_m_Map; // rough (R) AO (G) Metallic (B)
-
+struct Material {
+    sampler2D  albedoMap;
+    sampler2D  colorMaskTexture;
+    sampler2D  normalMap;
+    sampler2D  r_ao_m_Map; // rough (R) AO (G) Metallic (B)
+};
+uniform Material material;
 
 
 // lights
-uniform vec3 lightPositions[MAX_LIGHTS];
-uniform vec3 lightColors[MAX_LIGHTS];
-uniform int lightTypes[MAX_LIGHTS]; 
-uniform float cutOff; //theta_p         // full intensity
-uniform float outerCutOff; //theta_u    // zero intensity
-uniform vec3 spotDirection;
+struct Light {
+    int type;
+    vec3 color;
+    vec3 position;
+    vec3 direction;
 
-uniform float lightLinear = 0.014;
-uniform float lightQuadratic = 0.0007;
+    float cutOff;
+    float outerCutOff;
+
+    float attenuationConstant;
+    float attenuationLinear;
+    float attenuationQuadratic;
+};
+
+uniform Light lights[MAX_LIGHTS];
 /* Cook-Torrance BRDF
     F_r = kd * F_lambert + ks F_cook_torrance
     F_lambert = diffuse BRDF = c / PI                       ; (c) => albedo
@@ -129,35 +137,34 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0) {
 }  
 
 
-vec3 getLightPosition(int index) {
-    if(lightTypes[index] == DIRECTIONAL_LIGHT) {
-        return vec3(normalize(-lightPositions[index]));
+vec3 getLightPosition(Light light) {
+    if(light.type == DIRECTIONAL_LIGHT) {
+        return vec3(normalize(-light.position));
     } 
-    return vec3(normalize(lightPositions[index] - FragPos));
+    return vec3(normalize(light.position - FragPos));
 }
 
-vec3 getLightRadiance(int index) {
-    if(lightTypes[index] == DIRECTIONAL_LIGHT) {
-        return lightColors[index];
+vec3 getLightRadiance(Light light) {
+    if(light.type == DIRECTIONAL_LIGHT) {
+        return light.color;
     } 
-    vec3 lightDirection = normalize(lightPositions[index] - FragPos);
+    vec3 lightDirection = normalize(light.position - FragPos);
     float distance    = length(lightDirection);
-    float attenuation = 1.0 / (distance * distance * lightQuadratic + distance * lightLinear );
+    float attenuation = 1.0 / (distance * distance * light.attenuationQuadratic + distance * light.attenuationLinear + light.attenuationConstant );
 
-    if(lightTypes[index] == POINT_LIGHT) {
-        return lightColors[index] * attenuation; 
+    if(light.type == POINT_LIGHT) {
+        return light.color * attenuation; 
     }
-    float theta = dotMaxZero(lightDirection, normalize(-spotDirection));
-    float epsilon = (cutOff - outerCutOff);
-    float t = clamp((theta - outerCutOff) / epsilon, 0.0, 1.0);
+    float theta = dotMaxZero(lightDirection, normalize(-light.direction));
+    float t = clamp((theta - light.outerCutOff) / (light.cutOff - light.outerCutOff), 0.0, 1.0);
     
-    return lightColors[index] * attenuation * (t*t*(3 - 2*t));
+    return light.color * attenuation * (t*t*(3 - 2*t));
 
 }
 
 
 vec3 calcLight(vec3 albedo, float roughness, float metallic) {
-    vec3 N = normalize(TBN * (texture(normalMap, TexCoords).rgb * 2.0 - 1.0));   
+    vec3 N = normalize(TBN * (texture(material.normalMap, TexCoords).rgb * 2.0 - 1.0));   
     // vec3 N = normalize(Normal); 
     vec3 V = normalize(cameraPos - FragPos);
 
@@ -166,10 +173,10 @@ vec3 calcLight(vec3 albedo, float roughness, float metallic) {
          F0 = mix(F0, albedo, metallic);
 
     for(int i = 0;i < num_lights;i++) {
-        vec3 L = getLightPosition(i);
+        vec3 L = getLightPosition(lights[i]);
         vec3 H = normalize(V + L);
     
-        vec3 radiance = getLightRadiance(i);
+        vec3 radiance = getLightRadiance(lights[i]);
     
 
         // (F) fresnel

@@ -84,7 +84,7 @@
                 //     "sampler": "default"
                 // },
                 "home":{
-                    "type": "light",
+                    "type": "lit",
                     "shader": "light",
                     "pipelineState": {
                         "faceCulling":{
@@ -143,6 +143,44 @@
                                 "material": "metal"
                             }
                         ]
+                    }
+                ]
+            },
+            {
+                "position": [0, 0, 0],
+                "components": [
+                    {
+                        "type": "Light Component",
+                        "lightType": "flash",
+                        "color": [0.3, 0.3, 0.3],
+                        "cutOff": 5.0,
+                        "outerCutOff": 15.0,
+                        "attenuationConstant": 1.0,
+                        "attenuationLinear": 0.05,
+                        "attenuationQuadratic": 0.007
+                    }
+                ]
+            },
+            {
+                "position": [2, 2, 2],
+                "components": [
+                    {
+                        "type": "Light Component",
+                        "lightType": "directional",
+                        "color": [1.0, 1.0, 1.0]
+                    }
+                ]
+            },
+            {
+                "position": [0, 10, 0],
+                "components": [
+                    {
+                        "type": "Light Component",
+                        "lightType": "point",
+                        "color": [0.5, 0.1, 0.1],
+                        "attenuationConstant": 0.0,
+                        "attenuationLinear": 0.0,
+                        "attenuationQuadratic": 1.0
                     }
                 ]
             },

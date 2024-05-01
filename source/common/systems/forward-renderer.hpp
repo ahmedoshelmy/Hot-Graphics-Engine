@@ -2,6 +2,7 @@
 
 #include "../ecs/world.hpp"
 #include "../components/camera.hpp"
+#include "../components/light-component.hpp"
 #include "../components/mesh-renderer.hpp"
 #include "../asset-loader.hpp"
 
@@ -21,6 +22,13 @@ namespace our
         Mesh* mesh;
         Material* material;
     };
+    struct LightCommand {
+        glm::vec3 position;
+        glm::vec3 direction;
+        LightType type;
+        LightComponent* light;
+    };
+
 
     // A forward renderer is a renderer that draw the object final color directly to the framebuffer
     // In other words, the fragment shader in the material should output the color that we should see on the screen
@@ -33,6 +41,7 @@ namespace our
         // We define them here (instead of being local to the "render" function) as an optimization to prevent reallocating them every frame
         std::vector<RenderCommand> opaqueCommands;
         std::vector<RenderCommand> transparentCommands;
+        std::vector<LightCommand> lightSources;
         // Objects used for rendering a skybox
         Mesh* skySphere;
         TexturedMaterial* skyMaterial;

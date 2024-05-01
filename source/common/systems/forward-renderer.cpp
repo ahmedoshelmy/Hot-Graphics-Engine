@@ -1,6 +1,7 @@
 #include "forward-renderer.hpp"
 #include "../mesh/mesh-utils.hpp"
 #include "../texture/texture-utils.hpp"
+#include "../light/light-utils.hpp"
 #include <iostream>
 
 namespace our {
@@ -134,6 +135,7 @@ namespace our {
         CameraComponent* camera = nullptr;
         opaqueCommands.clear();
         transparentCommands.clear();
+        lightSources.clear();
         for(auto entity : world->getEntities()){
             // If we hadn't found a camera yet, we look for a camera in this entity
             if(!camera) camera = entity->getComponent<CameraComponent>();
@@ -153,15 +155,33 @@ namespace our {
                     opaqueCommands.push_back(command);
                 }
             }
+
+            if(auto lightRenderer = entity->getComponent<LightComponent>(); lightRenderer) {
+                LightCommand command;
+                command.type = lightRenderer->type;
+                command.position = lightRenderer->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0, 1.0f);
+                command.direction = lightRenderer->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0, 0.0f);
+                command.light = lightRenderer;
+                lightSources.push_back(command);
+            }
         }
 
         // If there is no camera, we return (we cannot render without a camera)
         if(camera == nullptr) return;
+        glm::vec3 cameraPosition = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 1.0f, 1.0f);
+        glm::vec3 cameraForward = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, -1.0f, 0.0f);
+
+        // if it's flashlight set position to camera position, and direction to camera direction
+        for(auto & lightSrc : lightSources) {
+            if(lightSrc.light->type == LightType::FLASH) {
+                lightSrc.type = LightType::SPOT;
+                lightSrc.position = cameraPosition;
+                lightSrc.direction = cameraForward;
+            }
+        }
 
         //TODO: (Req 9) Modify the following line such that "cameraForward" contains a vector pointing the camera forward direction
         // HINT: See how you wrote the CameraComponent::getViewMatrix, it should help you solve this one
-        glm::vec3 cameraPosition = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 1.0f, 1.0f);
-        glm::vec3 cameraForward = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, -1.0f, 0.0f);
         std::sort(transparentCommands.begin(), transparentCommands.end(), [cameraForward](const RenderCommand& first, const RenderCommand& second){
             //TODO: (Req 9) Finish this function
             // HINT: the following return should return true "first" should be drawn before "second".
@@ -194,18 +214,8 @@ namespace our {
         // Don't forget to set the "transform" uniform to be equal the model-view-projection matrix for each render command
         for(auto command : opaqueCommands) {
             command.material->setup();
-            if(dynamic_cast<LightMaterial*>(command.material) != nullptr) {
-                command.material->shader->set("spotLight.position", cameraPosition);
-                command.material->shader->set("spotLight.direction", cameraForward);
-                command.material->shader->set("u_Model", command.localToWorld);
-                command.material->shader->set("u_View",  camera->getViewMatrix());
-                command.material->shader->set("u_Projection", camera->getProjectionMatrix(windowSize));
-            }
-            else if(dynamic_cast<LitMaterial*>(command.material) != nullptr) {
-                command.material->shader->set("lightPositions[" + std::to_string(LitMaterial::MX_LIGHTS) + "]", cameraPosition);
-                command.material->shader->set("lightColors["    + std::to_string(LitMaterial::MX_LIGHTS) + "]", LightMaterial::ambientSpotLight);
-                command.material->shader->set("lightTypes["     + std::to_string(LitMaterial::MX_LIGHTS) + "]", SPOT_LIGHT);
-                command.material->shader->set("spotDirection", cameraForward);
+            if(dynamic_cast<LitMaterial*>(command.material) != nullptr) {
+                light_utils::setLightParameters(command.material->shader, lightSources);
                 command.material->shader->set("u_Model", command.localToWorld);
                 command.material->shader->set("u_View",  camera->getViewMatrix());
                 command.material->shader->set("u_Projection", camera->getProjectionMatrix(windowSize));
@@ -217,7 +227,6 @@ namespace our {
         }
         if(showWhiteBox) {
             glm::mat4 lightModel(1.0f);
-            lightModel = glm::translate(lightModel, LightMaterial::directionalLightDir);
             this->whiteBoxMaterial->setup();
             this->whiteBoxMaterial->shader->set("bgcolor", glm::vec3(1.0f));
             this->whiteBoxMaterial->shader->set("transform", VP * lightModel);

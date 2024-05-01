@@ -6,13 +6,12 @@
 #define color3 vec3(0.645, 0.283, 0.072)
 #define color4 vec3(1)
 
-  
 
 void main()
 {
-    vec3 albedo = pow(texture(albedoMap, TexCoords).rgb, vec3(2.2));
+    vec3 albedo = pow(texture(material.albedoMap, TexCoords).rgb, vec3(2.2));
     // ==== masking
-    vec3 colorMask =  pow(texture(colorMaskTexture, TexCoords).rgb, vec3(2.2));
+    vec3 colorMask =  pow(texture(material.colorMaskTexture, TexCoords).rgb, vec3(2.2));
     vec3 colorOut = mix( mix( mix(
                         albedo * color4, 
                         albedo * color1, 
@@ -23,7 +22,7 @@ void main()
     // ==== masking
 
 
-    vec3 r_ao_m = pow(texture(r_ao_m_Map, TexCoords).rgb, vec3(2.2));
+    vec3 r_ao_m = pow(texture(material.r_ao_m_Map, TexCoords).rgb, vec3(2.2));
     float roughness = r_ao_m.r;
     float ao = r_ao_m.g;
     float metallic = r_ao_m.b;
