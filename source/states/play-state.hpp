@@ -7,6 +7,7 @@
 #include <systems/free-camera-controller.hpp>
 #include <systems/fps-camera-controller.hpp>
 #include <systems/movement.hpp>
+#include <systems/light.hpp>
 #include <asset-loader.hpp>
 #include <material/material.hpp>
 #include "mesh/mesh-utils.hpp"
@@ -22,6 +23,7 @@ class Playstate: public our::State {
     our::FreeCameraControllerSystem cameraControllerFree;
     our::FpsCameraControllerSystem cameraControllerFps;
     our::MovementSystem movementSystem;
+    our::LightSystem lightSystem;
     bool showDemoWindow = false;
 
 
@@ -64,7 +66,7 @@ class Playstate: public our::State {
     }
 
     void onImmediateGui(){ 
-        
+        lightSystem.showGUI(&world);
     }      
 
     void onDestroy() override {

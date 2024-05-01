@@ -220,6 +220,7 @@ class Menustate: public our::State {
     void onImmediateGui(){ 
         
         if(showGUI) {
+            ImGui::Begin("Window 1");
             for(int i = 0; i < buttons.size();i++) {
                 ImGui::Text("Button %d", i);
                 std::string positionName = "position " + std::to_string(i);
@@ -232,6 +233,7 @@ class Menustate: public our::State {
             ImGui::Text("Glow Edge");
             ImGui::SliderFloat("edge0", &edge0, 0.01f, 1.f, "%.2f", 0 );
             ImGui::SliderFloat("edge1", &edge1, 0.01f, 1.f, "%.2f", 0 );
+            ImGui::End();
         }
         
     } 

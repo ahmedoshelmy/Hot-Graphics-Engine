@@ -157,7 +157,8 @@
                         "outerCutOff": 15.0,
                         "attenuationConstant": 1.0,
                         "attenuationLinear": 0.05,
-                        "attenuationQuadratic": 0.007
+                        "attenuationQuadratic": 0.007,
+                        "debug": true
                     }
                 ]
             },
@@ -167,23 +168,12 @@
                     {
                         "type": "Light Component",
                         "lightType": "directional",
-                        "color": [1.0, 1.0, 1.0]
+                        "color": [1.0, 1.0, 1.0],
+                        "debug": true
                     }
                 ]
             },
-            {
-                "position": [0, 10, 0],
-                "components": [
-                    {
-                        "type": "Light Component",
-                        "lightType": "point",
-                        "color": [0.5, 0.1, 0.1],
-                        "attenuationConstant": 0.0,
-                        "attenuationLinear": 0.0,
-                        "attenuationQuadratic": 1.0
-                    }
-                ]
-            },
+
 
             // {
             //     "position": [0, 0, 0],

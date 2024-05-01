@@ -93,6 +93,7 @@ set(COMMON_SOURCES
         source/common/systems/free-camera-controller.hpp
         source/common/systems/fps-camera-controller.hpp
         source/common/systems/movement.hpp
+        source/common/systems/light.hpp
 
         source/miniaudio_wrapper.hpp
         source/miniaudio_wrapper.cpp

@@ -9,6 +9,8 @@ namespace our {
         if(!data.is_object()) return;
        
         std::string type_string = data.value("lightType", "");
+        name = data.value("name", type_string);
+
         if(type_string == "directional") type = LightType::DIRECTIONAL;
         else if(type_string == "point") type = LightType::POINT;
         else if(type_string == "spot") type = LightType::SPOT;
@@ -21,5 +23,8 @@ namespace our {
         attenuationConstant = data.value("attenuationConstant", 1.0f);
         attenuationLinear = data.value("attenuationLinear", 0.007f);
         attenuationQuadratic = data.value("attenuationQuadratic", 0.0014f);
+
+
+        debug = data.value("debug", false);
     }
 }
