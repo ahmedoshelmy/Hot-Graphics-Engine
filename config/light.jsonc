@@ -26,7 +26,7 @@
                 },
                 "light":{
                     "vs":"assets/shaders/lighting/all_light.vert",
-                    "fs":"assets/shaders/house_exterior.frag",
+                    "fs":"assets/shaders/room_one/house_exterior.frag",
                     "gs":"assets/shaders/lighting/all_light.geom"
                 }
             },

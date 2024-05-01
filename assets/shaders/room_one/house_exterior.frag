@@ -1,4 +1,4 @@
-#include lighting/pbr.frag
+#include ../lighting/pbr.frag
 
 
 #define color1 vec3(0.970, 0.940, 0.877)

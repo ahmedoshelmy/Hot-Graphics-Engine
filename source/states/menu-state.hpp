@@ -85,7 +85,7 @@ class Menustate: public our::State {
         // Since the highlight is not textured, we used the tinted material shaders
         highlightMaterial->shader = new our::ShaderProgram();
         highlightMaterial->shader->attach("assets/shaders/tinted.vert", GL_VERTEX_SHADER);
-        highlightMaterial->shader->attach("assets/shaders/highlight-menu.frag", GL_FRAGMENT_SHADER);
+        highlightMaterial->shader->attach("assets/shaders/menu/highlight_menu.frag", GL_FRAGMENT_SHADER);
         highlightMaterial->shader->link();
         // The tint is white since we will subtract the background color from it to create a negative effect.
         highlightMaterial->tint = glm::vec4(0.725f, 1.0f, 0.513f, .23f);

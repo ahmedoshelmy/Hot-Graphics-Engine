@@ -23,8 +23,12 @@ bool our::ShaderProgram::attach(const std::string &filename, GLenum type, std::s
         if (lineBuffer.find(includeIndentifier) != lineBuffer.npos) {
             lineBuffer.erase(0, includeIndentifier.size()); //  remove #include to get the file name
 
-            std::string pathWithoutFileName = filename.substr(0, 1 + filename.find_last_of("/"));
-
+            std::string pathWithoutFileName = filename.substr(0, filename.find_last_of("/"));
+            while(lineBuffer.find("../") != lineBuffer.npos) {
+                lineBuffer.erase(0, 3); // remove ../
+                pathWithoutFileName = pathWithoutFileName.substr(0, pathWithoutFileName.find_last_of("/"));
+            }
+            pathWithoutFileName += "/";
             lineBuffer.insert(0, pathWithoutFileName); // insert the path of the folder
 
             std::ifstream includedFile(lineBuffer);
