@@ -96,6 +96,7 @@ namespace our {
             // The default options are fine but we don't need to interact with the depth buffer
             // so it is more performant to disable the depth mask
             postprocessMaterial->pipelineState.depthMask = false;
+            postprocessMaterial->pipelineState.depthTesting.enabled = false;
         }
     }
 

@@ -11,8 +11,8 @@
     },
     "scene": {
         "renderer":{
-            "sky": "assets/textures/skybox/sky_forest.jpeg"//,
-            // "postprocess": "assets/shaders/postprocess/vignette.frag"
+            "sky": "assets/textures/skybox/sky_forest.jpeg",
+            "postprocess": "assets/shaders/postprocess/vignette.frag"
         },
         "assets":{
             "shaders":{
