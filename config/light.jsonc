@@ -176,7 +176,7 @@
         },
         "world":[
             {
-                "name": "Camera", 
+                "name": "player",
                 "position": [0, 5, 10],
                 "components": [
                     {

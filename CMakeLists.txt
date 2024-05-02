@@ -29,7 +29,7 @@ set(IMGUI_SOURCES
 )
 
 # ReactPhysics3D
-add_subdirectory(vendor/reactphysics3D)
+#add_subdirectory(vendor/reactphysics3D)
 
 
 # Combine all vendor source files together into a single variable
@@ -140,7 +140,7 @@ include_directories(
         vendor/glm
         vendor/imgui
         vendor/utils
-        vendor/reactphysics3D/include
+#        vendor/reactphysics3D/include
 )
 
 
@@ -169,4 +169,4 @@ set(STATES_SOURCES
 add_executable(GAME_APPLICATION source/main.cpp ${STATES_SOURCES} ${COMMON_SOURCES} ${VENDOR_SOURCES} ${COMMON_SYSTEMS_SOURCES}
         ${COMMON_COMPONENTS_SOURCES})
 target_link_libraries(GAME_APPLICATION glfw)
-target_link_libraries(GAME_APPLICATION reactphysics3d)
+#target_link_libraries(GAME_APPLICATION reactphysics3d)

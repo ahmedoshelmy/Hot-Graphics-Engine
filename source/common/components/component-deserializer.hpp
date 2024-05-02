@@ -30,7 +30,7 @@ namespace our {
         } else if (type == LightComponent::getID()) {
             component = entity->addComponent<LightComponent>();
         }
-        } else if (type == RigidBodyComponent::getID()) {
+        else if (type == RigidBodyComponent::getID()) {
             component = entity->addComponent<RigidBodyComponent>();
         }
         if (component) component->deserialize(data);
