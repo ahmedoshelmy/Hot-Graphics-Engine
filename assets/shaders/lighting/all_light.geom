@@ -41,7 +41,6 @@ void main() {
     vec3 tangent = vec3(invDet * (deltaUV1.y * edge0 - deltaUV0.y * edge1));
     vec3 bitangent = vec3(invDet * (-deltaUV1.x * edge0 + deltaUV0.x * edge1));
 
-
     vec3 T = normalize(vec3(u_Model * vec4(tangent, 0.0f)));
     vec3 B = normalize(vec3(u_Model * vec4(bitangent, 0.0f)));
     vec3 N = normalize(vec3(u_Model * vec4(cross(edge1, edge0), 0.0f))); // recalculate normal vector to make sure it normal on edges
