@@ -60,6 +60,7 @@ namespace our {
     public:
         Texture2D* albedoMap, *colorMaskTexture, *normalMap, *r_ao_m_Map;
         Sampler* sampler;
+        float IOR;
 
         void setup() const override;
         void deserialize(const nlohmann::json& data) override;

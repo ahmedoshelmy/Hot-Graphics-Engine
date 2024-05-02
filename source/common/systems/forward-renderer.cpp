@@ -51,17 +51,7 @@ namespace our {
             this->skyMaterial->alphaThreshold = 1.0f;
             this->skyMaterial->transparent = false;
         }
-        if(this->showWhiteBox) {
-            this->whiteBoxMesh = our::mesh_utils::loadOBJ("assets/models/cube.obj");
-            ShaderProgram* dirLightShader = new our::ShaderProgram();
-            dirLightShader->attach("assets/shaders/tinted.vert", GL_VERTEX_SHADER);
-            dirLightShader->attach("assets/shaders/color.frag", GL_FRAGMENT_SHADER);
-            dirLightShader->link();
 
-            whiteBoxMaterial = new TintedMaterial();
-            whiteBoxMaterial->tint = glm::vec4(1.0f);
-            whiteBoxMaterial->shader = dirLightShader;
-        }
         // Then we check if there is a postprocessing shader in the configuration
         if(config.contains("postprocess")){
             //TODO: (Req 11) Create a framebuffer
@@ -168,9 +158,12 @@ namespace our {
 
         // If there is no camera, we return (we cannot render without a camera)
         if(camera == nullptr) return;
-        glm::vec3 cameraPosition = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 1.0f, 1.0f);
+        //TODO: (Req 9) Modify the following line such that "cameraForward" contains a vector pointing the camera forward direction
+        // HINT: See how you wrote the CameraComponent::getViewMatrix, it should help you solve this one
+        glm::vec3 cameraPosition = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0f, 1.0f);
         glm::vec3 cameraForward = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, -1.0f, 0.0f);
-
+        // std::cout << cameraPosition.x << " " << cameraPosition.y << " " << cameraPosition.z << '\n';
+        // std::cout << cameraForward.x << " " << cameraForward.y << " " << cameraForward.z << '\n';
         // if it's flashlight set position to camera position, and direction to camera direction
         for(auto & lightSrc : lightSources) {
             if(lightSrc.light->type == LightType::FLASH) {
@@ -180,8 +173,6 @@ namespace our {
             }
         }
 
-        //TODO: (Req 9) Modify the following line such that "cameraForward" contains a vector pointing the camera forward direction
-        // HINT: See how you wrote the CameraComponent::getViewMatrix, it should help you solve this one
         std::sort(transparentCommands.begin(), transparentCommands.end(), [cameraForward](const RenderCommand& first, const RenderCommand& second){
             //TODO: (Req 9) Finish this function
             // HINT: the following return should return true "first" should be drawn before "second".
@@ -225,13 +216,7 @@ namespace our {
             }
             command.mesh->draw();
         }
-        if(showWhiteBox) {
-            glm::mat4 lightModel(1.0f);
-            this->whiteBoxMaterial->setup();
-            this->whiteBoxMaterial->shader->set("bgcolor", glm::vec3(1.0f));
-            this->whiteBoxMaterial->shader->set("transform", VP * lightModel);
-            this->whiteBoxMesh->draw();
-        }
+       
 
         // If there is a sky material, draw the sky
         if(this->skyMaterial){
@@ -275,4 +260,12 @@ namespace our {
         }
     }
 
+    void ForwardRenderer::showGUI(World* world) {
+        bool showDemoWindow = true;
+        ImGui::ShowDemoWindow(&showDemoWindow);
+        ImGui::Begin("Entities");
+
+        for(auto entity : world->getEntities()) entity->showGUI();
+        ImGui::End();
+    }
 }

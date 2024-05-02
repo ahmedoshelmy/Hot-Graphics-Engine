@@ -27,7 +27,7 @@ namespace our {
 
         bool debug;
 
-        // The ID of this component type is "Mesh Renderer"
+        // The ID of this component type is "Light Component"
         static std::string getID() { return "Light Component"; }
 
         // Receives the mesh & material from the AssetLoader by the names given in the json object

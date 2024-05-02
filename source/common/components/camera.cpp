@@ -36,14 +36,15 @@ namespace our {
         // - the up direction which is the vector (0,1,0) but after being transformed by M
         // then you can use glm::lookAt
 
-        glm::vec4 eye = M * glm::vec4(0, 0, 0, 1);
-        glm::vec4 center = M * glm::vec4(0, 0, -1, 1);
-        glm::vec4 up = M * glm::vec4(0, 1, 0, 0);
+        // glm::vec4 eye = M * glm::vec4(0, 0, 0, 1);
+        // glm::vec4 center = M * glm::vec4(0, 0, -1, 1);
+        // glm::vec4 up = M * glm::vec4(0, 1, 0, 0);
 
-        return glm::lookAt(glm::vec3(eye), glm::vec3(center), glm::vec3(up));
-
-
-        // return glm::mat4(1.0f);
+        // return glm::lookAt(glm::vec3(eye), glm::vec3(center), glm::vec3(up));
+        glm::vec3 position = M * glm::vec4(0, 0, 0, 1);
+        glm::vec3 front = M * glm::vec4(0, 0, -1, 0);
+        glm::vec3 up = M * glm::vec4(0, 1, 0, 0);
+        return glm::lookAt(position, position + front, up);
     }
 
     // Creates and returns the camera projection matrix

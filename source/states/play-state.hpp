@@ -67,6 +67,7 @@ class Playstate: public our::State {
 
     void onImmediateGui(){ 
         lightSystem.showGUI(&world);
+        renderer.showGUI(&world);
     }      
 
     void onDestroy() override {

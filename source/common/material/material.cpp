@@ -83,27 +83,17 @@ namespace our {
         shader->set("material.colorMaskTexture", 1);
         shader->set("material.r_ao_m_Map", 2);
         shader->set("material.normalMap", 3);
-
-    //    shader->set("num_lights", (int)lights.size());
-
-    //     for(int i = 0;i < lights.size();i++) {
-    //         shader->set("lights[" + std::to_string(i) + "].type",   lights[i].type);
-    //         shader->set("lights[" + std::to_string(i) + "].color",  lights[i].color);
-    //         shader->set("lights[1].outerCutOff",                    glm::cos(glm::radians(lights[i].outerCutOff)));
-    //         shader->set("lights[1].cutOff",                         glm::cos(glm::radians(lights[i].cutOff)));
-    //         shader->set("attenuationConstant",                      lights[i].attenuationConstant);
-    //         shader->set("attenuationLinear",                        lights[i].attenuationLinear);
-    //         shader->set("attenuationQuadratic",                     lights[i].attenuationQuadratic);
-    //     }
-    
+        shader->set("material.IOR", IOR);
 
         glActiveTexture(GL_TEXTURE0);
         albedoMap->bind();
         sampler->bind(0); 
 
-        glActiveTexture(GL_TEXTURE1);
-        colorMaskTexture->bind();
-        sampler->bind(1);
+        if(colorMaskTexture) {
+            glActiveTexture(GL_TEXTURE1);
+            colorMaskTexture->bind();
+            sampler->bind(1);
+        }
 
 
         glActiveTexture(GL_TEXTURE2);
@@ -126,6 +116,7 @@ namespace our {
         colorMaskTexture = AssetLoader<Texture2D>::get(data.value("colorMaskTexture", ""));
         normalMap = AssetLoader<Texture2D>::get(data.value( "normalMap", ""));
         r_ao_m_Map = AssetLoader<Texture2D>::get(data.value( "r_ao_m_Map", ""));
+        IOR = data.value( "IOR", 0.03);
 
     }
 

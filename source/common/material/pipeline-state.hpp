@@ -19,7 +19,7 @@ namespace our {
 
         // This set of pipeline options specifies whether depth testing will be used or not and how it will be configured
         struct {
-            bool enabled = false;
+            bool enabled = true;
             GLenum function = GL_LEQUAL;
         } depthTesting;
 

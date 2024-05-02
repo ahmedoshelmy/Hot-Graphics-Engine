@@ -68,6 +68,7 @@ class Menustate: public our::State {
         menuMaterial->texture = our::texture_utils::loadImage("assets/textures/menu.png");
         // Initially, the menu material will be black, then it will fade in
         menuMaterial->tint = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+        menuMaterial->pipelineState.depthTesting.enabled = false;
 
         // Here, we load the shader that will be used to draw the background
         menuTextMaterial = new our::TexturedMaterial();
@@ -78,6 +79,7 @@ class Menustate: public our::State {
         menuTextMaterial->texture = our::texture_utils::loadImage("assets/textures/menu_text.png");
         menuTextMaterial->tint = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
+        menuTextMaterial->pipelineState.depthTesting.enabled = false;
         menuTextMaterial->pipelineState.blending.enabled = true;
 
         // Second, we create a material to highlight the hovered buttons
@@ -91,6 +93,7 @@ class Menustate: public our::State {
         highlightMaterial->tint = glm::vec4(0.725f, 1.0f, 0.513f, .23f);
         // To create a negative effect, we enable blending, set the equation to be subtract,
         // and set the factors to be one for both the source and the destination. 
+        highlightMaterial->pipelineState.depthTesting.enabled = false;
         highlightMaterial->pipelineState.blending.enabled = true;
 
         // Then we create a rectangle whose top-left corner is at the origin and its size is 1x1.

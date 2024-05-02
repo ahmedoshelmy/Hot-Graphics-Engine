@@ -14,6 +14,7 @@ out vec4 FragColor;
 in vec3 FragPos;
 in mat3 TBN;
 in vec2 TexCoords;
+in vec3 Normal;
 
 uniform vec3 cameraPos;
 uniform int num_lights;
@@ -23,6 +24,7 @@ struct Material {
     sampler2D  colorMaskTexture;
     sampler2D  normalMap;
     sampler2D  r_ao_m_Map; // rough (R) AO (G) Metallic (B)
+    float IOR;
 };
 uniform Material material;
 
@@ -43,6 +45,23 @@ struct Light {
 };
 
 uniform Light lights[MAX_LIGHTS];
+
+vec3 getNormalFromMap()
+{
+    vec3 tangentNormal = texture(material.normalMap, TexCoords).xyz * 2.0 - 1.0;
+
+    vec3 Q1  = dFdx(FragPos);
+    vec3 Q2  = dFdy(FragPos);
+    vec2 st1 = dFdx(TexCoords);
+    vec2 st2 = dFdy(TexCoords);
+
+    vec3 N   = normalize(Normal);
+    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
+    vec3 B  = -normalize(cross(N, T));
+    mat3 TBN = mat3(T, B, N);
+
+    return normalize(TBN * tangentNormal);
+}
 /* Cook-Torrance BRDF
     F_r = kd * F_lambert + ks F_cook_torrance
     F_lambert = diffuse BRDF = c / PI                       ; (c) => albedo
@@ -164,12 +183,13 @@ vec3 getLightRadiance(Light light) {
 
 
 vec3 calcLight(vec3 albedo, float roughness, float metallic) {
-    vec3 N = normalize(TBN * (texture(material.normalMap, TexCoords).rgb * 2.0 - 1.0));   
+    // vec3 N = normalize(TBN * (texture(material.normalMap, TexCoords).rgb * 2.0 - 1.0));   
     // vec3 N = normalize(Normal); 
+    vec3 N = getNormalFromMap();
     vec3 V = normalize(cameraPos - FragPos);
 
     vec3 Lo = vec3(0.0);
-    vec3 F0 = vec3(0.5); 
+    vec3 F0 = vec3(material.IOR); 
          F0 = mix(F0, albedo, metallic);
 
     for(int i = 0;i < num_lights;i++) {
