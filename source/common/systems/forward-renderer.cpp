@@ -5,26 +5,31 @@
 #include<glm/gtc/matrix_inverse.inl>
 #include<glm/gtc/matrix_transform.hpp>
 #include"physics.hpp"
+#include <glad/gl.h>
+// Text Rendering
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include <iostream>
+
 
 namespace our {
 
-    void ForwardRenderer::initialize(glm::ivec2 windowSize, Application* app, const nlohmann::json& config){
+    void ForwardRenderer::initialize(glm::ivec2 windowSize, Application *app, const nlohmann::json &config) {
         // First, we store the window size for later use
         this->windowSize = windowSize;
-        this->app = app;
 
         // Then we check if there is a sky texture in the configuration
-        if(config.contains("sky")){
+        if (config.contains("sky")) {
             // First, we create a sphere which will be used to draw the sky
             this->skySphere = mesh_utils::sphere(glm::ivec2(16, 16));
-            
+
             // We can draw the sky using the same shader used to draw textured objects
-            ShaderProgram* skyShader = new ShaderProgram();
+            ShaderProgram *skyShader = new ShaderProgram();
             skyShader->attach("assets/shaders/textured.vert", GL_VERTEX_SHADER);
             skyShader->attach("assets/shaders/textured.frag", GL_FRAGMENT_SHADER);
             skyShader->link();
-            
-            //TODO: (Req 10) pick the correct pipeline state to draw the sky
+
+            //TODO: (Req 10) Pick the correct pipeline state to draw the sky
             // Hints: the sky will be draw after the opaque objects so we would need depth testing but which depth funtion should we pick?
             // We will draw the sphere from the inside, so what options should we pick for the face culling.
             PipelineState skyPipelineState{};
@@ -35,10 +40,10 @@ namespace our {
 
             // Load the sky texture (note that we don't need mipmaps since we want to avoid any unnecessary blurring while rendering the sky)
             std::string skyTextureFile = config.value<std::string>("sky", "");
-            Texture2D* skyTexture = texture_utils::loadImage(skyTextureFile, false);
+            Texture2D *skyTexture = texture_utils::loadImage(skyTextureFile, false);
 
             // Setup a sampler for the sky 
-            Sampler* skySampler = new Sampler();
+            Sampler *skySampler = new Sampler();
             skySampler->set(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             skySampler->set(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             skySampler->set(GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -56,7 +61,7 @@ namespace our {
         }
 
         // Then we check if there is a postprocessing shader in the configuration
-        if(config.contains("postprocess")){
+        if (config.contains("postprocess")) {
             //TODO: (Req 11) Create a framebuffer
             glGenFramebuffers(1, &postprocessFrameBuffer);
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, postprocessFrameBuffer);
@@ -64,13 +69,14 @@ namespace our {
             // Hints: The color format can be (Red, Green, Blue and Alpha components with 8 bits for each channel).
             // The depth format can be (Depth component with 24 bits).
             colorTarget = our::texture_utils::empty(windowSize, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTarget->getOpenGLName(), 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTarget->getOpenGLName(),
+                                   0);
 
             //TODO: add stensil
             depthTarget = our::texture_utils::empty(windowSize, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTarget->getOpenGLName(), 0);
 
-            if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+            if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
                 std::cerr << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
             }
             // //TODO: (Req 11) Unbind the framebuffer just to be safe
@@ -79,14 +85,14 @@ namespace our {
             glGenVertexArrays(1, &postProcessVertexArray);
 
             // Create a sampler to use for sampling the scene texture in the post processing shader
-            Sampler* postprocessSampler = new Sampler();
+            Sampler *postprocessSampler = new Sampler();
             postprocessSampler->set(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             postprocessSampler->set(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             postprocessSampler->set(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             postprocessSampler->set(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
             // Create the post processing shader
-            ShaderProgram* postprocessShader = new ShaderProgram();
+            ShaderProgram *postprocessShader = new ShaderProgram();
             postprocessShader->attach("assets/shaders/fullscreen.vert", GL_VERTEX_SHADER);
             postprocessShader->attach(config.value<std::string>("postprocess", ""), GL_FRAGMENT_SHADER);
             postprocessShader->link();
@@ -100,16 +106,89 @@ namespace our {
             // so it is more performant to disable the depth mask
             postprocessMaterial->pipelineState.depthMask = false;
             postprocessMaterial->pipelineState.depthTesting.enabled = false;
-
-
         }
-        
+
+        // Text Renderer Initialization
+        textShader = new ShaderProgram();
+        textShader->attach("assets/shaders/text/text.vert", GL_VERTEX_SHADER);
+        textShader->attach("assets/shaders/text/text.frag", GL_FRAGMENT_SHADER);
+        textShader->link();
+        textShader->use();
+        glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(windowSize.x), 0.0f,
+                                          static_cast<float>(windowSize.y));
+        textShader->set("projection", projection);
+
+        // FreeType Initialization
+        FT_Library ft;
+        if (FT_Init_FreeType(&ft)) {
+            std::cerr << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+        }
+
+
+        // Select the font family
+        FT_Face face;
+        if (FT_New_Face(ft, "assets/fonts/ReggaeOne-Regular.ttf", 0, &face)) {
+            std::cerr << "ERROR::FREETYPE: Failed to load font" << std::endl;
+        }
+
+        // Set the font size 
+        // The second param is the width when set to 0 it is set automatically
+        // The third param is the height of the font
+        FT_Set_Pixel_Sizes(face, 0, 48);
+
+        // Disable byte-alignment restriction
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        // Generate textures of the characters using the specified font
+
+        for (unsigned char c = 0; c < 128; c++) {
+            if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
+                std::cerr << "ERROR::FREETYPE: Failed to load Glyph" << std::endl;
+                continue;
+            }
+            unsigned int texture;
+            glGenTextures(1, &texture);
+            glBindTexture(GL_TEXTURE_2D, texture);
+            glTexImage2D(
+                    GL_TEXTURE_2D,
+                    0,
+                    GL_RED,
+                    face->glyph->bitmap.width,
+                    face->glyph->bitmap.rows,
+                    0,
+                    GL_RED,
+                    GL_UNSIGNED_BYTE,
+                    face->glyph->bitmap.buffer
+            );
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            Character character = {
+                    texture,
+                    glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+                    glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+                    static_cast<unsigned int>(face->glyph->advance.x)
+            };
+            Characters.insert(std::pair<char, Character>(c, character));
+        }
+
+        // Destroy FreeType once we're finished
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+        FT_Done_Face(face);
+        FT_Done_FreeType(ft);
+
         this->initCastingBuffer();
+
+
     }
 
-    void ForwardRenderer::destroy(){
+
+    void ForwardRenderer::destroy() {
         // Delete all objects related to the sky
-        if(skyMaterial){
+        if (skyMaterial) {
             delete skySphere;
             delete skyMaterial->shader;
             delete skyMaterial->texture;
@@ -117,7 +196,7 @@ namespace our {
             delete skyMaterial;
         }
         // Delete all objects related to post processing
-        if(postprocessMaterial){
+        if (postprocessMaterial) {
             glDeleteFramebuffers(1, &postprocessFrameBuffer);
             glDeleteVertexArrays(1, &postProcessVertexArray);
             delete colorTarget;
@@ -127,7 +206,7 @@ namespace our {
             delete postprocessMaterial;
         }
         glDeleteFramebuffers(1, &castingFBO);
-            glDeleteVertexArrays(1, &castingVAO);
+        glDeleteVertexArrays(1, &castingVAO);
         delete primitiveCastingTarget;
         delete depthCastingTarget;
         delete castingMaterial->sampler;
@@ -135,19 +214,19 @@ namespace our {
         delete castingMaterial;
     }
 
-    void ForwardRenderer::render(World* world){
+    void ForwardRenderer::render(World *world) {
         mp[0] = "NON-WORLD";
         picked_item = "NON-WORLD";
         // First of all, we search for a camera and for all the mesh renderers
-        CameraComponent* camera = nullptr;
+        CameraComponent *camera = nullptr;
         opaqueCommands.clear();
         transparentCommands.clear();
         lightSources.clear();
-        for(auto entity : world->getEntities()){
+        for (auto entity: world->getEntities()) {
             // If we hadn't found a camera yet, we look for a camera in this entity
-            if(!camera) camera = entity->getComponent<CameraComponent>();
+            if (!camera) camera = entity->getComponent<CameraComponent>();
             // If this entity has a mesh renderer component
-            if(auto meshRenderer = entity->getComponent<MeshRendererComponent>(); meshRenderer){
+            if (auto meshRenderer = entity->getComponent<MeshRendererComponent>(); meshRenderer) {
                 // We construct a command from it
                 RenderCommand command;
                 command.localToWorld = meshRenderer->getOwner()->getLocalToWorldMatrix();
@@ -156,15 +235,15 @@ namespace our {
                 command.material = meshRenderer->material;
                 command.name = meshRenderer->getOwner()->name;
                 // if it is transparent, we add it to the transparent commands list
-                if(command.material->transparent){
+                if (command.material->transparent) {
                     transparentCommands.push_back(command);
                 } else {
-                // Otherwise, we add it to the opaque command list
+                    // Otherwise, we add it to the opaque command list
                     opaqueCommands.push_back(command);
                 }
             }
 
-            if(auto lightRenderer = entity->getComponent<LightComponent>(); lightRenderer) {
+            if (auto lightRenderer = entity->getComponent<LightComponent>(); lightRenderer) {
                 LightCommand command;
                 command.type = lightRenderer->type;
                 command.position = lightRenderer->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0, 1.0f);
@@ -175,7 +254,7 @@ namespace our {
         }
 
         // If there is no camera, we return (we cannot render without a camera)
-        if(camera == nullptr) return;
+        if (camera == nullptr) return;
         //TODO: (Req 9) Modify the following line such that "cameraForward" contains a vector pointing the camera forward direction
         // HINT: See how you wrote the CameraComponent::getViewMatrix, it should help you solve this one
         glm::vec3 cameraPosition = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0f, 1.0f);
@@ -183,25 +262,26 @@ namespace our {
         // std::cout << cameraPosition.x << " " << cameraPosition.y << " " << cameraPosition.z << '\n';
         // std::cout << cameraForward.x << " " << cameraForward.y << " " << cameraForward.z << '\n';
         // if it's flashlight set position to camera position, and direction to camera direction
-        for(auto & lightSrc : lightSources) {
-            if(lightSrc.light->type == LightType::FLASH) {
+        for (auto &lightSrc: lightSources) {
+            if (lightSrc.light->type == LightType::FLASH) {
                 lightSrc.type = LightType::SPOT;
                 lightSrc.position = cameraPosition;
                 lightSrc.direction = cameraForward;
             }
         }
 
-        std::sort(transparentCommands.begin(), transparentCommands.end(), [cameraForward](const RenderCommand& first, const RenderCommand& second){
-            //TODO: (Req 9) Finish this function
-            // HINT: the following return should return true "first" should be drawn before "second".
-            float distanceFirst = glm::dot(cameraForward, first.center);
-            float distanceSecond = glm::dot(cameraForward, second.center);
+        std::sort(transparentCommands.begin(), transparentCommands.end(),
+                  [cameraForward](const RenderCommand &first, const RenderCommand &second) {
+                      //TODO: (Req 9) Finish this function
+                      // HINT: the following return should return true "first" should be drawn before "second".
+                      float distanceFirst = glm::dot(cameraForward, first.center);
+                      float distanceSecond = glm::dot(cameraForward, second.center);
 
-           return distanceFirst > distanceSecond;
-        });
+                      return distanceFirst > distanceSecond;
+                  });
 
         //TODO: (Req 9) Get the camera ViewProjection matrix and store it in VP
-        glm::mat4 VP =  camera->getProjectionMatrix(windowSize) * camera->getViewMatrix();
+        glm::mat4 VP = camera->getProjectionMatrix(windowSize) * camera->getViewMatrix();
         //TODO: (Req 9) Set the OpenGL viewport using viewportStart and viewportSize
         glViewport(0, 0, windowSize[0], windowSize[1]);
 
@@ -213,22 +293,22 @@ namespace our {
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
         glDepthMask(GL_TRUE);
         // If there is a postprocess material, bind the framebuffer
-        
+
         // bind casting frame buffer
         pickingPhaseRenderer(camera);
-        
+
         PixelInfo pixel = readPixel(windowSize.x / 2, windowSize.y / 2);
         picked_item = mp[pixel.ObjectID];
         // std::cout << mp[pixel.ObjectID] << "\n";
         rendererPhaseRenderer(camera);
     }
 
-    void ForwardRenderer::showGUI(World* world) {
+    void ForwardRenderer::showGUI(World *world) {
         bool showDemoWindow = true;
         ImGui::ShowDemoWindow(&showDemoWindow);
         ImGui::Begin("Entities");
 
-        for(auto entity : world->getEntities()) entity->showGUI();
+        for (auto entity: world->getEntities()) entity->showGUI();
         ImGui::End();
     }
 
@@ -268,13 +348,13 @@ namespace our {
     void ForwardRenderer::pickingPhaseRenderer(CameraComponent *camera) {
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, castingFBO);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-        glm::mat4 VP =  camera->getProjectionMatrix(windowSize) * camera->getViewMatrix();
-        
+
+        glm::mat4 VP = camera->getProjectionMatrix(windowSize) * camera->getViewMatrix();
+
         // loop as it is and draw id to pixel
         unsigned int gObjectIndex = 1;
         //TODO: seperate world entities from others and just show them
-        for(auto command : opaqueCommands) {
+        for (auto command: opaqueCommands) {
             castingMaterial->setup();
             mp[gObjectIndex] = command.name;
             castingMaterial->shader->set("gObjectIndex", gObjectIndex++);
@@ -295,35 +375,34 @@ namespace our {
 
     void ForwardRenderer::rendererPhaseRenderer(CameraComponent *camera) {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        if(postprocessMaterial){
+        if (postprocessMaterial) {
             //TODO: (Req 11) bind the framebuffer
             glBindFramebuffer(GL_FRAMEBUFFER, postprocessFrameBuffer);
         }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-        glm::mat4 VP =  camera->getProjectionMatrix(windowSize) * camera->getViewMatrix();
+
+        glm::mat4 VP = camera->getProjectionMatrix(windowSize) * camera->getViewMatrix();
 
         // getting mouse coordinates
-        
-        for(auto command : opaqueCommands) {
+
+        for (auto command: opaqueCommands) {
             command.material->setup();
-            if(command.name == picked_item) command.material->shader->set("tint", glm::vec4(0.0, 1.0, 0.0, 0.2));  
-            else command.material->shader->set("tint", glm::vec4(1.0, 1.0, 1.0, 1.0));  
-            if(dynamic_cast<LitMaterial*>(command.material) != nullptr) {
+            if (command.name == picked_item) command.material->shader->set("tint", glm::vec4(0.0, 1.0, 0.0, 0.2));
+            else command.material->shader->set("tint", glm::vec4(1.0, 1.0, 1.0, 1.0));
+            if (dynamic_cast<LitMaterial *>(command.material) != nullptr) {
                 light_utils::setLightParameters(command.material->shader, lightSources);
                 command.material->shader->set("u_Model", command.localToWorld);
-                command.material->shader->set("u_View",  camera->getViewMatrix());
+                command.material->shader->set("u_View", camera->getViewMatrix());
                 command.material->shader->set("u_Projection", camera->getProjectionMatrix(windowSize));
-            } 
-            else {
+            } else {
                 command.material->shader->set("transform", VP * command.localToWorld);
             }
             command.mesh->draw();
         }
-       
+
 
         // If there is a sky material, draw the sky
-        if(this->skyMaterial){
+        if (this->skyMaterial) {
             //V = setup the sky material
             skyMaterial->setup();
             //Get the camera position
@@ -334,26 +413,30 @@ namespace our {
             //V = We want the sky to be drawn behind everything (in NDC space, z=1)
             // We can acheive the is by multiplying by an extra matrix after the projection but what values should we put in it?
             glm::mat4 alwaysBehindTransform = glm::mat4(
-                1.0f, 0.0f, 0.0f, 0.0f,
-                0.0f, 1.0f, 0.0f, 0.0f,
-                0.0f, 0.0f, 0.0f, 0.0f,
-                0.0f, 0.0f, 1.0f, 1.0f
+                    1.0f, 0.0f, 0.0f, 0.0f,
+                    0.0f, 1.0f, 0.0f, 0.0f,
+                    0.0f, 0.0f, 0.0f, 0.0f,
+                    0.0f, 0.0f, 1.0f, 1.0f
             );
             //V = set the "transform" uniform
             this->skyMaterial->shader->set("transform", alwaysBehindTransform * VP * skyModel);
             //V = draw the sky sphere
             this->skySphere->draw();
         }
-        
+
         //TODO: (Req 9) Draw all the transparent commands
         // Don't forget to set the "transform" uniform to be equal the model-view-projection matrix for each render command
-        for(auto command : transparentCommands) {
+        for (auto command: transparentCommands) {
             command.material->setup();
             command.material->shader->set("transform", VP * command.localToWorld);
             command.mesh->draw();
         }
+        // Text Rendering
+        renderText("Welcome To Locked Away", 25.0f, 100.0f, 0.5f, glm::vec3(1.0f, 1.0f, 1.0f), 0, 1);
+        renderText("You Picked Up A Key", 25.0f, 100.0f, 0.2f, glm::vec3(1.0f, 1.0f, 1.0f), 0, 0);
 
-        if(postprocessMaterial){
+
+        if (postprocessMaterial) {
             //TODO: (Req 11) Return to the default framebuffer
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             //TODO: (Req 11) Setup the postprocess material and draw the fullscreen triangle
@@ -365,12 +448,90 @@ namespace our {
 
     }
 
+    void ForwardRenderer::renderText(std::string text, float x, float y, float scale, glm::vec3 color, int text_align_x,
+                                     int text_align_y) {
+        // Text Rendering Setup
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        // Setting the buffer and vertex array
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
 
-    
+        // Choose the text color
+
+        textShader->use();
+        textShader->set("text_color", color);
+        glActiveTexture(GL_TEXTURE0);
+        glBindVertexArray(VAO);
+
+        // Center the text
+
+        if (text_align_x == 0) {
+            float text_width = 0;
+            for (std::string::const_iterator c = text.begin(); c != text.end(); c++) {
+                Character ch = Characters[*c];
+                text_width += (ch.Advance >> 6) * scale;
+            }
+            x = (windowSize.x / 2) - (text_width / 2);
+        }
+
+        if (text_align_y == 0) {
+            float text_height = 0;
+            for (std::string::const_iterator c = text.begin(); c != text.end(); c++) {
+                Character ch = Characters[*c];
+                text_height = ch.Size.y;
+            }
+            y = (windowSize.y / 2) - (text_height / 2);
+        }
+
+        // Iterate through all characters
+        std::string::const_iterator c;
+        float xpos = x;
+        float ypos = y;
+        for (c = text.begin(); c != text.end(); c++) {
+            Character ch = Characters[*c];
+
+            xpos += ch.Bearing.x * scale;
+            ypos -= (ch.Size.y - ch.Bearing.y) * scale;
+
+            float w = ch.Size.x * scale;
+            float h = ch.Size.y * scale;
+            // Update VBO for each character
+            float vertices[6][4] = {
+                    {xpos,     ypos + h, 0.0f, 0.0f},
+                    {xpos,     ypos,     0.0f, 1.0f},
+                    {xpos + w, ypos,     1.0f, 1.0f},
+
+                    {xpos,     ypos + h, 0.0f, 0.0f},
+                    {xpos + w, ypos,     1.0f, 1.0f},
+                    {xpos + w, ypos + h, 1.0f, 0.0f}
+            };
+            // Render glyph texture over quad
+            glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+            // Update content of VBO memory
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            // Render quad
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+            // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+            xpos += (ch.Advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64)
+        }
+        glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+    }
 
 
-    PixelInfo ForwardRenderer::readPixel(unsigned int x, unsigned int y)
-    {
+    PixelInfo ForwardRenderer::readPixel(unsigned int x, unsigned int y) {
         glBindFramebuffer(GL_READ_FRAMEBUFFER, castingFBO);
 
         glReadBuffer(GL_COLOR_ATTACHMENT0);

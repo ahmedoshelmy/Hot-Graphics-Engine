@@ -31,6 +31,8 @@ set(IMGUI_SOURCES
 # ReactPhysics3D
 #add_subdirectory(vendor/reactphysics3D)
 
+# FreeType
+add_subdirectory(vendor/utils/freetype-2.13.2)
 
 # Combine all vendor source files together into a single variable
 set(VENDOR_SOURCES ${GLAD_SOURCE} ${IMGUI_SOURCES})
@@ -142,6 +144,7 @@ include_directories(
         vendor/glm
         vendor/imgui
         vendor/utils
+        vendor/utils/freetype-2.13.2/include
 #        vendor/reactphysics3D/include
 )
 
@@ -171,4 +174,5 @@ set(STATES_SOURCES
 add_executable(GAME_APPLICATION source/main.cpp ${STATES_SOURCES} ${COMMON_SOURCES} ${VENDOR_SOURCES} ${COMMON_SYSTEMS_SOURCES}
         ${COMMON_COMPONENTS_SOURCES})
 target_link_libraries(GAME_APPLICATION glfw)
+target_link_libraries(GAME_APPLICATION freetype)
 #target_link_libraries(GAME_APPLICATION reactphysics3d)
