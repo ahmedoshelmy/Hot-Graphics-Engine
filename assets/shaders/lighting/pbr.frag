@@ -24,6 +24,9 @@ struct Material {
     sampler2D  colorMaskTexture;
     sampler2D  normalMap;
     sampler2D  r_ao_m_Map; // rough (R) AO (G) Metallic (B)
+    sampler2D  emissive;
+    bool  enableEmissive;
+    bool  enableColorMasking;
     float IOR;
 };
 uniform Material material;

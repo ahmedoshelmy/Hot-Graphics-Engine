@@ -23,5 +23,5 @@ CMakeSettings.json
 
 # Screenshots
 screenshots/
-
 vendor/reactphysics3D
+*.exe

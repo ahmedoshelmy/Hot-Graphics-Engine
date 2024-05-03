@@ -153,15 +153,15 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin)
 set(STATES_SOURCES
         source/states/play-state.hpp
         source/states/menu-state.hpp
-        source/states/shader-test-state.hpp
-        source/states/mesh-test-state.hpp
-        source/states/transform-test-state.hpp
-        source/states/pipeline-test-state.hpp
-        source/states/texture-test-state.hpp
-        source/states/sampler-test-state.hpp
-        source/states/material-test-state.hpp
-        source/states/entity-test-state.hpp
-        source/states/renderer-test-state.hpp
+#        source/states/shader-test-state.hpp
+#        source/states/mesh-test-state.hpp
+#        source/states/transform-test-state.hpp
+#        source/states/pipeline-test-state.hpp
+#        source/states/texture-test-state.hpp
+#        source/states/sampler-test-state.hpp
+#        source/states/material-test-state.hpp
+#        source/states/entity-test-state.hpp
+#        source/states/renderer-test-state.hpp
 
 )
 

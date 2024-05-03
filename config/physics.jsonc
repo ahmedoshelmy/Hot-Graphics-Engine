@@ -41,6 +41,7 @@
       },
       "textures": {
         "key": "assets/textures/key.png",
+        "hand": "assets/textures/hand.jpeg",
         "lady": "assets/textures/OldLady_baseColor.png",
         "home_albedo": "assets/textures/House_exterior/House_exterior_d.png",
         "home_normal": "assets/textures/House_exterior/House_exterior_n.png",
@@ -64,7 +65,11 @@
         "books_n": "assets/textures/Books/Books_n.png",
         "books_r_ao_m": "assets/textures/Books/Books_r_ao_m.png",
         "white": "assets/textures/white.png",
-        "black": "assets/textures/black.png"
+        "black": "assets/textures/black.png",
+        "flashlight_base": "assets/textures/FlashLight/M_Flashlight_V01_baseColor.png",
+        "flashlight_emissive": "assets/textures/FlashLight/M_Flashlight_V01_emissive.png",
+        "flashlight_roughness": "assets/textures/FlashLight/M_Flashlight_V01_metallicRoughness.png",
+        "flashlight_normal": "assets/textures/FlashLight/M_Flashlight_V01_normal.png"
       },
       "meshes": {
         "key": "assets/models/key.obj",
@@ -77,7 +82,9 @@
         "ceiling01": "assets/models/ceiling.obj",
         "booksetB": "assets/models/booksetB.obj",
         "table_home": "assets/models/home_table.obj",
-        "plane": "assets/models/plane.obj"
+        "plane": "assets/models/plane.obj",
+        "hand": "assets/models/hand.obj",
+        "flashlight": "assets/models/flashlight.obj"
       },
       "samplers": {
         "default": {},
@@ -176,20 +183,55 @@
           "r_ao_m_Map": "books_r_ao_m",
           "IOR": 0.45
         },
+        "flashlight": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "flashlight_base",
+          "normalMap": "flashlight_normal",
+          "emissiveMap": "flashlight_emissive",
+          "r_ao_m_Map": "flashlight_roughness",
+          "IOR": 0.5
+        },
         "key": {
           "type": "textured",
           "shader": "textured",
           "sampler": "default",
           "pipelineState": {
-            "faceCulling":{
+            "faceCulling": {
               "enabled": false
             },
-            "depthTesting":{
+            "depthTesting": {
               "enabled": true
             }
           },
-          "tint": [1, 1, 1, 1],
+          "tint": [
+            1,
+            1,
+            1,
+            1
+          ],
           "texture": "key"
+        },
+        "hand": {
+          "type": "textured",
+          "shader": "textured",
+          "sampler": "default",
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "tint": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "texture": "hand"
         }
       }
     },
@@ -217,27 +259,17 @@
         "children": [
           {
             "name": "hand",
-            "position": [
-              1,
-              -1,
-              -1
-            ],
-            "rotation": [
-              45,
-              45,
-              0
-            ],
-            "scale": [
-              0.1,
-              0.1,
-              1.0
-            ],
+            "position": [1, -1, -1],
+            "rotation": [45, 45, 0],
+            "scale": [0.1, 0.1, 1.0],
             "components": [
               {
                 "type": "Mesh Renderer",
                 "mesh": "cube",
                 "material": "metal"
               }
+            ],
+            "children": [
             ]
           },
           {
@@ -491,7 +523,32 @@
             "material": "key"
           }
         ]
+      },        {
+        "name": "flashlight",
+        "position": [
+          1,
+          5,
+          -34
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          30,
+          30,
+          30
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "flashlight",
+            "material": "flashlight"
+          }
+        ]
       }
+
     ]
   }
 }
