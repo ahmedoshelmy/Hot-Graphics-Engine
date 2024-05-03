@@ -5,6 +5,7 @@
 #include "../components/light-component.hpp"
 #include "../components/mesh-renderer.hpp"
 #include "../asset-loader.hpp"
+#include "../application.hpp"
 
 #include <glad/gl.h>
 #include <vector>
@@ -53,16 +54,21 @@ namespace our
         GLuint postprocessFrameBuffer, postProcessVertexArray;
         Texture2D *colorTarget, *depthTarget;
         TexturedMaterial* postprocessMaterial;
+
+        // need application for picking objects
+        Application* app;
     public:
         // Initialize the renderer including the sky and the Postprocessing objects.
         // windowSize is the width & height of the window (in pixels).
-        void initialize(glm::ivec2 windowSize, const nlohmann::json& config);
+        void initialize(glm::ivec2 windowSize, Application* app, const nlohmann::json& config);
         // Clean up the renderer
         void destroy();
         // This function should be called every frame to draw the given world
         void render(World* world);
 
         void showGUI(World* world);
+
+        void pickingComponent(World* world, CameraComponent* camera, glm::ivec2 windowSize);
 
 
     };

@@ -1,0 +1,355 @@
+{
+    "start-scene": "play",
+    "window":
+    {
+        "title":"Locked Away",
+        "size":{
+            "width":1920,
+            "height":1080
+        },
+        "fullscreen": false
+    },
+    "scene": {
+        "renderer":{
+            "sky": "assets/textures/skybox/sky_forest.jpeg",
+            "postprocess": "assets/shaders/postprocess/vignette.frag"
+        },
+        "assets":{
+            "shaders":{
+                "tinted":{
+                    "vs":"assets/shaders/tinted.vert",
+                    "fs":"assets/shaders/tinted.frag"
+                },
+                "textured":{
+                    "vs":"assets/shaders/textured.vert",
+                    "fs":"assets/shaders/textured.frag"
+                },
+                "light":{
+                    "vs":"assets/shaders/lighting/all_light.vert",
+                    "fs":"assets/shaders/lighting/basic_pbr_light.frag",
+                    "gs":"assets/shaders/lighting/all_light.geom"
+                },
+                "house_exterior":{
+                    "vs":"assets/shaders/lighting/all_light.vert",
+                    "fs":"assets/shaders/room_one/house_exterior.frag",
+                    "gs":"assets/shaders/lighting/all_light.geom"
+                },
+                "crosshair": {
+                    "vs":"assets/shaders/tinted.vert",
+                    "fs":"assets/shaders/crosshair.frag"
+                }
+            },
+            "textures":{
+                "lady": "assets/textures/OldLady_baseColor.png",
+                "home_albedo": "assets/textures/House_exterior/House_exterior_d.png",
+                "home_normal": "assets/textures/House_exterior/House_exterior_n.png",
+                "home_mask": "assets/textures/House_exterior/House_exterior_mask.png",
+                "home_r_ao_m": "assets/textures/House_exterior/House_exterior_r_ao_m.png",
+
+                "laminate_d": "assets/textures/Floor/Laminate_d.png",
+                "laminate_n": "assets/textures/Floor/Laminate_n.png",
+                "laminate_r_ao_m": "assets/textures/Floor/Laminate_r_ao_m.png",
+
+                "carpet_d": "assets/textures/Floor/Carpet_d.png",
+                "carpet_n": "assets/textures/Floor/Carpet_n.png",
+                "carpet_r_ao_m": "assets/textures/Floor/Carpet_r_ao_m.png",
+
+                "ceiling01_d": "assets/textures/Ceiling/Ceiling01_d.png",
+                "ceiling01_n": "assets/textures/Ceiling/Ceiling01_n.png",
+                "ceiling01_r_ao_m": "assets/textures/Ceiling/Ceiling01_r_ao_m.png",
+                // "carpet_dirt_mask": "assets/textures/Floor/Carpet_dirtMask.png", //TODO
+                
+                "concrete_d": "assets/textures/Floor/Concrete_d.png",
+                "concrete_n": "assets/textures/Floor/Concrete_n.png",
+                "concrete_r_ao_m": "assets/textures/Floor/Concrete_r_ao_m.png",
+
+                "books_d": "assets/textures/Books/Books_d.png",
+                "books_n": "assets/textures/Books/Books_n.png",
+                "books_r_ao_m": "assets/textures/Books/Books_r_ao_m.png",
+
+                "white": "assets/textures/white.png",
+                "black": "assets/textures/black.png"
+            },
+            "meshes":{
+                "cube": "assets/models/cube.obj",
+                "lady": "assets/models/lady.obj",
+                "home": "assets/models/real_home.obj",
+                "floor_kitchen": "assets/models/floor_kitchen.obj",
+                "floor_01": "assets/models/floor_01.obj",
+                "floor_02": "assets/models/floor_02.obj",
+                "floor_garage": "assets/models/floor_garage.obj",
+                "ceiling_01" : "assets/models/ceiling_01.obj",
+                "ceiling_02" : "assets/models/ceiling_02.obj",
+                "booksetB": "assets/models/booksetB.obj",
+                "table_home": "assets/models/home_table.obj",
+                "plane": "assets/models/plane.obj"
+            },
+            "samplers":{
+                "default":{},
+                "pixelated":{
+                    "MAG_FILTER": "GL_NEAREST"
+                }
+            },
+            "materials":{
+                "metal":{
+                    "type": "tinted",
+                    "shader": "tinted",
+                    "tint": [0.45, 0.4, 0.5, 1]
+                },
+                "crosshair": {
+                    "type": "tinted",
+                    "shader": "crosshair",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        },
+                        "blending":{
+                            "enabled": true,
+                            "sourceFactor": "GL_SRC_ALPHA",
+                            "destinationFactor": "GL_ONE_MINUS_SRC_ALPHA"
+                        },
+                        "depthMask": false
+                    },
+                    "transparent": true,
+                    "tint": [0.0, 0.62, 0.13, 0.5]
+                },
+    
+                "home":{
+                    "type": "lit",
+                    "shader": "house_exterior",
+                    "sampler": "default",
+                    "albedoMap": "home_albedo",
+                    "normalMap": "home_normal",
+                    "colorMaskTexture": "home_mask", 
+                    "r_ao_m_Map": "home_r_ao_m",
+                    "IOR": 0.5
+
+                },
+                "laminate":{
+                    "type": "lit",
+                    "shader": "light",
+                    "sampler": "default",
+                    "albedoMap": "laminate_d",
+                    "normalMap": "laminate_n",
+                    "r_ao_m_Map": "laminate_r_ao_m",
+                    "IOR": 0.45
+                },
+                "carpet":{
+                    "type": "lit",
+                    "shader": "light",
+                    "sampler": "default",
+                    "albedoMap": "carpet_d",
+                    "normalMap": "carpet_n",
+                    "r_ao_m_Map": "carpet_r_ao_m",
+                    "IOR": 0.45
+                },
+                "concrete":{
+                    "type": "lit",
+                    "shader": "light",
+                    "sampler": "default",
+                    "albedoMap": "concrete_d",
+                    "normalMap": "concrete_n",
+                    "r_ao_m_Map": "concrete_r_ao_m",
+                    "IOR": 0.45
+                },
+                "ceiling": {
+                    "type": "lit",
+                    "shader": "light",
+                    "sampler": "default",
+                    "albedoMap": "ceiling01_d",
+                    "normalMap": "ceiling01_n",
+                    "r_ao_m_Map": "ceiling01_r_ao_m",
+                    "IOR": 0.45
+                }, 
+                "books": {
+                    "type": "lit",
+                    "shader": "light",
+                    "sampler": "default",
+                    "albedoMap": "books_d",
+                    "normalMap": "books_n",
+                    "r_ao_m_Map": "books_r_ao_m",
+                    "IOR": 0.45
+                }
+                
+            }
+        },
+        "world":[
+            {
+                "name": "player",
+                "position": [0, 5, 10],
+                "components": [
+                    {
+                        "type": "Camera"
+                    },
+                    {
+                        "type": "Free Camera Controller"
+                    }
+                ],
+                "children": [
+                    {
+                        "name": "Person", 
+                        "position": [1, -1, -1],
+                        "rotation": [45, 45, 0],
+                        "scale": [0.1, 0.1, 1.0],
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "cube",
+                                "material": "metal"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "CrossHair",
+                        "position": [0, 0, 0],
+                        "rotation": [0, 0, 0],
+                        "scale": [1, 1, 1],
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "cube",
+                                "material": "crosshair"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Flash Light", 
+                "position": [0, 0, 0],
+                "components": [
+                    {
+                        "type": "Light Component",
+                        "lightType": "flash",
+                        "color": [0.2, 0.1, 0.6],
+                        "cutOff": 30.0,
+                        "outerCutOff": 35.0,
+                        "attenuationConstant": 1.0,
+                        "attenuationLinear": 0.07,
+                        "attenuationQuadratic": 0.0014,
+                        "debug": true
+                    }
+                ]
+            },
+            {
+                "name": "Directional Light", 
+                "position": [2.0, 2.0, 2.0],
+                "components": [
+                    {
+                        "type": "Light Component",
+                        "lightType": "directional",
+                        "color": [0.5, 0.5, 0.5],
+                        "debug": true
+                    }
+                ]
+            },
+            // {
+            //     "name": "Exterior Home",
+            //     "position": [0, 0, 0],
+            //     "rotation": [0, 0, 0],
+            //     "scale": [500, 500, 500],
+            //     "components": [
+            //         {
+            //             "type": "Mesh Renderer",
+            //             "mesh": "home",
+            //             "material": "home"
+            //         }
+            //     ]
+            // },
+            {
+                "name": "Kitchen Floor",
+                "position": [0, 0, 0],
+                "rotation": [0, 0, 0],
+                "scale": [500, 500, 500],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "floor_kitchen",
+                        "material": "laminate"
+                    }
+                ]
+            },
+            {
+                "name": "Floor 1",
+                "position": [0, 0, 0],
+                "rotation": [0, 0, 0],
+                "scale": [500, 500, 500],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "floor_01",
+                        "material": "carpet"
+                    }
+                ]
+            },
+            {
+                "name": "Floor 2",
+                "position": [0, 0, 0],
+                "rotation": [0, 0, 0],
+                "scale": [500, 500, 500],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "floor_02",
+                        "material": "carpet"
+                    }
+                ]
+            },
+            {
+                "name": "Garage Floor",
+                "position": [0, 0, 0],
+                "rotation": [0, 0, 0],
+                "scale": [500, 500, 500],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "floor_garage",
+                        "material": "concrete"
+                    }
+                ]
+            },
+            {
+                "name": "Ceiling 1",
+                "position": [0, 0, 0],
+                "rotation": [0, 0, 0],
+                "scale": [500, 500, 500],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "ceiling_01",
+                        "material": "ceiling"
+                    }
+                ]
+            },
+            {
+                "name": "Ceiling 2",
+                "position": [0, 0, 0],
+                "rotation": [0, 0, 0],
+                "scale": [500, 500, 500],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "ceiling_02",
+                        "material": "ceiling"
+                    }
+                ]
+            },
+            {
+                "name": "BookSetB",
+                "position": [-27, 6, -34],
+                "rotation": [0, 0, 0],
+                "scale": [500, 500, 500],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "booksetB",
+                        "material": "books"
+                    }
+                ]
+            }
+        ]
+    }
+}

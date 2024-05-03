@@ -3,12 +3,16 @@
 #include "../texture/texture-utils.hpp"
 #include "../light/light-utils.hpp"
 #include <iostream>
-
+#include<glm/gtc/matrix_access.hpp>
+#include<glm/gtc/matrix_inverse.inl>
+#include<glm/gtc/matrix_transform.hpp>
+#include"physics.hpp"
 namespace our {
 
-    void ForwardRenderer::initialize(glm::ivec2 windowSize, const nlohmann::json& config){
+    void ForwardRenderer::initialize(glm::ivec2 windowSize, Application* app, const nlohmann::json& config){
         // First, we store the window size for later use
         this->windowSize = windowSize;
+        this->app = app;
 
         // Then we check if there is a sky texture in the configuration
         if(config.contains("sky")){
@@ -60,11 +64,11 @@ namespace our {
             //TODO: (Req 11) Create a color and a depth texture and attach them to the framebuffer
             // Hints: The color format can be (Red, Green, Blue and Alpha components with 8 bits for each channel).
             // The depth format can be (Depth component with 24 bits).
-            colorTarget = our::texture_utils::empty(GL_RGBA, windowSize);
+            colorTarget = our::texture_utils::empty(windowSize, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTarget->getOpenGLName(), 0);
 
             //TODO: add stensil
-            depthTarget = our::texture_utils::empty(GL_DEPTH_COMPONENT, windowSize);
+            depthTarget = our::texture_utils::empty(windowSize, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTarget->getOpenGLName(), 0);
 
             if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -259,6 +263,7 @@ namespace our {
             glBindVertexArray(postProcessVertexArray);
             glDrawArrays(GL_TRIANGLES, 0, 3);
         }
+        pickingComponent(world, camera, windowSize);
     }
 
     void ForwardRenderer::showGUI(World* world) {
@@ -268,5 +273,60 @@ namespace our {
 
         for(auto entity : world->getEntities()) entity->showGUI();
         ImGui::End();
+    }
+
+
+    void ForwardRenderer::pickingComponent(World* world, CameraComponent* camera, glm::ivec2 windowSize) {
+        PhysicsSystem phy;
+        // from viewport to normalized device coordinates
+        glm::vec3 o = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0f, 1.0f);
+        glm::vec3 ray = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, -1.0f, 0.0f);
+
+        // glm::vec2 ndc =   (ray / glm::vec2(windowSize));
+        //           ndc = glm::vec2( 2.0f * ndc.x - 1.0f, 1.0f - 2.0f * ndc.y); // [-1, 1]
+        // // to homogoneouse clip (ray's z to point forwards)
+        // glm::vec4 ray_clip = glm::vec4(ndc, -1.0, 1.0);
+        // // to eye (camera) space (inverse of projection)
+        // glm::mat4 inv_proj = glm::inverse(camera->getProjectionMatrix(windowSize));
+        // glm::vec4 ray_eye = inv_proj * ray_clip;
+        // ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);
+        // // to world coordinates (finally) (inverse of view)
+        // glm::mat4 inv_view = glm::inverse(camera->getViewMatrix());
+        // glm::vec3 ray_world = glm::vec3(inv_view * ray_eye);
+        // ray_world = glm::normalize(ray_world);
+
+        // std::cout << ray.x << " " << ray.y << " " << ray.z << std::endl;
+
+        std::string name = "closest null";
+        float closest_distance = std::numeric_limits<float>::max();
+        std::cout << "================================================= \n";
+        for(auto entity : world->getEntities()) {
+            if(entity->getComponent<MeshRendererComponent>() == nullptr) continue;
+            std::pair<glm::vec3, glm::vec3> bounding_box = phy.getCollisionBox(entity);
+            glm::vec3 l = bounding_box.first;
+            glm::vec3 h = bounding_box.second;
+            // get intersection of ray with planes
+            glm::vec3 t_low = (l - o) / ray;
+            glm::vec3 t_high = (h - o )/ ray;
+            // close and far
+            float t_close = std::max({std::min(t_low.x, t_high.x), std::min(t_low.y, t_high.y), std::min(t_low.z, t_high.z)});
+            float t_far = std::min({std::max(t_low.x, t_high.x), std::max(t_low.y, t_high.y), std::max(t_low.z, t_high.z)});
+
+            glm::vec3 p_close = o + t_close * ray;
+            glm::vec3 p_far = o + t_far * ray;
+
+            if(t_close <= t_far ) {
+                // std::cout << "Collision: " << entity->name << " " << t_close << std::endl;
+            }
+            if(t_close <= t_far  && t_close >= 0 && t_close < closest_distance) {
+                closest_distance = t_close ;
+                name = entity->name;
+            }
+            //TODO: add bouding box to the raycasting
+            // phy.checkCollision(bounding_box.first, bounding_box.second, ....);
+            
+        }
+        std::cout << "Closest: " << name << " " << closest_distance << std::endl;
+
     }
 }

@@ -47,7 +47,7 @@ class Playstate: public our::State {
         // Then we initialize the renderer
 
         auto size = getApp()->getFrameBufferSize();
-        renderer.initialize(size, config["renderer"]);
+        renderer.initialize(size, getApp(), config["renderer"]);
     }
 
     void onDraw(double deltaTime) override {
