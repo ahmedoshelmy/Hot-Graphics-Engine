@@ -1,5 +1,5 @@
 {
-    "start-scene": "menu",
+    "start-scene": "play",
     "window":
     {
         "title":"Locked Away",
@@ -75,9 +75,11 @@
                 "lady": "assets/models/lady.obj",
                 "home": "assets/models/real_home.obj",
                 "floor_kitchen": "assets/models/floor_kitchen.obj",
-                "floor": "assets/models/floor.obj",
+                "floor_01": "assets/models/floor_01.obj",
+                "floor_02": "assets/models/floor_02.obj",
                 "floor_garage": "assets/models/floor_garage.obj",
-                "ceiling01" : "assets/models/ceiling.obj",
+                "ceiling_01" : "assets/models/ceiling_01.obj",
+                "ceiling_02" : "assets/models/ceiling_02.obj",
                 "booksetB": "assets/models/booksetB.obj",
                 "table_home": "assets/models/home_table.obj",
                 "plane": "assets/models/plane.obj"
@@ -153,7 +155,7 @@
                     "r_ao_m_Map": "concrete_r_ao_m",
                     "IOR": 0.45
                 },
-                "ceiling01": {
+                "ceiling": {
                     "type": "lit",
                     "shader": "light",
                     "sampler": "default",
@@ -222,7 +224,7 @@
                     {
                         "type": "Light Component",
                         "lightType": "flash",
-                        "color": [0.1, 0.1, 0.6],
+                        "color": [0.2, 0.1, 0.6],
                         "cutOff": 30.0,
                         "outerCutOff": 35.0,
                         "attenuationConstant": 1.0,
@@ -239,7 +241,7 @@
                     {
                         "type": "Light Component",
                         "lightType": "directional",
-                        "color": [0.3, 0.3, 0.3],
+                        "color": [0.5, 0.5, 0.5],
                         "debug": true
                     }
                 ]
@@ -271,14 +273,27 @@
                 ]
             },
             {
-                "name": "Floor",
+                "name": "Floor 1",
                 "position": [0, 0, 0],
                 "rotation": [0, 0, 0],
                 "scale": [500, 500, 500],
                 "components": [
                     {
                         "type": "Mesh Renderer",
-                        "mesh": "floor",
+                        "mesh": "floor_01",
+                        "material": "carpet"
+                    }
+                ]
+            },
+            {
+                "name": "Floor 2",
+                "position": [0, 0, 0],
+                "rotation": [0, 0, 0],
+                "scale": [500, 500, 500],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "floor_02",
                         "material": "carpet"
                     }
                 ]
@@ -297,15 +312,28 @@
                 ]
             },
             {
-                "name": "Ceiling",
+                "name": "Ceiling 1",
                 "position": [0, 0, 0],
                 "rotation": [0, 0, 0],
                 "scale": [500, 500, 500],
                 "components": [
                     {
                         "type": "Mesh Renderer",
-                        "mesh": "ceiling01",
-                        "material": "ceiling01"
+                        "mesh": "ceiling_01",
+                        "material": "ceiling"
+                    }
+                ]
+            },
+            {
+                "name": "Ceiling 2",
+                "position": [0, 0, 0],
+                "rotation": [0, 0, 0],
+                "scale": [500, 500, 500],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "ceiling_02",
+                        "material": "ceiling"
                     }
                 ]
             },

@@ -1,6 +1,6 @@
 #include pbr.frag
 
-
+uniform vec4 tint = vec4(1.0, 1.0, 1.0, 1.0);
 
 
 void main()
@@ -19,6 +19,6 @@ void main()
 
     color = pow(color, vec3(1.0/2.2)); 
 
-    FragColor = vec4(color, 1.0);
+    FragColor = tint * vec4(color, 1.0);
    
 } 

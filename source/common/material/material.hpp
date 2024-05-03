@@ -54,6 +54,17 @@ namespace our {
         void deserialize(const nlohmann::json& data) override;
     };
 
+    // class PickingMaterial : public TexturedMaterial {
+    //     public:
+    //         unsigned int objectIndex, drawIndex;
+
+    //         void setup () const override {
+    //             TexturedMaterial::setup();
+    //             shader->set("objectIndex", objectIndex);
+    //             shader->set("drawIndex", drawIndex);
+    //         }
+    // };
+
 
 
     class LitMaterial : public Material {

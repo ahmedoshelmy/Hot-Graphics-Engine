@@ -1,14 +1,17 @@
 #include "forward-renderer.hpp"
 #include "../mesh/mesh-utils.hpp"
-#include "../texture/texture-utils.hpp"
 #include "../light/light-utils.hpp"
-#include <iostream>
+#include<glm/gtc/matrix_access.hpp>
+#include<glm/gtc/matrix_inverse.inl>
+#include<glm/gtc/matrix_transform.hpp>
+#include"physics.hpp"
 
 namespace our {
 
-    void ForwardRenderer::initialize(glm::ivec2 windowSize, const nlohmann::json& config){
+    void ForwardRenderer::initialize(glm::ivec2 windowSize, Application* app, const nlohmann::json& config){
         // First, we store the window size for later use
         this->windowSize = windowSize;
+        this->app = app;
 
         // Then we check if there is a sky texture in the configuration
         if(config.contains("sky")){
@@ -60,11 +63,11 @@ namespace our {
             //TODO: (Req 11) Create a color and a depth texture and attach them to the framebuffer
             // Hints: The color format can be (Red, Green, Blue and Alpha components with 8 bits for each channel).
             // The depth format can be (Depth component with 24 bits).
-            colorTarget = our::texture_utils::empty(GL_RGBA, windowSize);
+            colorTarget = our::texture_utils::empty(windowSize, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTarget->getOpenGLName(), 0);
 
             //TODO: add stensil
-            depthTarget = our::texture_utils::empty(GL_DEPTH_COMPONENT, windowSize);
+            depthTarget = our::texture_utils::empty(windowSize, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTarget->getOpenGLName(), 0);
 
             if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -96,7 +99,12 @@ namespace our {
             // The default options are fine but we don't need to interact with the depth buffer
             // so it is more performant to disable the depth mask
             postprocessMaterial->pipelineState.depthMask = false;
+            postprocessMaterial->pipelineState.depthTesting.enabled = false;
+
+
         }
+        
+        this->initCastingBuffer();
     }
 
     void ForwardRenderer::destroy(){
@@ -118,9 +126,18 @@ namespace our {
             delete postprocessMaterial->shader;
             delete postprocessMaterial;
         }
+        glDeleteFramebuffers(1, &castingFBO);
+            glDeleteVertexArrays(1, &castingVAO);
+        delete primitiveCastingTarget;
+        delete depthCastingTarget;
+        delete castingMaterial->sampler;
+        delete castingMaterial->shader;
+        delete castingMaterial;
     }
 
     void ForwardRenderer::render(World* world){
+        mp[0] = "NON-WORLD";
+        picked_item = "NON-WORLD";
         // First of all, we search for a camera and for all the mesh renderers
         CameraComponent* camera = nullptr;
         opaqueCommands.clear();
@@ -137,6 +154,7 @@ namespace our {
                 command.center = glm::vec3(command.localToWorld * glm::vec4(0, 0, 0, 1));
                 command.mesh = meshRenderer->mesh;
                 command.material = meshRenderer->material;
+                command.name = meshRenderer->getOwner()->name;
                 // if it is transparent, we add it to the transparent commands list
                 if(command.material->transparent){
                     transparentCommands.push_back(command);
@@ -186,6 +204,8 @@ namespace our {
         glm::mat4 VP =  camera->getProjectionMatrix(windowSize) * camera->getViewMatrix();
         //TODO: (Req 9) Set the OpenGL viewport using viewportStart and viewportSize
         glViewport(0, 0, windowSize[0], windowSize[1]);
+
+
         //TODO: (Req 9) Set the clear color to black and the clear depth to 1
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClearDepth(1.0);
@@ -193,18 +213,102 @@ namespace our {
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
         glDepthMask(GL_TRUE);
         // If there is a postprocess material, bind the framebuffer
+        
+        // bind casting frame buffer
+        pickingPhaseRenderer(camera);
+        
+        PixelInfo pixel = readPixel(windowSize.x / 2, windowSize.y / 2);
+        picked_item = mp[pixel.ObjectID];
+        // std::cout << mp[pixel.ObjectID] << "\n";
+        rendererPhaseRenderer(camera);
+    }
+
+    void ForwardRenderer::showGUI(World* world) {
+        bool showDemoWindow = true;
+        ImGui::ShowDemoWindow(&showDemoWindow);
+        ImGui::Begin("Entities");
+
+        for(auto entity : world->getEntities()) entity->showGUI();
+        ImGui::End();
+    }
+
+    // ray intersect AABB slab
+    // void ForwardRenderer::pickingComponent(World* world, CameraComponent* camera, glm::ivec2 windowSize) {
+    //     PhysicsSystem phy;
+    //     // from viewport to normalized device coordinates
+    //     glm::vec3 o = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0f, 1.0f);
+    //     glm::vec3 ray = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, -1.0f, 0.0f);
+
+    //     std::string name = "closest null";
+    //     float closest_distance = std::numeric_limits<float>::max();
+    //     std::cout << "================================================= \n";
+    //     for(auto entity : world->getEntities()) {
+    //         if(entity->getComponent<MeshRendererComponent>() == nullptr) continue;
+    //         std::pair<glm::vec3, glm::vec3> bounding_box = phy.getCollisionBox(entity);
+    //         glm::vec3 l = bounding_box.first;
+    //         glm::vec3 h = bounding_box.second;
+    //         // get intersection of ray with planes
+    //         glm::vec3 t_low = (l - o) / ray;
+    //         glm::vec3 t_high = (h - o )/ ray;
+    //         // close and far
+    //         float t_close = std::max({std::min(t_low.x, t_high.x), std::min(t_low.y, t_high.y), std::min(t_low.z, t_high.z)});
+    //         float t_far = std::min({std::max(t_low.x, t_high.x), std::max(t_low.y, t_high.y), std::max(t_low.z, t_high.z)});
+
+    //         glm::vec3 p_close = o + t_close * ray;
+    //         glm::vec3 p_far = o + t_far * ray;
+
+    //         if(t_close <= t_far  && t_close >= 0 && t_close < closest_distance) {
+    //             closest_distance = t_close ;
+    //             name = entity->name;
+    //         }
+    //     }
+    //     std::cout << "Closest: " << name << " " << closest_distance << std::endl;
+
+    // }
+    void ForwardRenderer::pickingPhaseRenderer(CameraComponent *camera) {
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, castingFBO);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        glm::mat4 VP =  camera->getProjectionMatrix(windowSize) * camera->getViewMatrix();
+        
+        // loop as it is and draw id to pixel
+        unsigned int gObjectIndex = 1;
+        //TODO: seperate world entities from others and just show them
+        for(auto command : opaqueCommands) {
+            castingMaterial->setup();
+            mp[gObjectIndex] = command.name;
+            castingMaterial->shader->set("gObjectIndex", gObjectIndex++);
+            castingMaterial->shader->set("transform", VP * command.localToWorld);
+            command.mesh->draw();
+        }
+
+        // for(auto command : transparentCommands) {
+        //     castingMaterial->setup();
+        //     castingMaterial->shader->set("gObjectIndex", gObjectIndex++);
+        //     castingMaterial->shader->set("transform", VP * command.localToWorld);
+        //     command.mesh->draw();
+        // }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    }
+
+    void ForwardRenderer::rendererPhaseRenderer(CameraComponent *camera) {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         if(postprocessMaterial){
             //TODO: (Req 11) bind the framebuffer
             glBindFramebuffer(GL_FRAMEBUFFER, postprocessFrameBuffer);
         }
-
-        //TODO: (Req 9) Clear the color and depth buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        //TODO: (Req 9) Draw all the opaque commands
-        // Don't forget to set the "transform" uniform to be equal the model-view-projection matrix for each render command
+        glm::mat4 VP =  camera->getProjectionMatrix(windowSize) * camera->getViewMatrix();
+
+        // getting mouse coordinates
+        
         for(auto command : opaqueCommands) {
             command.material->setup();
+            if(command.name == picked_item) command.material->shader->set("tint", glm::vec4(0.0, 1.0, 0.0, 0.2));  
+            else command.material->shader->set("tint", glm::vec4(1.0, 1.0, 1.0, 1.0));  
             if(dynamic_cast<LitMaterial*>(command.material) != nullptr) {
                 light_utils::setLightParameters(command.material->shader, lightSources);
                 command.material->shader->set("u_Model", command.localToWorld);
@@ -220,14 +324,14 @@ namespace our {
 
         // If there is a sky material, draw the sky
         if(this->skyMaterial){
-            //TODO: (Req 10) setup the sky material
+            //V = setup the sky material
             skyMaterial->setup();
-            //TODO: (Req 10) Get the camera position
+            //Get the camera position
             glm::vec3 cameraPosition = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0, 1.0);
-            //TODO: (Req 10) Create a model matrix for the sky such that it always follows the camera (sky sphere center = camera position)
+            //V = Create a model matrix for the sky such that it always follows the camera (sky sphere center = camera position)
             glm::mat4 skyModel(1.0f);
             skyModel = glm::translate(skyModel, cameraPosition);
-            //TODO: (Req 10) We want the sky to be drawn behind everything (in NDC space, z=1)
+            //V = We want the sky to be drawn behind everything (in NDC space, z=1)
             // We can acheive the is by multiplying by an extra matrix after the projection but what values should we put in it?
             glm::mat4 alwaysBehindTransform = glm::mat4(
                 1.0f, 0.0f, 0.0f, 0.0f,
@@ -235,9 +339,9 @@ namespace our {
                 0.0f, 0.0f, 0.0f, 0.0f,
                 0.0f, 0.0f, 1.0f, 1.0f
             );
-            //TODO: (Req 10) set the "transform" uniform
+            //V = set the "transform" uniform
             this->skyMaterial->shader->set("transform", alwaysBehindTransform * VP * skyModel);
-            //TODO: (Req 10) draw the sky sphere
+            //V = draw the sky sphere
             this->skySphere->draw();
         }
         
@@ -249,7 +353,6 @@ namespace our {
             command.mesh->draw();
         }
 
-        // If there is a postprocess material, apply postprocessing
         if(postprocessMaterial){
             //TODO: (Req 11) Return to the default framebuffer
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -258,14 +361,27 @@ namespace our {
             glBindVertexArray(postProcessVertexArray);
             glDrawArrays(GL_TRIANGLES, 0, 3);
         }
+
+
     }
 
-    void ForwardRenderer::showGUI(World* world) {
-        bool showDemoWindow = true;
-        ImGui::ShowDemoWindow(&showDemoWindow);
-        ImGui::Begin("Entities");
 
-        for(auto entity : world->getEntities()) entity->showGUI();
-        ImGui::End();
+    
+
+
+    PixelInfo ForwardRenderer::readPixel(unsigned int x, unsigned int y)
+    {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, castingFBO);
+
+        glReadBuffer(GL_COLOR_ATTACHMENT0);
+
+        PixelInfo Pixel;
+        glReadPixels(x, y, 1, 1, GL_RGB_INTEGER, GL_UNSIGNED_INT, &Pixel);
+
+        glReadBuffer(GL_NONE);
+
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+        return Pixel;
     }
 }

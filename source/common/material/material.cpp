@@ -64,19 +64,6 @@ namespace our {
     }
 
 
-    // -------------------- directional light -----------------
-    // glm::vec3   LightMaterial::directionalLightDir = glm::vec3(-15.0f, 15.0f, -25.0f);
-    // glm::vec3   LightMaterial::ambientDirLight = glm::vec3(0.0f, 0.0f, 0.0f), 
-    //             LightMaterial::diffuseDirLight = glm::vec3(0.0f, 0.0f, 0.0f), 
-    //             LightMaterial::specDirLight    = glm::vec3(0.2f, 0.2f, 0.2f);
-    // // -------------------- spot light -----------------
-    // glm::vec3   LightMaterial::ambientSpotLight = glm::vec3( 0.3f, 0.3f, 0.3f), 
-    //             LightMaterial::diffuseSpotLight = glm::vec3(0.1f, 0.2f, 0.2f), 
-    //             LightMaterial::specSpotLight    = glm::vec3(.2f, .2f, .2f);
-    // float LightMaterial::cutOff = 15.0f, LightMaterial::outerCutOff = 20.0f;
-    // float LightMaterial::spot_constant = 1.0f, LightMaterial::spot_linear = 0.014f, LightMaterial::spot_quadratic = 1.0f;
-
-
     void LitMaterial::setup() const {
         Material::setup();
         shader->set("material.albedoMap", 0);
