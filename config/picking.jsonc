@@ -246,19 +246,19 @@
                     }
                 ]
             },
-            // {
-            //     "name": "Exterior Home",
-            //     "position": [0, 0, 0],
-            //     "rotation": [0, 0, 0],
-            //     "scale": [500, 500, 500],
-            //     "components": [
-            //         {
-            //             "type": "Mesh Renderer",
-            //             "mesh": "home",
-            //             "material": "home"
-            //         }
-            //     ]
-            // },
+            {
+                "name": "Exterior Home",
+                "position": [0, 0, 0],
+                "rotation": [0, 0, 0],
+                "scale": [500, 500, 500],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "home",
+                        "material": "home"
+                    }
+                ]
+            },
             {
                 "name": "Kitchen Floor",
                 "position": [0, 0, 0],
