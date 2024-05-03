@@ -102,12 +102,12 @@ set(COMMON_COMPONENTS_SOURCES
         source/common/components/movement.hpp
         source/common/components/movement.cpp
         source/common/components/component-deserializer.hpp
-        source/common/components/light.cpp
-        source/common/components/light.hpp
         #        source/common/components/player.cpp
         #        source/common/components/player.hpp
         source/common/components/rigid-body.cpp
         source/common/components/rigid-body.hpp
+        source/common/components/trigger.cpp
+        source/common/components/trigger.hpp
 
 )
 
@@ -145,7 +145,7 @@ include_directories(
 
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin)
 
 set(STATES_SOURCES

@@ -13,13 +13,20 @@ namespace our {
             entity->parent = parent;
 
             entity->deserialize(entityData);
+            if(!entity->name.empty()){
+                entityByName[entity->name] = entity;
+            }
             if(entityData.contains("children")){
                 //TODO: (Req 8) Recursively call this world's "deserialize" using the children data
                 // and the current entity as the parent
-                
                 deserialize(entityData["children"], entity);
             }
+
         }
+    }
+
+    Entity  * World::getEntity(const std::string & entityName) {
+        return entityByName[entityName];
     }
 
 }

@@ -1,5 +1,6 @@
 #include "physics.hpp"
 #include "components/mesh-renderer.hpp"
+#include "components/free-camera-controller.hpp"
 
 namespace our {
 
@@ -76,5 +77,43 @@ namespace our {
                 position.y >= box_min.y && position.y <= box_max.y &&
                 position.z >= box_min.z && position.z <= box_max.z);
     }
+
+    bool PhysicsSystem::checkSpheresCollison(const glm::vec3 &center1, const glm::vec3 &center2, const int &radius1,
+                                             const int &radius2) {
+        double distance = sqrt(
+                (center1.x - center2.x) * (center1.x - center2.x) +
+                (center1.y - center2.y) * (center1.y - center2.y) +
+                (center1.z - center2.z) * (center1.z - center2.z)
+        );
+        return distance < radius1 + radius2;
+    }
+
+    void PhysicsSystem::reverseMovement(float deltaTime,Entity * player) {
+        auto *controller = player->getComponent<FreeCameraControllerComponent>();
+        glm::vec3 current_sensitivity = controller->positionSensitivity;
+        glm::mat4 M = player->localTransform.toMat4();
+        glm::vec3 front = glm::vec3(M * glm::vec4(0, 0, -1, 0)),
+                up = glm::vec3(M * glm::vec4(0, 1, 0, 0)),
+                right = glm::vec3(M * glm::vec4(1, 0, 0, 0));
+
+        glm::vec3 &player_pos = player->localTransform.position;
+        if (app->getKeyboard().isPressed(GLFW_KEY_W))
+            player_pos -= front * (deltaTime * current_sensitivity.z);
+
+        if (app->getKeyboard().isPressed(GLFW_KEY_S))
+            player_pos += front * (deltaTime * current_sensitivity.z);
+
+        if (app->getKeyboard().isPressed(GLFW_KEY_A))
+            player_pos += right * (deltaTime * current_sensitivity.x);
+
+        if (app->getKeyboard().isPressed(GLFW_KEY_D))
+            player_pos -= right * (deltaTime * current_sensitivity.x);
+    }
+
+
+    bool PhysicsSystem::checkCollisionRayCasting() {
+        return false;
+    }
+
 
 }
