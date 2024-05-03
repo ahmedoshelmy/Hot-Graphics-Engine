@@ -53,6 +53,7 @@ namespace our
         GLuint postprocessFrameBuffer, postProcessVertexArray;
         Texture2D *colorTarget, *depthTarget;
         TexturedMaterial* postprocessMaterial;
+
     public:
         // Initialize the renderer including the sky and the Postprocessing objects.
         // windowSize is the width & height of the window (in pixels).
@@ -63,6 +64,21 @@ namespace our
         void render(World* world);
 
         void showGUI(World* world);
+
+    private:
+        struct Character {
+            unsigned int TextureID; // ID handle of the glyph texture
+            glm::ivec2   Size;      // Size of glyph
+            glm::ivec2   Bearing;   // Offset from baseline to left/top of glyph
+            unsigned int Advance;   // Horizontal offset to advance to next glyph
+        };
+
+        // Objects used for text rendering
+
+        std::map<GLchar, Character> Characters;
+        GLuint VAO, VBO;
+        ShaderProgram* textShader;
+        void renderText(std::string text, float x, float y, float scale, glm::vec3 color, int text_align_x, int text_align_y);
 
 
     };
