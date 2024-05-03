@@ -40,6 +40,7 @@
         }
       },
       "textures": {
+        "key": "assets/textures/key.png",
         "lady": "assets/textures/OldLady_baseColor.png",
         "home_albedo": "assets/textures/House_exterior/House_exterior_d.png",
         "home_normal": "assets/textures/House_exterior/House_exterior_n.png",
@@ -66,6 +67,7 @@
         "black": "assets/textures/black.png"
       },
       "meshes": {
+        "key": "assets/models/key.obj",
         "cube": "assets/models/cube.obj",
         "lady": "assets/models/lady.obj",
         "home": "assets/models/real_home.obj",
@@ -169,10 +171,25 @@
           "type": "lit",
           "shader": "light",
           "sampler": "default",
-          "albedoMap": "books_d",
+          "albedoMap": "key",
           "normalMap": "books_n",
           "r_ao_m_Map": "books_r_ao_m",
           "IOR": 0.45
+        },
+        "key": {
+          "type": "textured",
+          "shader": "textured",
+          "sampler": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "key"
         }
       }
     },
@@ -199,7 +216,7 @@
         ],
         "children": [
           {
-            "name": "Person",
+            "name": "hand",
             "position": [
               1,
               -1,
@@ -447,6 +464,31 @@
             "type": "RigidBody",
             "shape": "Sphere",
             "radius": 5
+          }
+        ]
+      },
+      {
+        "name": "key",
+        "position": [
+          1,
+          5,
+          -34
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          0.2,
+          0.2,
+          0.2
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "key",
+            "material": "key"
           }
         ]
       }

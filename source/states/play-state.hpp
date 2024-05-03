@@ -12,6 +12,8 @@
 #include <material/material.hpp>
 #include "mesh/mesh-utils.hpp"
 #include <systems/physics.hpp>
+#include <systems/picking.hpp>
+
 
 // This state shows how to use the ECS framework and deserialization.
 
@@ -26,6 +28,7 @@ class Playstate: public our::State {
     our::MovementSystem movementSystem;
     our::LightSystem lightSystem;
     our::PhysicsSystem physicsSystem;
+    our::PickingSystem pickingSystem;
     bool showDemoWindow = false;
 
 
@@ -56,6 +59,7 @@ class Playstate: public our::State {
         cameraControllerFree.update(&world, (float)deltaTime);
         cameraControllerFps.update(&world, (float)deltaTime);
 //        physicsSystem.update(&world, (float)deltaTime);
+        pickingSystem.update(&world, getApp());
         // And finally we use the renderer system to draw the scene
         renderer.render(&world);
 

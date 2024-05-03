@@ -128,7 +128,9 @@ set(COMMON_SYSTEMS_SOURCES
         source/common/systems/locked-away.cpp
         source/common/systems/locked-away.hpp
         source/common/systems/physics.cpp
-#        source/common/systems/movement.cpp
+        source/common/systems/picking.cpp
+        source/common/systems/picking.hpp
+        #        source/common/systems/movement.cpp
 )
 
 
