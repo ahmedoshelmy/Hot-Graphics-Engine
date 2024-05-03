@@ -16,6 +16,16 @@ set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)           # Don't build Installation I
 set(GLFW_USE_HYBRID_HPG ON CACHE BOOL "" FORCE)     # Add variables to use High Performance Graphics Card if available
 add_subdirectory(vendor/glfw)                       # Build the GLFW project to use later as a library
 
+set(BUILD_EXTRAS OFF CACHE BOOL "" FORCE)
+set(BUILD_CPU_DEMOS OFF CACHE BOOL "" FORCE)
+set(BUILD_OPENGL3_DEMOS OFF CACHE BOOL "" FORCE)
+set(BUILD_BULLET2_DEMOS OFF CACHE BOOL "" FORCE)
+add_subdirectory(vendor/bullet3-3.25)              
+# add_subdirectory(vendor/bullet-2.81-rev2613/src) 
+# add_subdirectory(vendor/bullet/BulletCollision) 
+# add_subdirectory(vendor/bullet/LinearMath) 
+# add_subdirectory(vendor/bullet/BulletCommon) 
+
 # A variable with all the source files of GLAD
 set(GLAD_SOURCE vendor/glad/src/gl.c)
 # A variables with all the source files of Dear ImGui
@@ -140,6 +150,7 @@ include_directories(
         vendor/glm
         vendor/imgui
         vendor/utils
+        vendor/bullet-2.81-rev2613/src
 #        vendor/reactphysics3D/include
 )
 
@@ -151,22 +162,23 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin)
 set(STATES_SOURCES
         source/states/play-state.hpp
         source/states/menu-state.hpp
-        source/states/shader-test-state.hpp
-        source/states/mesh-test-state.hpp
-        source/states/transform-test-state.hpp
-        source/states/pipeline-test-state.hpp
-        source/states/texture-test-state.hpp
-        source/states/sampler-test-state.hpp
-        source/states/material-test-state.hpp
-        source/states/entity-test-state.hpp
-        source/states/renderer-test-state.hpp
+        # source/states/shader-test-state.hpp
+        # source/states/mesh-test-state.hpp
+        # source/states/transform-test-state.hpp
+        # source/states/pipeline-test-state.hpp
+        # source/states/texture-test-state.hpp
+        # source/states/sampler-test-state.hpp
+        # source/states/material-test-state.hpp
+        # source/states/entity-test-state.hpp
+        # source/states/renderer-test-state.hpp
 
 )
+
 
 # For each example, we add an executable target
 # Each target compiles one example source file and the common & vendor source files
 # Then we link GLFW with each target
 add_executable(GAME_APPLICATION source/main.cpp ${STATES_SOURCES} ${COMMON_SOURCES} ${VENDOR_SOURCES} ${COMMON_SYSTEMS_SOURCES}
         ${COMMON_COMPONENTS_SOURCES})
-target_link_libraries(GAME_APPLICATION glfw)
+target_link_libraries(GAME_APPLICATION glfw Bullet3Dynamics Bullet3Collision LinearMath)
 #target_link_libraries(GAME_APPLICATION reactphysics3d)

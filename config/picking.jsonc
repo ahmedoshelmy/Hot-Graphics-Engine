@@ -185,7 +185,7 @@
                         "type": "Camera"
                     },
                     {
-                        "type": "Free Camera Controller"
+                        "type": "FPS Camera Controller"
                     }
                 ],
                 "children": [

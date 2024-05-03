@@ -57,10 +57,10 @@ namespace our {
 
         // Then we check if there is a postprocessing shader in the configuration
         if(config.contains("postprocess")){
-            //TODO: (Req 11) Create a framebuffer
+            //Create a framebuffer
             glGenFramebuffers(1, &postprocessFrameBuffer);
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, postprocessFrameBuffer);
-            //TODO: (Req 11) Create a color and a depth texture and attach them to the framebuffer
+            //Create a color and a depth texture and attach them to the framebuffer
             // Hints: The color format can be (Red, Green, Blue and Alpha components with 8 bits for each channel).
             // The depth format can be (Depth component with 24 bits).
             colorTarget = our::texture_utils::empty(windowSize, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
@@ -73,7 +73,7 @@ namespace our {
             if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
                 std::cerr << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
             }
-            // //TODO: (Req 11) Unbind the framebuffer just to be safe
+            // //Unbind the framebuffer just to be safe
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             // Create a vertex array to use for drawing the texture
             glGenVertexArrays(1, &postProcessVertexArray);
@@ -176,7 +176,7 @@ namespace our {
 
         // If there is no camera, we return (we cannot render without a camera)
         if(camera == nullptr) return;
-        //TODO: (Req 9) Modify the following line such that "cameraForward" contains a vector pointing the camera forward direction
+        //Modify the following line such that "cameraForward" contains a vector pointing the camera forward direction
         // HINT: See how you wrote the CameraComponent::getViewMatrix, it should help you solve this one
         glm::vec3 cameraPosition = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0f, 1.0f);
         glm::vec3 cameraForward = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, -1.0f, 0.0f);
@@ -192,31 +192,29 @@ namespace our {
         }
 
         std::sort(transparentCommands.begin(), transparentCommands.end(), [cameraForward](const RenderCommand& first, const RenderCommand& second){
-            //TODO: (Req 9) Finish this function
-            // HINT: the following return should return true "first" should be drawn before "second".
             float distanceFirst = glm::dot(cameraForward, first.center);
             float distanceSecond = glm::dot(cameraForward, second.center);
 
            return distanceFirst > distanceSecond;
         });
 
-        //TODO: (Req 9) Get the camera ViewProjection matrix and store it in VP
+        //Get the camera ViewProjection matrix and store it in VP
         glm::mat4 VP =  camera->getProjectionMatrix(windowSize) * camera->getViewMatrix();
-        //TODO: (Req 9) Set the OpenGL viewport using viewportStart and viewportSize
+        //Set the OpenGL viewport using viewportStart and viewportSize
         glViewport(0, 0, windowSize[0], windowSize[1]);
 
 
-        //TODO: (Req 9) Set the clear color to black and the clear depth to 1
+        //Set the clear color to black and the clear depth to 1
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClearDepth(1.0);
-        //TODO: (Req 9) Set the color mask to true and the depth mask to true (to ensure the glClear will affect the framebuffer)
+        //Set the color mask to true and the depth mask to true (to ensure the glClear will affect the framebuffer)
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
         glDepthMask(GL_TRUE);
         // If there is a postprocess material, bind the framebuffer
         
         // bind casting frame buffer
         pickingPhaseRenderer(camera);
-        
+
         PixelInfo pixel = readPixel(windowSize.x / 2, windowSize.y / 2);
         picked_item = mp[pixel.ObjectID];
         // std::cout << mp[pixel.ObjectID] << "\n";
@@ -273,7 +271,7 @@ namespace our {
         
         // loop as it is and draw id to pixel
         unsigned int gObjectIndex = 1;
-        //TODO: seperate world entities from others and just show them
+        //TODO: add alpha so the complete transparent not seen
         for(auto command : opaqueCommands) {
             castingMaterial->setup();
             mp[gObjectIndex] = command.name;
@@ -296,7 +294,7 @@ namespace our {
     void ForwardRenderer::rendererPhaseRenderer(CameraComponent *camera) {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         if(postprocessMaterial){
-            //TODO: (Req 11) bind the framebuffer
+            //bind the framebuffer
             glBindFramebuffer(GL_FRAMEBUFFER, postprocessFrameBuffer);
         }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -345,7 +343,7 @@ namespace our {
             this->skySphere->draw();
         }
         
-        //TODO: (Req 9) Draw all the transparent commands
+        //Draw all the transparent commands
         // Don't forget to set the "transform" uniform to be equal the model-view-projection matrix for each render command
         for(auto command : transparentCommands) {
             command.material->setup();
@@ -354,9 +352,9 @@ namespace our {
         }
 
         if(postprocessMaterial){
-            //TODO: (Req 11) Return to the default framebuffer
+            //Return to the default framebuffer
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            //TODO: (Req 11) Setup the postprocess material and draw the fullscreen triangle
+            //Setup the postprocess material and draw the fullscreen triangle
             postprocessMaterial->setup();
             glBindVertexArray(postProcessVertexArray);
             glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -364,10 +362,6 @@ namespace our {
 
 
     }
-
-
-    
-
 
     PixelInfo ForwardRenderer::readPixel(unsigned int x, unsigned int y)
     {
@@ -384,4 +378,15 @@ namespace our {
 
         return Pixel;
     }
+
+    void ForwardRenderer::getCollidedObjects(World* world, CameraComponent *camera) {
+        glm::mat4 VP =  camera->getProjectionMatrix(windowSize) * camera->getViewMatrix();
+
+        for(auto entity : world->getEntities()){
+            if(entity->getComponent<MeshRendererComponent>() == nullptr) continue;
+            
+        }
+
+    }
+
 }

@@ -72,10 +72,10 @@ namespace our
         Texture2D* primitiveCastingTarget, *depthCastingTarget;
         TexturedMaterial* castingMaterial;
         std::map<unsigned int, std::string> mp;
-        std::string picked_item;
         // need application for picking objects
         Application* app;
     public:
+        std::string picked_item;
         // Initialize the renderer including the sky and the Postprocessing objects.
         // windowSize is the width & height of the window (in pixels).
         void initialize(glm::ivec2 windowSize, Application* app, const nlohmann::json& config);
@@ -134,6 +134,7 @@ namespace our
         void rendererPhaseRenderer(CameraComponent *camera) ;
         PixelInfo readPixel(unsigned int x, unsigned int y);
 
+        void getCollidedObjects(World* world, CameraComponent *camera);
     };
 
 }

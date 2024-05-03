@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glad/gl.h>
+
 #include "vertex.hpp"
 
 namespace our {
@@ -104,6 +105,7 @@ namespace our {
             glDeleteVertexArrays(1, &VAO);
         }
 
+        
 
         Mesh(Mesh const &) = delete;
 
