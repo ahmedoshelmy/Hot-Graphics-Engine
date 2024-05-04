@@ -30,6 +30,7 @@ class Playstate: public our::State {
     our::PhysicsSystem physicsSystem;
     our::PickingSystem pickingSystem;
     bool showDemoWindow = false;
+    std::string pickedItem ;
 
 
     void onInitialize() override {
@@ -59,10 +60,10 @@ class Playstate: public our::State {
         cameraControllerFree.update(&world, (float)deltaTime);
         cameraControllerFps.update(&world, (float)deltaTime);
 //        physicsSystem.update(&world, (float)deltaTime);
-        pickingSystem.update(&world, getApp());
+        pickingSystem.update(&world, getApp(),pickedItem);
         
         // And finally we use the renderer system to draw the scene
-        renderer.render(&world);
+        renderer.render(&world,pickedItem);
 
         // Get a reference to the keyboard object
         auto& keyboard = getApp()->getKeyboard();

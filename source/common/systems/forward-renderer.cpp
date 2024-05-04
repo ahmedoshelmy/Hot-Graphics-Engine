@@ -214,7 +214,7 @@ namespace our {
         delete castingMaterial;
     }
 
-    void ForwardRenderer::render(World *world) {
+    void ForwardRenderer::render(World *world, std::string & pickedItem) {
         mp[0] = "NON-WORLD";
         picked_item = "NON-WORLD";
         // First of all, we search for a camera and for all the mesh renderers
@@ -299,6 +299,7 @@ namespace our {
 
         PixelInfo pixel = readPixel(windowSize.x / 2, windowSize.y / 2);
         picked_item = mp[pixel.ObjectID];
+        pickedItem = picked_item;
         // std::cout << mp[pixel.ObjectID] << "\n";
         rendererPhaseRenderer(camera);
     }
