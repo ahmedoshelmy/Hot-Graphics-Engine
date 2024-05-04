@@ -5,21 +5,18 @@
 #include<glm/gtc/matrix_inverse.inl>
 #include<glm/gtc/matrix_transform.hpp>
 #include"physics.hpp"
-// Include Bullet
-#include <btBulletCollisionCommon.h>
 #include <glad/gl.h>
 // Text Rendering
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include <iostream>
 
-
 namespace our {
 
     void ForwardRenderer::initialize(glm::ivec2 windowSize, Application *app, const nlohmann::json &config) {
         // First, we store the window size for later use
         this->windowSize = windowSize;
-
+        this->app = app;
         // Then we check if there is a sky texture in the configuration
         if (config.contains("sky")) {
             // First, we create a sphere which will be used to draw the sky
@@ -183,16 +180,7 @@ namespace our {
         FT_Done_FreeType(ft);
 
         this->initCastingBuffer();
-        // initalizing bullet physics engine
-        broadphase = new btDbvtBroadphase();
-        // Set up the collision configuration and dispatcher
-        collisionConfiguration = new btDefaultCollisionConfiguration();
-        dispatcher = new btCollisionDispatcher(collisionConfiguration);
-        // The actual physics solver
-        solver = new btSequentialImpulseConstraintSolver;
-        // The world.
-        dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
-        dynamicsWorld->setGravity(btVector3(0,-9.81f,0));
+        
     }
 
 
@@ -223,11 +211,6 @@ namespace our {
         delete castingMaterial->shader;
         delete castingMaterial;
 
-        delete broadphase;
-        delete collisionConfiguration;
-        delete dispatcher;
-        delete solver;
-        delete dynamicsWorld;
     }
 
     void ForwardRenderer::render(World *world) {
@@ -358,6 +341,7 @@ namespace our {
     //     std::cout << "Closest: " << name << " " << closest_distance << std::endl;
 
     // }
+   
     void ForwardRenderer::pickingPhaseRenderer(CameraComponent *camera) {
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, castingFBO);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -373,6 +357,8 @@ namespace our {
             castingMaterial->shader->set("gObjectIndex", gObjectIndex++);
             castingMaterial->shader->set("transform", VP * command.localToWorld);
             command.mesh->draw();
+            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void *) 0);
+
         }
 
         // for(auto command : transparentCommands) {
@@ -476,15 +462,6 @@ namespace our {
         return Pixel;
     }
 
-    void ForwardRenderer::getCollidedObjects(World* world, CameraComponent *camera) {
-        glm::mat4 VP =  camera->getProjectionMatrix(windowSize) * camera->getViewMatrix();
-
-        for(auto entity : world->getEntities()){
-            if(entity->getComponent<MeshRendererComponent>() == nullptr) continue;
-            
-        }
-
-    }
 
     void ForwardRenderer::renderText(std::string text, float x, float y, float scale, glm::vec3 color, int text_align_x,
                                      int text_align_y) {

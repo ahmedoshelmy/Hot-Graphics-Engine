@@ -1,6 +1,9 @@
 #include "physics.hpp"
 #include "components/mesh-renderer.hpp"
 #include "components/free-camera-controller.hpp"
+#include "components/camera.hpp"
+#include <btBulletDynamicsCommon.h>
+#include "../physics/physics-utils.hpp"
 
 namespace our {
 
@@ -115,5 +118,90 @@ namespace our {
         return false;
     }
 
+    void PhysicsSystem::initialize(World* world)  {
+        // initalizing bullet physics engine
+        broadphase = new btDbvtBroadphase();
+        // Set up the collision configuration and dispatcher
+        collisionConfiguration = new btDefaultCollisionConfiguration();
+        dispatcher = new btCollisionDispatcher(collisionConfiguration);
+        // The actual physics solver
+        solver = new btSequentialImpulseConstraintSolver;
+        // The physics world.
+        dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
+        dynamicsWorld->setGravity(btVector3(0,-9.81f,0));
+        // mydebugdrawer = new BulletDebugDrawer_OpenGL();
+        // dynamicsWorld->setDebugDrawer(mydebugdrawer);
+        // ======================= start creating rigid bodies
+        for(auto entity : world->getEntities()){
+            // get mesh componenent & skip if it is not
+            MeshRendererComponent* meshComponent = entity->getComponent<MeshRendererComponent>();
+            if(meshComponent == nullptr) continue;
+            unsigned int mesh_id = meshComponent->mesh->id; // mesh id
+            // create rigid body and set it's id
+            btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(
+                0,                                     // mass, in kg. 0 -> Static object, will never move.
+                physics_utils::getMotionStateEntity(entity),       // get motion state (local to world & set scaling of collision shape)
+                meshComponent->mesh->shape,            // collision shape of body
+                btVector3(0,0,0)                      // local inertia
+            );
+            btRigidBody *rigidBody = new btRigidBody(rigidBodyCI);
+            // add to the world & set pointer to the mesh id
+            dynamicsWorld->addCollisionObject(rigidBody);
+            rigidBody->setUserPointer((void*)(mesh_id));
+
+            rigidBodies[mesh_id] = rigidBody; // store pointer to it (no need for now but to delete it later)
+            mp_ids[mesh_id] = entity->name;   // set mesh id to entity name for debugging
+        }
+    }
+
+    unsigned int PhysicsSystem::getCameraCollidedMesh(World *world, float deltaTime, float distance) {
+        
+        dynamicsWorld->stepSimulation(deltaTime, 7);
+        // =========== ray test ======
+        Entity * player = world->getEntity("player");
+        glm::vec3 out_origin = player->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0f, 1.0f);
+        glm::vec3 out_direction = player->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, -1.0f, 0.0f);
+
+        glm::vec3 out_end = out_origin + out_direction * distance;
+
+        // if you want to get by mouse uncomment
+
+        // glm::vec3 out_origin = getMouseWorldSpace(camera);
+        // glm::vec3 out_direction = normalize(out_origin);
+        // glm::vec3 out_end = out_origin + out_direction * 100000.0f;
+        btCollisionWorld::ClosestRayResultCallback RayCallback(
+            btVector3(out_origin.x, out_origin.y, out_origin.z), 
+            btVector3(out_end.x, out_end.y, out_end.z)
+        );
+
+        dynamicsWorld->rayTest(
+            btVector3(out_origin.x, out_origin.y, out_origin.z), 
+            btVector3(out_end.x, out_end.y, out_end.z), 
+            RayCallback
+        );
+
+
+        if(RayCallback.hasHit()) {
+            return (size_t)RayCallback.m_collisionObject->getUserPointer();
+        } 
+        return 0; // return if no objects
+
+    }
+
+    unsigned int  PhysicsSystem::getPersonCollidedMesh(World *world, float deltaTime) {
+        return 0;
+    }
+
+    void PhysicsSystem::destroy() {
+        for(auto& body : rigidBodies) {
+            dynamicsWorld->removeRigidBody(body.second); 
+            delete body.second;
+        }
+        delete broadphase;
+        delete collisionConfiguration;
+        delete dispatcher;
+        delete solver;
+        delete dynamicsWorld;
+    }
 
 }

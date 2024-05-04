@@ -46,6 +46,8 @@ class Playstate: public our::State {
         // We initialize the camera controller system since it needs a pointer to the app
         cameraControllerFree.enter(getApp());
         cameraControllerFps.enter(getApp());
+        // initalize physics
+        physicsSystem.initialize(&world);
         // initalize lighting constants
         // Then we initialize the renderer
 
@@ -58,7 +60,7 @@ class Playstate: public our::State {
         movementSystem.update(&world, (float)deltaTime);
         cameraControllerFree.update(&world, (float)deltaTime);
         cameraControllerFps.update(&world, (float)deltaTime);
-//        physicsSystem.update(&world, (float)deltaTime);
+        physicsSystem.update(&world, (float)deltaTime);
         pickingSystem.update(&world, getApp());
         // And finally we use the renderer system to draw the scene
         renderer.render(&world);

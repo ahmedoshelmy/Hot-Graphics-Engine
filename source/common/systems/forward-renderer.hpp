@@ -13,13 +13,11 @@
 #include <algorithm>
 #include <iostream>
 #include <map>
-#include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
-#include <BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h>
-#include <BulletCollision/CollisionDispatch/btCollisionDispatcher.h>
-#include <BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h>
+// Include Bullet
 
 namespace our
 {
+
     
     // The render command stores command that tells the renderer that it should draw
     // the given mesh at the given localToWorld matrix using the given material
@@ -79,18 +77,7 @@ namespace our
         std::map<unsigned int, std::string> mp;
         // need application for picking objects
         Application* app;
-        // need for bullet integration
-        btBroadphaseInterface* broadphase;
-
-        // Set up the collision configuration and dispatcher
-        btDefaultCollisionConfiguration* collisionConfiguration;
-        btCollisionDispatcher* dispatcher;
-
-        // The actual physics solver
-        btSequentialImpulseConstraintSolver* solver;
-        // The world.
-        btDiscreteDynamicsWorld* dynamicsWorld;
-
+        
     public:
         std::string picked_item;
         // Initialize the renderer including the sky and the Postprocessing objects.
@@ -166,7 +153,8 @@ namespace our
         void renderText(std::string text, float x, float y, float scale, glm::vec3 color, int text_align_x, int text_align_y);
 
 
-        void getCollidedObjects(World* world, CameraComponent *camera);
+        
     };
-
 }
+
+
