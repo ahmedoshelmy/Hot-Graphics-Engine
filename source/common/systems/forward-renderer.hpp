@@ -13,6 +13,11 @@
 #include <algorithm>
 #include <iostream>
 #include <map>
+#include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
+#include <BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h>
+#include <BulletCollision/CollisionDispatch/btCollisionDispatcher.h>
+#include <BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h>
+
 namespace our
 {
     
@@ -74,6 +79,18 @@ namespace our
         std::map<unsigned int, std::string> mp;
         // need application for picking objects
         Application* app;
+        // need for bullet integration
+        btBroadphaseInterface* broadphase;
+
+        // Set up the collision configuration and dispatcher
+        btDefaultCollisionConfiguration* collisionConfiguration;
+        btCollisionDispatcher* dispatcher;
+
+        // The actual physics solver
+        btSequentialImpulseConstraintSolver* solver;
+        // The world.
+        btDiscreteDynamicsWorld* dynamicsWorld;
+
     public:
         std::string picked_item;
         // Initialize the renderer including the sky and the Postprocessing objects.

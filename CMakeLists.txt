@@ -150,7 +150,7 @@ include_directories(
         vendor/glm
         vendor/imgui
         vendor/utils
-        vendor/bullet-2.81-rev2613/src
+        vendor/bullet3-3.25/src
 #        vendor/reactphysics3D/include
 )
 
@@ -180,5 +180,5 @@ set(STATES_SOURCES
 # Then we link GLFW with each target
 add_executable(GAME_APPLICATION source/main.cpp ${STATES_SOURCES} ${COMMON_SOURCES} ${VENDOR_SOURCES} ${COMMON_SYSTEMS_SOURCES}
         ${COMMON_COMPONENTS_SOURCES})
-target_link_libraries(GAME_APPLICATION glfw Bullet3Dynamics Bullet3Collision LinearMath)
+target_link_libraries(GAME_APPLICATION glfw BulletDynamics BulletCollision LinearMath)
 #target_link_libraries(GAME_APPLICATION reactphysics3d)

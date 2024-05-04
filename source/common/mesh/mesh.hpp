@@ -1,9 +1,8 @@
 #pragma once
 
 #include <glad/gl.h>
-
 #include "vertex.hpp"
-
+#include <BulletCollision/CollisionShapes/btConvexHullShape.h>
 namespace our {
 
 #define ATTRIB_LOC_POSITION 0
@@ -18,6 +17,8 @@ namespace our {
         unsigned int VAO;
         // We need to remember the number of elements that will be draw by glDrawElements 
         GLsizei elementCount;
+        btConvexHullShape* collisionShape;
+
     public:
         glm::vec3 min, max; // They represent the minimum and maximum coordinates in the mesh
 
@@ -86,6 +87,10 @@ namespace our {
                 this->max.z = std::max(this->max.z, vertix.position.z);
             }
 
+            collisionShape = new btConvexHullShape();
+            for (auto &vertix : vertices) {
+                collisionShape->addPoint(btVector3(vertix.position.x, vertix.position.y, vertix.position.z));
+            }
         }
 
         // this function should render the mesh
@@ -103,6 +108,7 @@ namespace our {
             glDeleteBuffers(1, &VBO);
             glDeleteBuffers(1, &EBO);
             glDeleteVertexArrays(1, &VAO);
+            delete collisionShape;
         }
 
         

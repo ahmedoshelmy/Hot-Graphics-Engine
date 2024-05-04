@@ -5,7 +5,8 @@
 #include<glm/gtc/matrix_inverse.inl>
 #include<glm/gtc/matrix_transform.hpp>
 #include"physics.hpp"
-
+// Include Bullet
+#include <btBulletCollisionCommon.h>
 namespace our {
 
     void ForwardRenderer::initialize(glm::ivec2 windowSize, Application* app, const nlohmann::json& config){
@@ -105,6 +106,16 @@ namespace our {
         }
         
         this->initCastingBuffer();
+        // initalizing bullet physics engine
+        broadphase = new btDbvtBroadphase();
+        // Set up the collision configuration and dispatcher
+        collisionConfiguration = new btDefaultCollisionConfiguration();
+        dispatcher = new btCollisionDispatcher(collisionConfiguration);
+        // The actual physics solver
+        solver = new btSequentialImpulseConstraintSolver;
+        // The world.
+        dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
+        dynamicsWorld->setGravity(btVector3(0,-9.81f,0));
     }
 
     void ForwardRenderer::destroy(){
@@ -133,6 +144,12 @@ namespace our {
         delete castingMaterial->sampler;
         delete castingMaterial->shader;
         delete castingMaterial;
+
+        delete broadphase;
+        delete collisionConfiguration;
+        delete dispatcher;
+        delete solver;
+        delete dynamicsWorld;
     }
 
     void ForwardRenderer::render(World* world){
