@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <iostream>
 #include <map>
+#include <queue>
 namespace our
 {
     
@@ -42,13 +43,20 @@ namespace our
             printf("Object %d draw %d prim %d\n", ObjectID, DrawID, PrimID);
         }
     };
-
+    struct TextRenderCommand {
+        float initialTime;
+        float duration ;
+        std::string text;
+    };
 
     // A forward renderer is a renderer that draw the object final color directly to the framebuffer
     // In other words, the fragment shader in the material should output the color that we should see on the screen
     // This is different from more complex renderers that could draw intermediate data to a framebuffer before computing the final color
     // In this project, we only need to implement a forward renderer
     class ForwardRenderer {
+         std::queue<TextRenderCommand > textCommands;
+         double currentTime ;
+
         // These window size will be used on multiple occasions (setting the viewport, computing the aspect ratio, etc.)
         glm::ivec2 windowSize;
         // These are two vectors in which we will store the opaque and the transparent commands.
@@ -82,7 +90,7 @@ namespace our
         // Clean up the renderer
         void destroy();
         // This function should be called every frame to draw the given world
-        void render(World* world);
+        void render(World* world,std::string &,double);
 
         void showGUI(World* world);
 
@@ -133,6 +141,8 @@ namespace our
         void pickingPhaseRenderer(CameraComponent *camera) ;
         void rendererPhaseRenderer(CameraComponent *camera) ;
         PixelInfo readPixel(unsigned int x, unsigned int y);
+        void renderText(std::string text, double seconds);
+
     private:
         struct Character {
             unsigned int TextureID; // ID handle of the glyph texture
@@ -147,8 +157,7 @@ namespace our
         GLuint VAO, VBO;
         ShaderProgram* textShader;
         void renderText(std::string text, float x, float y, float scale, glm::vec3 color, int text_align_x, int text_align_y);
-
-
+        void checkTextCommands();
     };
 
 }

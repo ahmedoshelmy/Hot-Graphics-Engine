@@ -75,15 +75,15 @@ namespace our {
             // It means we are ready now you can draw since we attached the Vertex Array to null
             glBindVertexArray(0);
 
-            for (auto &vertix : vertices)
-            {
-                this->min.x = std::min(this->min.x, vertix.position.x);
-                this->min.y = std::min(this->min.y, vertix.position.y);
-                this->min.z = std::min(this->min.z, vertix.position.z);
-                this->max.x = std::max(this->max.x, vertix.position.x);
-                this->max.y = std::max(this->max.y, vertix.position.y);
-                this->max.z = std::max(this->max.z, vertix.position.z);
-            }
+//            for (auto &vertix : vertices)
+//            {
+//                this->min.x = std::min(this->min.x, vertix.position.x);
+//                this->min.y = std::min(this->min.y, vertix.position.y);
+//                this->min.z = std::min(this->min.z, vertix.position.z);
+//                this->max.x = std::max(this->max.x, vertix.position.x);
+//                this->max.y = std::max(this->max.y, vertix.position.y);
+//                this->max.z = std::max(this->max.z, vertix.position.z);
+//            }
 
         }
 

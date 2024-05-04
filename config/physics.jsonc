@@ -771,7 +771,18 @@
             "type": "Mesh Renderer",
             "mesh": "key",
             "material": "key"
+          },
+          {
+            "type": "Pickable",
+            "inventoryMousePosition": [440, 375],
+            "inventoryScale": [0.03, 0.03, 0.03],
+            "inventoryRotation": [1.8, 3.1, -0.05],
+            "inventoryPosition": [-1.6, 0.1, -0.5],
+            "handScale": [0.9,0.9, -0.09],
+            "handRotation": [0, 0, 0],
+            "handPosition": [-1, -1.5, -1]
           }
+
         ]
       },
       {
@@ -796,6 +807,16 @@
             "type": "Mesh Renderer",
             "mesh": "flashlight",
             "material": "flashlight"
+          },
+          {
+            "type": "Pickable",
+            "inventoryMousePosition": [740, 375],
+            "inventoryScale": [5, 5, 5],
+            "inventoryRotation": [0, 0.1, 0.1],
+            "inventoryPosition": [-0.6, 0.2, -0.55],
+            "handPosition": [-1, -1.5, -1],
+            "handRotation": [3, 1.57, 2],
+            "handScale": [30, 30, 30]
           }
         ]
       },
