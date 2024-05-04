@@ -33,7 +33,7 @@ namespace our {
         // Check that the user clicked on P
         if (app->getKeyboard().isPressed(GLFW_KEY_P)) pick(world, "key");
 
-        if (app->getKeyboard().isPressed(GLFW_KEY_I)) {            
+        if (app->getKeyboard().isPressed(GLFW_KEY_I)) {    
             showInventory(world);
             inventoryState = true;
         }

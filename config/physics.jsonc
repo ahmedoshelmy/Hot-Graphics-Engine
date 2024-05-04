@@ -73,7 +73,66 @@
         "flashlight_normal": "assets/textures/FlashLight/M_Flashlight_V01_normal.png",
         "walls_d": "assets/textures/Walls/Walls_d.png",
         "walls_n": "assets/textures/Walls/Walls_n.png",
-        "walls_r_ao_m": "assets/textures/Walls/Walls_r_ao_m.png"
+        "walls_r_ao_m": "assets/textures/Walls/Walls_r_ao_m.png",
+
+        "refregirator_d": "assets/textures/KitchenDevices/KitchenDevices02_d.png",
+        "refregirator_n": "assets/textures/KitchenDevices/KitchenDevices02_n.png",
+        "refregirator_r_ao_m": "assets/textures/KitchenDevices/KitchenDevices02_r_ao_m.png",
+
+        "bed_d": "assets/textures/Bed/BedAndTable_d.png",
+        "bed_n": "assets/textures/Bed/BedAndTable_n.png",
+        "bed_r_ao_m": "assets/textures/Bed/BedAndTable_r_ao_m.png",
+
+        "cabinet_d": "assets/textures/Cabinet/cabinet_d.png",
+        "cabinet_n": "assets/textures/Cabinet/cabinet_n.png",
+        "cabinet_r_ao_m": "assets/textures/Cabinet/cabinet_r_ao_m.png",
+
+        "table_d": "assets/textures/DiningTable/DiningTable_d.png",
+        "table_n": "assets/textures/DiningTable/DiningTable_n.png",
+        "table_r_ao_m": "assets/textures/DiningTable/DiningTable_r_ao_m.png",
+
+        
+        "counter_d": "assets/textures/ChangingDresser/ChangingDresser_d.png",
+        "counter_n": "assets/textures/ChangingDresser/ChangingDresser_n.png",
+        "counter_r_ao_m": "assets/textures/ChangingDresser/ChangingDresser_r_ao_m.png",
+
+        "sink_d": "assets/textures/BathroomSink/BathroomSink_d.png",
+        "sink_n": "assets/textures/BathroomSink/BathroomSink_n.png",
+        "sink_r_ao_m": "assets/textures/BathroomSink/BathroomSink_r_ao_m.png",
+
+        "window_d": "assets/textures/Windows/Windows_d.png",
+        "window_n": "assets/textures/Windows/Windows_n.png",
+        "window_r_ao_m": "assets/textures/Windows/Windows_r_ao_m.png",
+
+        
+        "stairs_d": "assets/textures/Stairs/Stairs_d.png",
+        "stairs_n": "assets/textures/Stairs/Stairs_n.png",
+        "stairs_r_ao_m": "assets/textures/Stairs/Stairs_r_ao_m.png",
+
+        
+        "dresser_d": "assets/textures/HallwayDresser/HallwayDresser_d.png",
+        "dresser_n": "assets/textures/HallwayDresser/HallwayDresser_n.png",
+        "dresser_r_ao_m": "assets/textures/HallwayDresser/HallwayDresser_r_ao_m.png",
+
+        "pictures_d": "assets/textures/PictureSet/PictureSet_d.png",
+        "pictures_n": "assets/textures/PictureSet/PictureSet_n.png",
+        "pictures_r_ao_m": "assets/textures/PictureSet/PictureSet_r_ao_m.png",
+
+        "cupboard_d": "assets/textures/DiningCupboard/DiningCupboard_d.png",
+        "cupboard_n": "assets/textures/DiningCupboard/DiningCupboard_n.png",
+        "cupboard_r_ao_m": "assets/textures/DiningCupboard/DiningCupboard_r_ao_m.png",
+
+        "baby_bed_d": "assets/textures/BabyBed/BabyBed_d.png",
+        "baby_bed_n": "assets/textures/BabyBed/BabyBed_n.png",
+        "baby_bed_r_ao_m": "assets/textures/BabyBed/BabyBed_s.png",
+
+        "chair_d": "assets/textures/Armchair/Armchair_d.png",
+        "chair_n": "assets/textures/Armchair/Armchair_n.png",
+        "chair_r_ao_m": "assets/textures/Armchair/Armchair_r_ao_m.png",
+
+        "beanbag_d": "assets/textures/Beanbag/Beanbag_d.png",
+        "beanbag_n": "assets/textures/Beanbag/Beanbag_n.png",
+        "beanbag_r_ao_m": "assets/textures/Beanbag/Beanbag_r_ao_m.png"
       },
       "meshes": {
         "key": "assets/models/key.obj",
@@ -90,7 +149,23 @@
         "hand": "assets/models/hand.obj",
         "flashlight": "assets/models/flashlight.obj",
         "walls": "assets/models/walls.obj",
-        "inventory": "assets/models/inventory.obj"
+        "inventory": "assets/models/inventory.obj",
+        "refregirator": "assets/models/refregirator.obj",
+        "bed": "assets/models/bed.obj",
+        "cabinet": "assets/models/cabinet.obj",
+        "table": "assets/models/table.obj",
+        "counter": "assets/models/counter.obj",
+        "sink": "assets/models/sink.obj",
+        "window": "assets/models/big_window.obj",
+        "small_window": "assets/models/small_window.obj",
+        "narrow_window": "assets/models/narrow_window.obj",
+        "stairs": "assets/models/stairs.obj",
+        "dresser": "assets/models/dresser.obj",
+        "pictures": "assets/models/pictures.obj",
+        "cupboard": "assets/models/cupboard.obj",
+        "baby_bed": "assets/models/baby_bed.obj",
+        "chair": "assets/models/chair.obj",
+        "beanbag": "assets/models/beanbag.obj"
       },
       "samplers": {
         "default": {},
@@ -191,7 +266,7 @@
           "type": "lit",
           "shader": "light",
           "sampler": "default",
-          "albedoMap": "key",
+          "albedoMap": "books_d",
           "normalMap": "books_n",
           "r_ao_m_Map": "books_r_ao_m",
           "IOR": 0.45
@@ -253,6 +328,132 @@
           "albedoMap": "walls_d",
           "normalMap": "walls_n",
           "r_ao_m_Map": "walls_r_ao_m",
+          "IOR": 0.45
+        },
+        "refregirator": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "refregirator_d",
+          "normalMap": "refregirator_n",
+          "r_ao_m_Map": "refregirator_r_ao_m",
+          "IOR": 0.45
+        },
+        "bed": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "bed_d",
+          "normalMap": "bed_n",
+          "r_ao_m_Map": "bed_r_ao_m",
+          "IOR": 0.45
+        },
+        "cabinet": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "cabinet_d",
+          "normalMap": "cabinet_n",
+          "r_ao_m_Map": "cabinet_r_ao_m",
+          "IOR": 0.45
+        },
+        "table": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "table_d",
+          "normalMap": "table_n",
+          "r_ao_m_Map": "table_r_ao_m",
+          "IOR": 0.45
+        },
+        "counter": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "counter_d",
+          "normalMap": "counter_n",
+          "r_ao_m_Map": "counter_r_ao_m",
+          "IOR": 0.45
+        },
+        "sink": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "sink_d",
+          "normalMap": "sink_n",
+          "r_ao_m_Map": "sink_r_ao_m",
+          "IOR": 0.45
+        },
+        "window": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "window_d",
+          "normalMap": "window_n",
+          "r_ao_m_Map": "window_r_ao_m",
+          "IOR": 0.45
+        },
+        "stairs": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "stairs_d",
+          "normalMap": "stairs_n",
+          "r_ao_m_Map": "stairs_r_ao_m",
+          "IOR": 0.45
+        },
+        "dresser": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "dresser_d",
+          "normalMap": "dresser_n",
+          "r_ao_m_Map": "dresser_r_ao_m",
+          "IOR": 0.45
+        },
+        "pictures": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "pictures_d",
+          "normalMap": "pictures_n",
+          "r_ao_m_Map": "pictures_r_ao_m",
+          "IOR": 0.45
+        },
+        "cupboard": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "cupboard_d",
+          "normalMap": "cupboard_n",
+          "r_ao_m_Map": "cupboard_r_ao_m",
+          "IOR": 0.45
+        },
+        "baby_bed": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "baby_bed_d",
+          "normalMap": "baby_bed_n",
+          "r_ao_m_Map": "baby_bed_r_ao_m",
+          "IOR": 0.45
+        },
+        "chair": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "chair_d",
+          "normalMap": "chair_n",
+          "r_ao_m_Map": "chair_r_ao_m",
+          "IOR": 0.45
+        },
+        "beanbag": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "beanbag_d",
+          "normalMap": "beanbag_n",
+          "r_ao_m_Map": "beanbag_r_ao_m",
           "IOR": 0.45
         }
       }
@@ -434,7 +635,7 @@
         "name": "Walls",
         "position": [0, 0, 0],
         "rotation": [0, 0, 0],
-        "scale": [500, 500, 500],
+        "scale": [5, 5, 5],
         "components": [
             {
                 "type": "Mesh Renderer",
@@ -572,7 +773,8 @@
             "material": "key"
           }
         ]
-      },        {
+      },
+      {
         "name": "flashlight",
         "position": [
           1,
@@ -596,8 +798,732 @@
             "material": "flashlight"
           }
         ]
-      }
-
+      },
+      {
+        "name": "Refregirator",
+        "position": [
+          -25.000,
+          1.0,
+          -11.000
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          5.0,
+          5.0,
+          5.0
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "refregirator",
+            "material": "refregirator"
+          }
+        ]
+      },
+      {
+      "name": "Bed",
+      "position": [
+        -11.300,
+        1.0,
+        -16.000
+      ],
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "bed",
+          "material": "bed"
+        }
+      ]
+    },
+    {
+      "name": "Cabinet",
+      "position": [
+        -10.000,
+        1.0,
+        -16.000
+      ],
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "cabinet",
+          "material": "cabinet"
+        }
+      ]
+    },
+    {
+      "name": "Table",
+      "position": [
+        -11.000,
+        2.0,
+        6.000
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "table",
+          "material": "table"
+        }
+      ]
+    },
+    {
+      "name": "Counter",
+      "position": [
+        -25.000,
+        1.0,
+        -18.000
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        4.0,
+        4.0,
+        4.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "counter",
+          "material": "counter"
+        }
+      ]
+    },
+    {
+      "name": "Sink",
+      "position": [
+        4.500,
+        1.0,
+        13.000
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "sink",
+          "material": "sink"
+        }
+      ]
+    },
+    {
+      "name": "Window",
+      "position": [
+        -27.000,
+        8.500,
+        -21.800
+      ],
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "window",
+          "material": "window"
+        }
+      ]
+    },
+    {
+      "name": "Window_2",
+      "position": [
+        19.000,
+        8.5,
+        27.000
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "window",
+          "material": "window"
+        }
+      ]
+    },
+    {
+      "name": "Window_3",
+      "position": [
+        -20.200,
+        10.000,
+        14.300
+      ],
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "small_window",
+          "material": "window"
+        }
+      ]
+    },
+    {
+      "name": "Window_4",
+      "position": [
+        -17.700,
+        23.500,
+        14.300
+      ],
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "small_window",
+          "material": "window"
+        }
+      ]
+    },
+    {
+      "name": "Window_5",
+      "position": [
+        -17.700,
+        22.000,
+        30.200
+      ],
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "narrow_window",
+          "material": "window"
+        }
+      ]
+    },
+    {
+      "name": "Window_6",
+      "position": [
+        -17.700,
+        9.000,
+        30.200
+      ],
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "narrow_window",
+          "material": "window"
+        }
+      ]
+    },
+    {
+      "name": "Window_7",
+      "position": [
+        19.100,
+        22.000,
+        24.500
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "narrow_window",
+          "material": "window"
+        }
+      ]
+    },
+    {
+      "name": "Window_8",
+      "position": [
+        21.000,
+        22.000,
+        3.800
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "narrow_window",
+          "material": "window"
+        }
+      ]
+    },
+    {
+      "name": "Window_9",
+      "position": [
+        21.000,
+        22.000,
+        -12.400
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "narrow_window",
+          "material": "window"
+        }
+      ]
+    },
+    {
+      "name": "Window_10",
+      "position": [
+        23.500,
+        22.000,
+        -28.000
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "narrow_window",
+          "material": "window"
+        }
+      ]
+    },
+    {
+      "name": "Window_11",
+      "position": [
+        -17.700,
+        22.000,
+        0.300
+      ],
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "narrow_window",
+          "material": "window"
+        }
+      ]
+    },
+    {
+      "name": "Window_12",
+      "position": [
+        -24.000,
+        22.000,
+        -21.700
+      ],
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "narrow_window",
+          "material": "window"
+        }
+      ]
+    },
+    {
+      "name": "Stairs",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "stairs",
+          "material": "stairs"
+        }
+      ]
+    },
+    {
+      "name": "Dresser",
+      "position": [
+        -8.000,
+        1.0,
+        38.000
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "dresser",
+          "material": "dresser" 
+        }
+      ]
+    },
+    {
+      "name": "Pictures",
+      "position": [
+        5.000,
+        8.000,
+        36.000
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "pictures",
+          "material": "pictures"
+        }
+      ]
+    },
+    {
+      "name": "Cupboard",
+      "position": [
+        6.000,
+        1.000,
+        16.000
+      ],
+      "rotation": [
+        0,
+        270,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "cupboard",
+          "material": "cupboard"
+        }
+      ]
+    },
+    {
+      "name": "Baby Bed",
+      "position": [
+        -15.400,
+        1.000,
+        30.5
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "baby_bed",
+          "material": "baby_bed"
+        }
+      ]
+    },
+    {
+      "name": "Chair",
+      "position": [
+        -11.000,
+        1.000,
+        0
+      ],
+      "rotation": [
+        0,
+        270,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "chair",
+          "material": "chair"
+        }
+      ]
+    },
+    {
+      "name": "Chair_2",
+      "position": [
+        -11.000,
+        1.000,
+        11.500
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "chair",
+          "material": "chair"
+        }
+      ]
+    },
+    {
+      "name": "Chair_3",
+      "position": [
+        15.000,
+        1.000,
+        35.000
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "chair",
+          "material": "chair"
+        }
+      ]
+    },
+    {
+      "name": "Chair_4",
+      "position": [
+        -1.000,
+        1.000,
+        35.00
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "chair",
+          "material": "chair"
+        }
+      ]
+    },
+    {
+      "name": "Beanbag",
+      "position": [
+        -24.000,
+        1.000,
+        -35.000
+      ],
+      "rotation": [
+        0,
+        270,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "beanbag",
+          "material": "beanbag"
+        }
+      ]
+    },
+    {
+      "name": "Beanbag_2",
+      "position": [
+        7.000,
+        1.000,
+        34.500
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "beanbag",
+          "material": "beanbag"
+        }
+      ]
+    }
     ]
   }
 }
