@@ -1,0 +1,663 @@
+{
+  "start-scene": "menu",
+  "window": {
+    "title": "Locked Away",
+    "size": {
+      "width": 1920,
+      "height": 1080
+    },
+    "fullscreen": false
+  },
+  "scene": {
+    "renderer": {
+      "sky": "assets/textures/skybox/sky_forest.jpeg"
+      //,
+      // "postprocess": "assets/shaders/postprocess/vignette.frag"
+    },
+    "assets": {
+      "shaders": {
+        "tinted": {
+          "vs": "assets/shaders/tinted.vert",
+          "fs": "assets/shaders/tinted.frag"
+        },
+        "textured": {
+          "vs": "assets/shaders/textured.vert",
+          "fs": "assets/shaders/textured.frag"
+        },
+        "light": {
+          "vs": "assets/shaders/lighting/all_light.vert",
+          "fs": "assets/shaders/lighting/basic_pbr_light.frag",
+          "gs": "assets/shaders/lighting/all_light.geom"
+        },
+        "house_exterior": {
+          "vs": "assets/shaders/lighting/all_light.vert",
+          "fs": "assets/shaders/room_one/house_exterior.frag",
+          "gs": "assets/shaders/lighting/all_light.geom"
+        },
+        "crosshair": {
+          "vs": "assets/shaders/tinted.vert",
+          "fs": "assets/shaders/crosshair.frag"
+        }
+      },
+      "textures": {
+        "key": "assets/textures/key.png",
+        "inventory": "assets/textures/old-map-vintage-texture-free-background.jpg",
+        "hand": "assets/textures/hand.jpeg",
+        "lady": "assets/textures/OldLady_baseColor.png",
+        "home_albedo": "assets/textures/House_exterior/House_exterior_d.png",
+        "home_normal": "assets/textures/House_exterior/House_exterior_n.png",
+        "home_mask": "assets/textures/House_exterior/House_exterior_mask.png",
+        "home_r_ao_m": "assets/textures/House_exterior/House_exterior_r_ao_m.png",
+        "laminate_d": "assets/textures/Floor/Laminate_d.png",
+        "laminate_n": "assets/textures/Floor/Laminate_n.png",
+        "laminate_r_ao_m": "assets/textures/Floor/Laminate_r_ao_m.png",
+        "carpet_d": "assets/textures/Floor/Carpet_d.png",
+        "carpet_n": "assets/textures/Floor/Carpet_n.png",
+        "carpet_r_ao_m": "assets/textures/Floor/Carpet_r_ao_m.png",
+        "ceiling01_d": "assets/textures/Ceiling/Ceiling01_d.png",
+        "ceiling01_n": "assets/textures/Ceiling/Ceiling01_n.png",
+        "ceiling01_r_ao_m": "assets/textures/Ceiling/Ceiling01_r_ao_m.png",
+        // "carpet_dirt_mask": "assets/textures/Floor/Carpet_dirtMask.png", //TODO
+
+        "concrete_d": "assets/textures/Floor/Concrete_d.png",
+        "concrete_n": "assets/textures/Floor/Concrete_n.png",
+        "concrete_r_ao_m": "assets/textures/Floor/Concrete_r_ao_m.png",
+        "books_d": "assets/textures/Books/Books_d.png",
+        "books_n": "assets/textures/Books/Books_n.png",
+        "books_r_ao_m": "assets/textures/Books/Books_r_ao_m.png",
+        "white": "assets/textures/white.png",
+        "black": "assets/textures/black.png",
+        "flashlight_base": "assets/textures/FlashLight/M_Flashlight_V01_baseColor.png",
+        "flashlight_emissive": "assets/textures/FlashLight/M_Flashlight_V01_emissive.png",
+        "flashlight_roughness": "assets/textures/FlashLight/M_Flashlight_V01_metallicRoughness.png",
+        "flashlight_normal": "assets/textures/FlashLight/M_Flashlight_V01_normal.png",
+        "walls_d": "assets/textures/Walls/Walls_d.png",
+        "walls_n": "assets/textures/Walls/Walls_n.png",
+        "walls_r_ao_m": "assets/textures/Walls/Walls_r_ao_m.png",
+
+        "drawer_d": "assets/textures/Drawer/drawer_base.png",
+        "drawer_n": "assets/textures/Drawer/drawer_normal.png",
+        "drawer_r_ao_m": "assets/textures/Drawer/drawer_roughness.png"
+      },
+      "meshes": {
+        "key": "assets/models/key.obj",
+        "cube": "assets/models/cube.obj",
+        "lady": "assets/models/lady.obj",
+        "home": "assets/models/real_home.obj",
+        "floor_kitchen": "assets/models/floor_kitchen.obj",
+        "floor": "assets/models/floor.obj",
+        "floor_garage": "assets/models/floor_garage.obj",
+        "ceiling01": "assets/models/ceiling.obj",
+        "booksetB": "assets/models/booksetB.obj",
+        "table_home": "assets/models/home_table.obj",
+        "plane": "assets/models/plane.obj",
+        "hand": "assets/models/hand.obj",
+        "flashlight": "assets/models/flashlight.obj",
+        "walls": "assets/models/walls.obj",
+        "inventory": "assets/models/inventory.obj",
+        "dresser": "assets/models/dresser1.obj"
+      },
+      "samplers": {
+        "default": {},
+        "pixelated": {
+          "MAG_FILTER": "GL_NEAREST"
+        }
+      },
+      "materials": {
+        "metal": {
+          "type": "tinted",
+          "shader": "tinted",
+          "tint": [
+            0.45,
+            0.4,
+            0.5,
+            1
+          ]
+        },
+        "crosshair": {
+          "type": "tinted",
+          "shader": "crosshair",
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            },
+            "blending": {
+              "enabled": true,
+              "sourceFactor": "GL_SRC_ALPHA",
+              "destinationFactor": "GL_ONE_MINUS_SRC_ALPHA"
+            },
+            "depthMask": false
+          },
+          "transparent": true,
+          "tint": [
+            0.45,
+            0.4,
+            0.5,
+            0.5
+          ]
+        },
+        "inventory": {
+          "type": "textured",
+          "shader": "textured",
+          "texture": "inventory",
+          "transparent": false,
+          "tint": [1, 1, 1, 1]
+        },
+        "home": {
+          "type": "lit",
+          "shader": "house_exterior",
+          "sampler": "default",
+          "albedoMap": "home_albedo",
+          "normalMap": "home_normal",
+          "colorMaskTexture": "home_mask",
+          "r_ao_m_Map": "home_r_ao_m",
+          "IOR": 0.5
+        },
+        "laminate": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "laminate_d",
+          "normalMap": "laminate_n",
+          "r_ao_m_Map": "laminate_r_ao_m",
+          "IOR": 0.45
+        },
+        "carpet": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "carpet_d",
+          "normalMap": "carpet_n",
+          "r_ao_m_Map": "carpet_r_ao_m",
+          "IOR": 0.45
+        },
+        "concrete": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "concrete_d",
+          "normalMap": "concrete_n",
+          "r_ao_m_Map": "concrete_r_ao_m",
+          "IOR": 0.45
+        },
+        "ceiling01": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "ceiling01_d",
+          "normalMap": "ceiling01_n",
+          "r_ao_m_Map": "ceiling01_r_ao_m",
+          "IOR": 0.45
+        },
+        "books": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "key",
+          "normalMap": "books_n",
+          "r_ao_m_Map": "books_r_ao_m",
+          "IOR": 0.45
+        },
+        "flashlight": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "flashlight_base",
+          "normalMap": "flashlight_normal",
+          "emissiveMap": "flashlight_emissive",
+          "r_ao_m_Map": "flashlight_roughness",
+          "IOR": 0.5
+        },
+        "key": {
+          "type": "textured",
+          "shader": "textured",
+          "sampler": "default",
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "tint": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "texture": "key"
+        },
+        "hand": {
+          "type": "textured",
+          "shader": "textured",
+          "sampler": "default",
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "tint": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "texture": "hand"
+        },
+        "walls": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "walls_d",
+          "normalMap": "walls_n",
+          "r_ao_m_Map": "walls_r_ao_m",
+          "IOR": 0.45
+        },
+        "drawer": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "drawer_d",
+          "normalMap": "drawer_n",
+          "r_ao_m_Map": "drawer_r_ao_m",
+          "IOR": 0.45
+        }
+      }
+    },
+    "world": [
+      {
+        "name": "player",
+        "position": [
+          0,
+          5,
+          10
+        ],
+        "components": [
+          {
+            "type": "Camera"
+          },
+          {
+            "type": "Free Camera Controller"
+          },
+          {
+            "type": "RigidBody",
+            "shape": "Sphere",
+            "radius": 5
+          }
+        ],
+
+        "children": [
+          {
+            "name": "hand",
+            "position": [1, -1, -1],
+            "rotation": [45, 45, 0],
+            "scale": [0.1, 0.1, 1.0],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "cube",
+                "material": "metal"
+              }
+            ],
+            "children": [
+            ]
+          },
+          {
+            "name": "CrossHair",
+            "position": [
+              0,
+              0,
+              0
+            ],
+            "rotation": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "cube",
+                "material": "crosshair"
+              }
+            ]
+          },
+          {
+            "name": "Inventory",
+            "position": [0, 0, -2.0],
+            "rotation": [1.5, 0, 0],
+            "scale": [0, 0, 0],
+            "components": [
+                {
+                    "type": "Mesh Renderer",
+                    "mesh": "inventory",
+                    "material": "inventory"
+                }
+            ]
+        }
+        ]
+      },
+      {
+        "name": "Flash Light",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "components": [
+          {
+            "type": "Light Component",
+            "lightType": "flash",
+            "color": [
+              0.1,
+              0.1,
+              0.6
+            ],
+            "cutOff": 30.0,
+            "outerCutOff": 35.0,
+            "attenuationConstant": 1.0,
+            "attenuationLinear": 0.07,
+            "attenuationQuadratic": 0.0014,
+            "debug": true
+          }
+        ]
+      },
+      {
+        "name": "Directional Light",
+        "position": [
+          2.0,
+          2.0,
+          2.0
+        ],
+        "components": [
+          {
+            "type": "Light Component",
+            "lightType": "directional",
+            "color": [
+              0.3,
+              0.3,
+              0.3
+            ],
+            "debug": true
+          }
+        ]
+      },
+      {
+        "name": "Exterior Home",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          500,
+          500,
+          500
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "home",
+            "material": "home"
+          }
+        ]
+      },
+      {
+        "name": "Kitchen Floor",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          500,
+          500,
+          500
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "floor_kitchen",
+            "material": "laminate"
+          }
+        ]
+      },
+      {
+        "name": "Walls",
+        "position": [0, 0, 0],
+        "rotation": [0, 0, 0],
+        "scale": [500, 500, 500],
+        "components": [
+            {
+                "type": "Mesh Renderer",
+                "mesh": "walls",
+                "material": "walls"
+            }
+        ]
+      },
+      {
+        "name": "Floor",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          500,
+          500,
+          500
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "floor",
+            "material": "carpet"
+          }
+        ]
+      },
+      {
+        "name": "Garage Floor",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          500,
+          500,
+          500
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "floor_garage",
+            "material": "concrete"
+          }
+        ]
+      },
+      {
+        "name": "Ceiling",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          500,
+          500,
+          500
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "ceiling01",
+            "material": "ceiling01"
+          }
+        ]
+      },
+      {
+        "name": "BookSetB",
+        "position": [
+          -27,
+          6,
+          -34
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          500,
+          500,
+          500
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "booksetB",
+            "material": "books"
+          },
+          {
+            "type": "RigidBody",
+            "shape": "Sphere",
+            "radius": 5
+          }
+        ]
+      },
+      {
+        "name": "key",
+        "position": [
+          1,
+          5,
+          -34
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          0.2,
+          0.2,
+          0.2
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "key",
+            "material": "key"
+          },
+          {
+            "type": "Pickable",
+            "inventoryMousePosition": [440, 375],
+            "inventoryScale": [0.03, 0.03, 0.03],
+            "inventoryRotation": [1.8, 3.1, -0.05],
+            "inventoryPosition": [-1.6, 0.1, -0.5],
+            "handScale": [0.9,0.9, -0.09],
+            "handRotation": [0, 0, 0],
+            "handPosition": [-1, -1.5, -1]
+          }
+
+        ]
+      },
+      {
+        "name": "flashlight",
+        "position": [
+          1,
+          5,
+          -34
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          30,
+          30,
+          30
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "flashlight",
+            "material": "flashlight"
+          },
+          {
+            "type": "Pickable",
+            "inventoryMousePosition": [740, 375],
+            "inventoryScale": [5, 5, 5],
+            "inventoryRotation": [0, 0.1, 0.1],
+            "inventoryPosition": [-0.6, 0.2, -0.55],
+            "handPosition": [-1, -1.5, -1],
+            "handRotation": [3, 1.57, 2],
+            "handScale": [30, 30, 30]
+          }
+        ]
+      },
+      {
+        "name": "dresser",
+        "position": [
+          1,
+          5,
+          -34
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "dresser",
+            "material": "drawer"
+          }
+        ]
+      }
+    ]
+  }
+}
