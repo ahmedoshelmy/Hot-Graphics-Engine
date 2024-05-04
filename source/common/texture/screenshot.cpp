@@ -25,7 +25,7 @@ bool our::screenshot_png(const std::string& filename, bool include_alpha) {
     // If alpha is included, each pixel will use 4 bytes so the row would always be divisible by 4.
     // Otherwise, we can only be sure it is divisible by 1 (because everything is divisible by 1).
     glPixelStorei(GL_PACK_ALIGNMENT, include_alpha ? 4 : 1);
-    // Pick a format for reading pixels from framebuffer
+    // pick a format for reading pixels from framebuffer
     GLenum format = include_alpha ? GL_RGBA : GL_RGB;
     // Read Pixels from framebuffer
     glReadPixels(viewport.x, viewport.y, viewport.w, viewport.h, format, GL_UNSIGNED_BYTE, data.data());

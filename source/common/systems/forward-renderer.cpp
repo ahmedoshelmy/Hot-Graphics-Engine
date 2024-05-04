@@ -25,7 +25,7 @@ namespace our {
             skyShader->attach("assets/shaders/textured.frag", GL_FRAGMENT_SHADER);
             skyShader->link();
             
-            //TODO: (Req 10) Pick the correct pipeline state to draw the sky
+            //TODO: (Req 10) pick the correct pipeline state to draw the sky
             // Hints: the sky will be draw after the opaque objects so we would need depth testing but which depth funtion should we pick?
             // We will draw the sphere from the inside, so what options should we pick for the face culling.
             PipelineState skyPipelineState{};
