@@ -67,6 +67,10 @@
                 "books_n": "assets/textures/Books/Books_n.png",
                 "books_r_ao_m": "assets/textures/Books/Books_r_ao_m.png",
 
+                "walls_d": "assets/textures/Walls/Walls_d.png",
+                "walls_n": "assets/textures/Walls/Walls_n.png",
+                "walls_r_ao_m": "assets/textures/Walls/Walls_r_ao_m.png",
+
                 "white": "assets/textures/white.png",
                 "black": "assets/textures/black.png"
             },
@@ -80,7 +84,8 @@
                 "ceiling01" : "assets/models/ceiling.obj",
                 "booksetB": "assets/models/booksetB.obj",
                 "table_home": "assets/models/home_table.obj",
-                "plane": "assets/models/plane.obj"
+                "plane": "assets/models/plane.obj",
+                "walls": "assets/models/walls.obj"
             },
             "samplers":{
                 "default":{},
@@ -169,6 +174,15 @@
                     "albedoMap": "books_d",
                     "normalMap": "books_n",
                     "r_ao_m_Map": "books_r_ao_m",
+                    "IOR": 0.45
+                },
+                "walls": {
+                    "type": "lit",
+                    "shader": "light",
+                    "sampler": "default",
+                    "albedoMap": "walls_d",
+                    "normalMap": "walls_n",
+                    "r_ao_m_Map": "walls_r_ao_m",
                     "IOR": 0.45
                 }
                 
@@ -319,6 +333,19 @@
                         "type": "Mesh Renderer",
                         "mesh": "booksetB",
                         "material": "books"
+                    }
+                ]
+            },
+            {
+                "name": "Walls",
+                "position": [0, 0, 0],
+                "rotation": [0, 0, 0],
+                "scale": [500, 500, 500],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "walls",
+                        "material": "walls"
                     }
                 ]
             }

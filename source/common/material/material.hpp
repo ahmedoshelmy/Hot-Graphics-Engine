@@ -69,8 +69,9 @@ namespace our {
 
     class LitMaterial : public Material {
     public:
-        Texture2D* albedoMap, *colorMaskTexture, *normalMap, *r_ao_m_Map;
+        Texture2D* albedoMap, *colorMaskTexture, *normalMap, *r_ao_m_Map, * emissiveMap;
         Sampler* sampler;
+        glm::vec3 colorMasking[4];
         float IOR;
 
         void setup() const override;

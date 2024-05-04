@@ -13,16 +13,23 @@ namespace our {
         glm::vec3 &scale = object->localTransform.scale;
         glm::vec3 &rotation = object->localTransform.rotation;
 
-        position = glm::vec3(-1, -1.5, -1); // caught by hand
-        scale = glm::vec3(0.009 / (hand->localTransform.scale.x / 10), 0.009 / (hand->localTransform.scale.y / 10),
-                          -0.09);
+        if (item_name == "flashlight") {
+            position = glm::vec3(-1, -1.5, -1); // caught by hand
+            scale = glm::vec3(30, 30,30);
+            rotation = glm::vec3(3, 1.57, 2);
+        } else if (item_name == "key") {
+            position = glm::vec3(-1, -1.5, -1); // caught by hand
+            scale = glm::vec3(0.009 / (hand->localTransform.scale.x / 10), 0.009 / (hand->localTransform.scale.y / 10),
+                              -0.09);
+        }
+
 
     }
 
     void PickingSystem::update(our::World *world, our::Application *app) {
         // Check that the user clicked on P
         if (!app->getKeyboard().isPressed(GLFW_KEY_P)) return;
-        pick(world,"key");
+        pick(world, "key");
         // This should handle the picking of different things including keys and boxes
 //        Entity *Key1 = world->getEntity("key1");
 //        auto triggerComponent = Key1->getComponent<TriggerComponent>();

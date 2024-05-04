@@ -14,10 +14,10 @@ namespace our {
     }
 
     // This function read the material data from a json object
-    void Material::deserialize(const nlohmann::json& data){
-        if(!data.is_object()) return;
+    void Material::deserialize(const nlohmann::json &data) {
+        if (!data.is_object()) return;
 
-        if(data.contains("pipelineState")){
+        if (data.contains("pipelineState")) {
             pipelineState.deserialize(data["pipelineState"]);
         }
         shader = AssetLoader<ShaderProgram>::get(data["shader"].get<std::string>());
@@ -33,9 +33,9 @@ namespace our {
     }
 
     // This function read the material data from a json object
-    void TintedMaterial::deserialize(const nlohmann::json& data){
+    void TintedMaterial::deserialize(const nlohmann::json &data) {
         Material::deserialize(data);
-        if(!data.is_object()) return;
+        if (!data.is_object()) return;
         tint = data.value("tint", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
     }
 
@@ -48,16 +48,16 @@ namespace our {
         shader->set("alphaThreshold", alphaThreshold);
         glActiveTexture(GL_TEXTURE0);
         texture->bind();
-        if(sampler)
+        if (sampler)
             sampler->bind(0);
         shader->set("tex", 0);
 
     }
 
     // This function read the material data from a json object
-    void TexturedMaterial::deserialize(const nlohmann::json& data){
+    void TexturedMaterial::deserialize(const nlohmann::json &data) {
         TintedMaterial::deserialize(data);
-        if(!data.is_object()) return;
+        if (!data.is_object()) return;
         alphaThreshold = data.value("alphaThreshold", 0.0f);
         texture = AssetLoader<Texture2D>::get(data.value("texture", ""));
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
@@ -71,12 +71,18 @@ namespace our {
         shader->set("material.r_ao_m_Map", 2);
         shader->set("material.normalMap", 3);
         shader->set("material.IOR", IOR);
+        shader->set("material.emissive", 4);
+        if (emissiveMap)shader->set("material.enableEmissive", true);
+        else shader->set("material.enableEmissive", false);
+        if (colorMaskTexture)shader->set("material.enableColorMasking", true);
+        else shader->set("material.enableColorMasking", false);
+
 
         glActiveTexture(GL_TEXTURE0);
         albedoMap->bind();
-        sampler->bind(0); 
+        sampler->bind(0);
 
-        if(colorMaskTexture) {
+        if (colorMaskTexture) {
             glActiveTexture(GL_TEXTURE1);
             colorMaskTexture->bind();
             sampler->bind(1);
@@ -91,24 +97,30 @@ namespace our {
         normalMap->bind();
         sampler->bind(3);
 
+        if (emissiveMap) {
+            glActiveTexture(GL_TEXTURE4);
+            emissiveMap->bind();
+            sampler->bind(4);
+        }
+
+
     }
 
 
-    void LitMaterial::deserialize(const nlohmann::json& data){
+    void LitMaterial::deserialize(const nlohmann::json &data) {
         Material::deserialize(data);
-        if(!data.is_object()) return;
+        if (!data.is_object()) return;
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
 
         albedoMap = AssetLoader<Texture2D>::get(data.value("albedoMap", ""));
         colorMaskTexture = AssetLoader<Texture2D>::get(data.value("colorMaskTexture", ""));
-        normalMap = AssetLoader<Texture2D>::get(data.value( "normalMap", ""));
-        r_ao_m_Map = AssetLoader<Texture2D>::get(data.value( "r_ao_m_Map", ""));
-        IOR = data.value( "IOR", 0.03);
+        normalMap = AssetLoader<Texture2D>::get(data.value("normalMap", ""));
+        r_ao_m_Map = AssetLoader<Texture2D>::get(data.value("r_ao_m_Map", ""));
+        emissiveMap = AssetLoader<Texture2D>::get(data.value("emissiveMap", ""));
+        IOR = data.value("IOR", 0.03);
+
 
     }
 
-
-
-    
 
 }

@@ -16,9 +16,12 @@ void main()
 
     vec3 ambient = vec3(0.03) * albedo * ao;
     vec3 color = ambient + Lo;
+    vec3 emissive = vec3(0);
+    if(material.enableEmissive){
+        emissive =  pow(texture(material.emissive, TexCoords).rgb, vec3(2.2));
+    }
+    color = pow(color+emissive, vec3(1.0/2.2));
 
-    color = pow(color, vec3(1.0/2.2)); 
-
-    FragColor = tint * vec4(color, 1.0);
+    FragColor = tint * vec4(color, 1.0) ;
    
 } 
