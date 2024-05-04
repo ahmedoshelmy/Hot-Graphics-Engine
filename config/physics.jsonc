@@ -132,7 +132,24 @@
 
         "beanbag_d": "assets/textures/Beanbag/Beanbag_d.png",
         "beanbag_n": "assets/textures/Beanbag/Beanbag_n.png",
-        "beanbag_r_ao_m": "assets/textures/Beanbag/Beanbag_r_ao_m.png"
+        "beanbag_r_ao_m": "assets/textures/Beanbag/Beanbag_r_ao_m.png",
+
+        "basket_d": "assets/textures/ClothesBasket/ClothesBasket_d.png",
+        "basket_n": "assets/textures/ClothesBasket/ClothesBasket_n.png",
+        "basket_r_ao_m": "assets/textures/ClothesBasket/ClothesBasket_r_ao_m.png",
+
+        "board_d": "assets/textures/Whiteboard/Whiteboard_d.png",
+        "board_n": "assets/textures/Whiteboard/Whiteboard_n.png",
+        "board_r_ao_m": "assets/textures/Whiteboard/Whiteboard_r_ao_m.png",
+
+        "guitar_d": "assets/textures/GuitarAcoustic/GuitarAcoustic_d.png",
+        "guitar_n": "assets/textures/GuitarAcoustic/GuitarAcoustic_n.png",
+        "guitar_r_ao_m": "assets/textures/GuitarAcoustic/GuitarAcoustic_r_ao_m.png",
+
+        "rabbits_d": "assets/textures/Bunny/Bunny_d.png",
+        "rabbits_n": "assets/textures/Bunny/Bunny_n.png",
+        "rabbits_r_ao_m": "assets/textures/Bunny/Bunny_r_ao_m.png"
+
       },
       "meshes": {
         "key": "assets/models/key.obj",
@@ -165,7 +182,11 @@
         "cupboard": "assets/models/cupboard.obj",
         "baby_bed": "assets/models/baby_bed.obj",
         "chair": "assets/models/chair.obj",
-        "beanbag": "assets/models/beanbag.obj"
+        "beanbag": "assets/models/beanbag.obj",
+        "basket": "assets/models/basket.obj",
+        "board": "assets/models/board.obj",
+        "guitar": "assets/models/guitar.obj",
+        "rabbits": "assets/models/rabbits.obj"
       },
       "samplers": {
         "default": {},
@@ -454,6 +475,42 @@
           "albedoMap": "beanbag_d",
           "normalMap": "beanbag_n",
           "r_ao_m_Map": "beanbag_r_ao_m",
+          "IOR": 0.45
+        },
+        "basket": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "basket_d",
+          "normalMap": "basket_n",
+          "r_ao_m_Map": "basket_r_ao_m",
+          "IOR": 0.45
+        },
+        "board": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "board_d",
+          "normalMap": "board_n",
+          "r_ao_m_Map": "board_r_ao_m",
+          "IOR": 0.45
+        },
+        "guitar": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "guitar_d",
+          "normalMap": "guitar_n",
+          "r_ao_m_Map": "guitar_r_ao_m",
+          "IOR": 0.45
+        },
+        "rabbits": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "rabbits_d",
+          "normalMap": "rabbits_n",
+          "r_ao_m_Map": "rabbits_r_ao_m",
           "IOR": 0.45
         }
       }
@@ -1542,6 +1599,106 @@
           "type": "Mesh Renderer",
           "mesh": "beanbag",
           "material": "beanbag"
+        }
+      ]
+    },
+    {
+      "name": "Basket",
+      "position": [
+        18.000,
+        0,
+        -35.000
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "basket",
+          "material": "basket"
+        }
+      ]
+    },
+    {
+      "name": "Board",
+      "position": [
+        -7.200,
+        6.000,
+        -22.000
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        8.0,
+        8.0,
+        8.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "board",
+          "material": "board"
+        }
+      ]
+    },
+    {
+      "name": "Guitar",
+      "position": [
+        2.000,
+        4.000,
+        -6.900
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "guitar",
+          "material": "guitar"
+        }
+      ]
+    },
+    {
+      "name": "Rabbits",
+      "position": [
+        -1.000,
+        0.500,
+        -16.000
+      ],
+      "rotation": [
+        0,
+        270,
+        0
+      ],
+      "scale": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "components": [
+        {
+          "type": "Mesh Renderer",
+          "mesh": "rabbits",
+          "material": "rabbits"
         }
       ]
     }
