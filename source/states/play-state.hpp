@@ -60,10 +60,10 @@ class Playstate: public our::State {
         cameraControllerFree.update(&world, (float)deltaTime);
         cameraControllerFps.update(&world, (float)deltaTime);
 //        physicsSystem.update(&world, (float)deltaTime);
-        pickingSystem.update(&world, getApp(),pickedItem);
+        pickingSystem.update(&world, getApp(),pickedItem,&renderer);
         
         // And finally we use the renderer system to draw the scene
-        renderer.render(&world,pickedItem);
+        renderer.render(&world,pickedItem,deltaTime);
 
         // Get a reference to the keyboard object
         auto& keyboard = getApp()->getKeyboard();

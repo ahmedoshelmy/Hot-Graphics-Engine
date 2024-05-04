@@ -2,6 +2,7 @@
 #include "components/trigger.hpp"
 #include <iostream>
 #include "../components/pickable.hpp"
+#include "forward-renderer.hpp"
 
 namespace our {
 
@@ -23,9 +24,12 @@ namespace our {
         rotation = pickableComponent->handRotation;
         scale = pickableComponent->handScale;
         itemInRightHand = item_name;
+        showMessage("You added to the inventory a " + item_name + " Press I to open the inventory",5);
+
     }
 
-    void PickingSystem::update(our::World *world, our::Application *app, std::string pickedObject) {
+    void PickingSystem::update(our::World *world, our::Application *app, std::string pickedObject,ForwardRenderer * renderer) {
+        if(!this->renderer) this->renderer = renderer;
         // Check that the user clicked on P
         if (app->getKeyboard().isPressed(GLFW_KEY_P)) {
             if (isPickable(pickedObject)) {
@@ -80,6 +84,7 @@ namespace our {
         position = pickableComponent->inventoryPosition;
         rotation = pickableComponent->inventoryRotation;
         scale = pickableComponent->inventoryScale;
+        showMessage("You picked "+item_name+ " Press I to to open the inventory ",5);
     }
 
     void PickingSystem::showInventory(World *world) {
@@ -126,5 +131,9 @@ namespace our {
             }
         }
         return "";
+    }
+
+    void PickingSystem::showMessage(std::string text, double time) {
+        renderer->renderText(text,time);
     }
 }

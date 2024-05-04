@@ -10,6 +10,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include <iostream>
+#include <utility>
 
 
 namespace our {
@@ -182,7 +183,7 @@ namespace our {
 
         this->initCastingBuffer();
 
-
+        currentTime = 0;
     }
 
 
@@ -214,7 +215,8 @@ namespace our {
         delete castingMaterial;
     }
 
-    void ForwardRenderer::render(World *world, std::string & pickedItem) {
+    void ForwardRenderer::render(World *world, std::string &pickedItem, double deltaTime) {
+        currentTime += deltaTime;
         mp[0] = "NON-WORLD";
         picked_item = "NON-WORLD";
         // First of all, we search for a camera and for all the mesh renderers
@@ -433,9 +435,9 @@ namespace our {
             command.mesh->draw();
         }
         // Text Rendering
-        renderText("Welcome To Locked Away", 25.0f, 100.0f, 0.5f, glm::vec3(1.0f, 1.0f, 1.0f), 0, 1);
+//        renderText("Welcome To Locked Away", 25.0f, 100.0f, 0.5f, glm::vec3(1.0f, 1.0f, 1.0f), 0, 1);
         renderText("You Picked Up A Key", 25.0f, 100.0f, 0.2f, glm::vec3(1.0f, 1.0f, 1.0f), 0, 0);
-
+        checkTextCommands();
 
         if (postprocessMaterial) {
             //TODO: (Req 11) Return to the default framebuffer
@@ -546,4 +548,25 @@ namespace our {
 
         return Pixel;
     }
+
+    void ForwardRenderer::renderText(std::string text, double seconds) {
+        TextRenderCommand textRenderCommand;
+        textRenderCommand.duration = seconds;
+        textRenderCommand.text = text;
+        textRenderCommand.initialTime = currentTime;
+        std::cout<<"RENDER TEXT";
+        textCommands.push(textRenderCommand);
+    }
+
+    void ForwardRenderer::checkTextCommands() {
+        int sz = textCommands.size();
+        for (int i = 0; i < sz; ++i) {
+            auto textCommand = textCommands.front();
+            textCommands.pop();
+            if (textCommand.duration + textCommand.initialTime < currentTime)continue;
+            textCommands.push(textCommand);
+            renderText(textCommand.text, 25.0f, 100.0f, 0.5f, glm::vec3(1.0f, 1.0f, 1.0f), 0, 1);
+        }
+    }
+
 }
