@@ -60,6 +60,7 @@ class Playstate: public our::State {
         cameraControllerFps.update(&world, (float)deltaTime);
 //        physicsSystem.update(&world, (float)deltaTime);
         pickingSystem.update(&world, getApp());
+        
         // And finally we use the renderer system to draw the scene
         renderer.render(&world);
 

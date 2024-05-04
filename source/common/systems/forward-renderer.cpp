@@ -387,8 +387,8 @@ namespace our {
 
         for (auto command: opaqueCommands) {
             command.material->setup();
-            if (command.name == picked_item) command.material->shader->set("tint", glm::vec4(0.0, 1.0, 0.0, 0.2));
-            else command.material->shader->set("tint", glm::vec4(1.0, 1.0, 1.0, 1.0));
+            // if (command.name == picked_item) command.material->shader->set("tint", glm::vec4(0.0, 1.0, 0.0, 0.2));
+            // else command.material->shader->set("tint", glm::vec4(1.0, 1.0, 1.0, 1.0));
             if (dynamic_cast<LitMaterial *>(command.material) != nullptr) {
                 light_utils::setLightParameters(command.material->shader, lightSources);
                 command.material->shader->set("u_Model", command.localToWorld);

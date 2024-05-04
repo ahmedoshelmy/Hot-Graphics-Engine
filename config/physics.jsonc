@@ -41,6 +41,7 @@
       },
       "textures": {
         "key": "assets/textures/key.png",
+        "inventory": "assets/textures/old-map-vintage-texture-free-background.jpg",
         "hand": "assets/textures/hand.jpeg",
         "lady": "assets/textures/OldLady_baseColor.png",
         "home_albedo": "assets/textures/House_exterior/House_exterior_d.png",
@@ -69,7 +70,10 @@
         "flashlight_base": "assets/textures/FlashLight/M_Flashlight_V01_baseColor.png",
         "flashlight_emissive": "assets/textures/FlashLight/M_Flashlight_V01_emissive.png",
         "flashlight_roughness": "assets/textures/FlashLight/M_Flashlight_V01_metallicRoughness.png",
-        "flashlight_normal": "assets/textures/FlashLight/M_Flashlight_V01_normal.png"
+        "flashlight_normal": "assets/textures/FlashLight/M_Flashlight_V01_normal.png",
+        "walls_d": "assets/textures/Walls/Walls_d.png",
+        "walls_n": "assets/textures/Walls/Walls_n.png",
+        "walls_r_ao_m": "assets/textures/Walls/Walls_r_ao_m.png"
       },
       "meshes": {
         "key": "assets/models/key.obj",
@@ -84,7 +88,9 @@
         "table_home": "assets/models/home_table.obj",
         "plane": "assets/models/plane.obj",
         "hand": "assets/models/hand.obj",
-        "flashlight": "assets/models/flashlight.obj"
+        "flashlight": "assets/models/flashlight.obj",
+        "walls": "assets/models/walls.obj",
+        "inventory": "assets/models/inventory.obj"
       },
       "samplers": {
         "default": {},
@@ -127,6 +133,13 @@
             0.5,
             0.5
           ]
+        },
+        "inventory": {
+          "type": "textured",
+          "shader": "textured",
+          "texture": "inventory",
+          "transparent": false,
+          "tint": [1, 1, 1, 1]
         },
         "home": {
           "type": "lit",
@@ -232,6 +245,15 @@
             1
           ],
           "texture": "hand"
+        },
+        "walls": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "walls_d",
+          "normalMap": "walls_n",
+          "r_ao_m_Map": "walls_r_ao_m",
+          "IOR": 0.45
         }
       }
     },
@@ -256,6 +278,7 @@
             "radius": 5
           }
         ],
+
         "children": [
           {
             "name": "hand",
@@ -296,7 +319,20 @@
                 "material": "crosshair"
               }
             ]
-          }
+          },
+          {
+            "name": "Inventory",
+            "position": [0, 0, -2.0],
+            "rotation": [1.5, 0, 0],
+            "scale": [0, 0, 0],
+            "components": [
+                {
+                    "type": "Mesh Renderer",
+                    "mesh": "inventory",
+                    "material": "inventory"
+                }
+            ]
+        }
         ]
       },
       {
@@ -392,6 +428,19 @@
             "mesh": "floor_kitchen",
             "material": "laminate"
           }
+        ]
+      },
+      {
+        "name": "Walls",
+        "position": [0, 0, 0],
+        "rotation": [0, 0, 0],
+        "scale": [500, 500, 500],
+        "components": [
+            {
+                "type": "Mesh Renderer",
+                "mesh": "walls",
+                "material": "walls"
+            }
         ]
       },
       {

@@ -6,6 +6,9 @@ namespace our {
         Entity *hand = world->getEntity("hand");
         Entity *object = world->getEntity(item_name);
 
+        // Add the object to the inventory entities
+        addToInventory(world, item_name);
+
         // insert child to hand
         object->addParent(hand);
 
@@ -28,8 +31,19 @@ namespace our {
 
     void PickingSystem::update(our::World *world, our::Application *app) {
         // Check that the user clicked on P
-        if (!app->getKeyboard().isPressed(GLFW_KEY_P)) return;
-        pick(world, "key");
+        if (app->getKeyboard().isPressed(GLFW_KEY_P)) pick(world, "key");
+
+        if (app->getKeyboard().isPressed(GLFW_KEY_I)) {            
+            showInventory(world);
+            inventoryState = true;
+        }
+
+        if (app->getKeyboard().isPressed(GLFW_KEY_C)) {            
+            hideInventory(world);
+            inventoryState = false;
+        }
+
+
         // This should handle the picking of different things including keys and boxes
 //        Entity *Key1 = world->getEntity("key1");
 //        auto triggerComponent = Key1->getComponent<TriggerComponent>();
@@ -47,8 +61,46 @@ namespace our {
         glm::vec3 &scale = object->localTransform.scale;
         glm::vec3 &rotation = object->localTransform.rotation;
 
-        // If scale is 0, it will disappear xD
-        // TODO, This should be changed to insert it as a child to the inventory
+        // Add the object to the inventory entities
+        inventoryEntities.push_back(object);
+    }
+
+    void PickingSystem::showInventory(World *world) {
+        // This should show the inventory
+        // This should be done by showing the children of the inventory entity
+        Entity *inventory = world->getEntity("Inventory");
+        // Set the position, scale and rotation of the inventory
+        glm::vec3 &position = inventory->localTransform.position;
+        glm::vec3 &rotation = inventory->localTransform.rotation;
+        glm::vec3 &scale = inventory->localTransform.scale;
+
+        position = glm::vec3(-0.1, 0, -2);
+        rotation = glm::vec3(1.5, 0, 0);
+        scale = glm::vec3(1.1);
+
+        // Show the children of the inventory entity
+        for (Entity *entity: inventoryEntities) {
+            entity->parent = inventory;
+
+            // Set the position, scale and rotation of the object to be in the correct position in the inventory
+            glm::vec3 &position = entity->localTransform.position;
+            glm::vec3 &scale = entity->localTransform.scale;
+            glm::vec3 &rotation = entity->localTransform.rotation;
+
+            position = glm::vec3(-1.6, 0.1, -0.5);
+            rotation = glm::vec3(1.8, 3.1, -0.05);
+            scale = glm::vec3(0.03, 0.03, 0.03);
+        }
+
+        
+    }
+    
+    void PickingSystem::hideInventory(World *world) {
+        // This should hide the inventory
+        // This should be done by hiding the children of the inventory entity
+        Entity *inventory = world->getEntity("Inventory");
+        // Set the scale of the inventory to 0
+        glm::vec3 &scale = inventory->localTransform.scale;
         scale = glm::vec3(0);
     }
 
