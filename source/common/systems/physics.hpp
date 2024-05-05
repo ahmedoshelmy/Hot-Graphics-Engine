@@ -29,7 +29,6 @@ namespace our {
     // The Collision system is responsible for detecting collision between objects
     class PhysicsSystem {
     public:
-        Application *app;
         // need for bullet integration
         btBroadphaseInterface* broadphase;
         // Set up the collision configuration and dispatcher
@@ -52,11 +51,12 @@ namespace our {
         void initialize(World* world);
         
         // This should be called every frame to update all entities containing a CollisionComponent.
-        void update(World *world, float deltaTime) {
+        void update(World *world, Application* app, float deltaTime) {
             Entity * player = world->getEntity("player");
             if (!player) return;
             unsigned int mesh_selected = getCameraCollidedMesh(world, deltaTime, 1.0f);
             unsigned int mesh_hit = getPersonCollidedMesh(world, deltaTime) ;
+            if(mesh_hit) reverseMovement(deltaTime, app, player);
             // For each entity in the world
             auto *rigidBody = player->getComponent<RigidBodyComponent>();
             auto player_pos = player->localTransform.position;
@@ -81,7 +81,7 @@ namespace our {
         static bool checkSpheresCollison(const glm::vec3 &center1, const glm::vec3 &center2, const int &radius1,
                                          const int &radius2);
 
-        void reverseMovement(float deltaTime,Entity * player);
+        void reverseMovement(float deltaTime, Application* app, Entity * player);
 
         std::pair<glm::vec3, glm::vec3> getCollisionBox(Entity *entity);
 

@@ -96,7 +96,7 @@ namespace our {
         return distance < radius1 + radius2;
     }
 
-    void PhysicsSystem::reverseMovement(float deltaTime,Entity * player) {
+    void PhysicsSystem::reverseMovement(float deltaTime,  Application* app, Entity * player) {
         auto *controller = player->getComponent<FreeCameraControllerComponent>();
         glm::vec3 current_sensitivity = controller->positionSensitivity;
         glm::mat4 M = player->localTransform.toMat4();
@@ -136,7 +136,7 @@ namespace our {
         dynamicsWorld->setGravity(btVector3(0,-9.81f,0));
 
         ghost = new btGhostObject();
-        ghost->setCollisionShape(new btBoxShape(btVector3(1.0, 1.0, 1.0)));
+        ghost->setCollisionShape(new btBoxShape(btVector3(1.0, 2.0, 1.5)));
         ghost->setUserPointer((void *)0);
         mp_ids[0] = "GHOST";
         
