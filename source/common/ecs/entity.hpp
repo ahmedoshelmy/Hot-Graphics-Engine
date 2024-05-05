@@ -111,9 +111,12 @@ namespace our {
         void showGUI() {
             if (debug && name != "") {
                 if (ImGui::CollapsingHeader(name.c_str())) {
+                    glm::mat3 model = getLocalToWorldMatrix();
+                    glm::vec3 rotation = model * localTransform.rotation;
                     ImGui::InputFloat3("position", glm::value_ptr(localTransform.position), 3, 0.0f);
-                    ImGui::InputFloat3("rotation", glm::value_ptr(localTransform.rotation), 3, 0.0f);
+                    ImGui::InputFloat3("rotation", glm::value_ptr(rotation), 3, 0.0f);
                     ImGui::InputFloat3("scaling", glm::value_ptr(localTransform.scale), 3, 0.0f);
+                    localTransform.rotation = glm::inverse(model) * rotation;
                 }
             }
         }

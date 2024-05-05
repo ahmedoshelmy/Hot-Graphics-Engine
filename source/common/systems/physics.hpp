@@ -58,7 +58,7 @@ namespace our {
             Entity * player = world->getEntity("player");
             if (!player) return;
             unsigned int mesh_selected = getCameraCollidedMesh(world, deltaTime, 1000.0f);
-            unsigned int mesh_hit = 0;// getPersonCollidedMesh(world, deltaTime) ;
+            unsigned int mesh_hit =  getPersonCollidedMesh(world, deltaTime) ;
             bool isOnGround = allowMoveOnGround(world, deltaTime, closestDistance);
             std::cout << "hit: " << mp_ids[mesh_hit] << " onGround: " << isOnGround << "\n";
             if(mesh_hit || !isOnGround) reverseMovement(deltaTime, app, player);
