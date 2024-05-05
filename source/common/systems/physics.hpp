@@ -61,7 +61,9 @@ namespace our {
             unsigned int mesh_hit =  getPersonCollidedMesh(world, deltaTime) ;
             bool isOnGround = allowMoveOnGround(world, deltaTime, closestDistance);
             std::cout << "hit: " << mp_ids[mesh_hit] << " onGround: " << isOnGround << "\n";
-            if(mesh_hit || !isOnGround) reverseMovement(deltaTime, app, player);
+            if(mesh_hit) reverseMovement(deltaTime, app, player);
+//            if(mesh_hit || !isOnGround) reverseMovement(deltaTime, app, player);
+
             // For each entity in the world
             auto *rigidBody = player->getComponent<RigidBodyComponent>();
             auto player_pos = player->localTransform.position;
