@@ -1,5 +1,6 @@
 #include "physics.hpp"
 #include "components/mesh-renderer.hpp"
+#include "components/ground-or-stairs.hpp"
 #include "components/free-camera-controller.hpp"
 #include "components/camera.hpp"
 #include <btBulletDynamicsCommon.h>
@@ -163,6 +164,10 @@ namespace our {
 
             rigidBodies[mesh_id] = rigidBody; // store pointer to it (no need for now but to delete it later)
             mp_ids[mesh_id] = entity->name;   // set mesh id to entity name for debugging
+
+            // ========== if it's ground or stairs set isGroundOrStairs = true
+            isGroundOrStairs[mesh_id] = (entity->getComponent<GroundOrStairsComponent>() != nullptr);
+
         }
     }
 
@@ -215,6 +220,38 @@ namespace our {
         dynamicsWorld->contactTest(ghost, collisionCallback);
 
         return collisionCallback.collided_id;
+    }
+
+    bool PhysicsSystem::allowMoveOnGround(World *world, float deltaTime, float distance ) {
+        Entity * camera = world->getEntity("player"); // camera
+
+        if(!camera) return 0;
+
+        dynamicsWorld->stepSimulation(deltaTime, 7);
+        // =========== ray test ======
+        glm::vec3 out_origin = camera->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0f, 1.0f); // origin of camera in the world
+        glm::vec3 out_direction =  glm::vec4(0.0, -1.0, 0.0f, 0.0f); // in -ve y axis (down)
+
+        glm::vec3 out_end = out_origin + out_direction * distance;
+
+        btCollisionWorld::ClosestRayResultCallback RayCallback(
+            btVector3(out_origin.x, out_origin.y, out_origin.z), 
+            btVector3(out_end.x, out_end.y, out_end.z)
+        );
+
+        dynamicsWorld->rayTest(
+            btVector3(out_origin.x, out_origin.y, out_origin.z), 
+            btVector3(out_end.x, out_end.y, out_end.z), 
+            RayCallback
+        );
+
+
+        if(RayCallback.hasHit()) {
+            unsigned int id = (size_t)RayCallback.m_collisionObject->getUserPointer();
+            return isGroundOrStairs[id];
+        } 
+        
+        return 0; // return if no objects
     }
 
     void PhysicsSystem::destroy() {

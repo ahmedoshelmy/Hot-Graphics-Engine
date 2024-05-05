@@ -269,6 +269,9 @@
                         "type": "Mesh Renderer",
                         "mesh": "floor_kitchen",
                         "material": "laminate"
+                    },
+                    {
+                        "type": "Ground or Stairs Component"
                     }
                 ]
             },
@@ -282,6 +285,9 @@
                         "type": "Mesh Renderer",
                         "mesh": "floor_01",
                         "material": "carpet"
+                    },
+                    {
+                        "type": "Ground or Stairs Component"
                     }
                 ]
             },
@@ -295,6 +301,9 @@
                         "type": "Mesh Renderer",
                         "mesh": "floor_02",
                         "material": "carpet"
+                    },
+                    {
+                        "type": "Ground or Stairs Component"
                     }
                 ]
             },
@@ -308,6 +317,9 @@
                         "type": "Mesh Renderer",
                         "mesh": "floor_garage",
                         "material": "concrete"
+                    },
+                    {
+                        "type": "Ground or Stairs Component"
                     }
                 ]
             },

@@ -41,6 +41,7 @@ namespace our {
         // store the rigid bodies of system 
         std::map<unsigned int, btRigidBody*> rigidBodies;
         std::map<unsigned int, std::string> mp_ids; // mesh id => entity name
+        std::map<unsigned int, bool> isGroundOrStairs; // mesh id => is ground or not
         // BulletDebugDrawer_OpenGL* mydebugdrawer;
         // btKinematicCharacterController character;
         // Initialize the renderer 
@@ -54,9 +55,10 @@ namespace our {
         void update(World *world, Application* app, float deltaTime) {
             Entity * player = world->getEntity("player");
             if (!player) return;
-            unsigned int mesh_selected = getCameraCollidedMesh(world, deltaTime, 1.0f);
+            unsigned int mesh_selected = getCameraCollidedMesh(world, deltaTime, 1000.0f);
             unsigned int mesh_hit = getPersonCollidedMesh(world, deltaTime) ;
-            if(mesh_hit) reverseMovement(deltaTime, app, player);
+            bool isOnGround = allowMoveOnGround(world, deltaTime, 5.0f);
+            if(mesh_hit || !isOnGround) reverseMovement(deltaTime, app, player);
             // For each entity in the world
             auto *rigidBody = player->getComponent<RigidBodyComponent>();
             auto player_pos = player->localTransform.position;
@@ -87,7 +89,7 @@ namespace our {
 
         unsigned int  getCameraCollidedMesh(World *world, float deltaTime, float distance = 5.0f) ; // return mesh id that collided from camera within certain distance 
         unsigned int  getPersonCollidedMesh(World *world, float deltaTime) ; // return mesh id that person collided with
-        
+        bool allowMoveOnGround(World *world, float deltaTime, float distance = 5.0f);
     };
     
 }   

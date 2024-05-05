@@ -115,6 +115,7 @@ set(COMMON_COMPONENTS_SOURCES
         source/common/components/light-component.hpp
         source/common/components/light-component.cpp
         source/common/components/free-camera-controller.hpp
+        source/common/components/ground-or-stairs.hpp
         source/common/components/fps-camera-controller.hpp
         source/common/components/camera-controller.hpp
         source/common/components/camera-controller.cpp

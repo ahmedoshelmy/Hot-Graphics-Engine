@@ -8,7 +8,7 @@
 #include "fps-camera-controller.hpp"
 #include "movement.hpp"
 #include "rigid-body.hpp"
-
+#include "ground-or-stairs.hpp"
 namespace our {
 
     // Given a json object, this function picks and creates a component in the given entity
@@ -32,6 +32,8 @@ namespace our {
         }
         else if (type == RigidBodyComponent::getID()) {
             component = entity->addComponent<RigidBodyComponent>();
+        } else if (type == GroundOrStairsComponent::getID() ) {
+            component = entity->addComponent<GroundOrStairsComponent>();
         }
         if (component) component->deserialize(data);
     }
