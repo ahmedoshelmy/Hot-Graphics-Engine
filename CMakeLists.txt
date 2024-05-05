@@ -112,6 +112,8 @@ set(COMMON_COMPONENTS_SOURCES
         source/common/components/trigger.hpp
         source/common/components/pickable.cpp
         source/common/components/pickable.hpp
+        source/common/components/knob-component.cpp
+        source/common/components/knob-component.hpp
 
 )
 
@@ -134,6 +136,8 @@ set(COMMON_SYSTEMS_SOURCES
         source/common/systems/physics.cpp
         source/common/systems/picking.cpp
         source/common/systems/picking.hpp
+        source/common/systems/drawer-opener.cpp
+        source/common/systems/drawer-opener.hpp
         #        source/common/systems/movement.cpp
 )
 

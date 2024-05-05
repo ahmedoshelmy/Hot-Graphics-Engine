@@ -9,6 +9,7 @@
 #include "movement.hpp"
 #include "rigid-body.hpp"
 #include "pickable.hpp"
+#include "knob-component.hpp"
 
 namespace our {
 
@@ -34,6 +35,8 @@ namespace our {
             component = entity->addComponent<RigidBodyComponent>();
         } else if (type == PickableComponent::getID()) {
             component = entity->addComponent<PickableComponent>();
+        }else if (type == KnobComponent::getID()) {
+            component = entity->addComponent<KnobComponent>();
         }
         if (component) component->deserialize(data);
     }

@@ -11,6 +11,7 @@
 #include <asset-loader.hpp>
 #include <material/material.hpp>
 #include "mesh/mesh-utils.hpp"
+#include "systems/drawer-opener.hpp"
 #include <systems/physics.hpp>
 #include <systems/picking.hpp>
 
@@ -29,6 +30,7 @@ class Playstate: public our::State {
     our::LightSystem lightSystem;
     our::PhysicsSystem physicsSystem;
     our::PickingSystem pickingSystem;
+    our::DrawerOpenerSystem drawerOpenerSystem;
     bool showDemoWindow = false;
     std::string pickedItem ;
 
@@ -61,6 +63,7 @@ class Playstate: public our::State {
         cameraControllerFps.update(&world, (float)deltaTime);
 //        physicsSystem.update(&world, (float)deltaTime);
         pickingSystem.update(&world, getApp(),pickedItem,&renderer);
+        drawerOpenerSystem.update(&world, getApp(),pickedItem,&renderer,(float)deltaTime);
         
         // And finally we use the renderer system to draw the scene
         renderer.render(&world,pickedItem,deltaTime);
