@@ -12,24 +12,33 @@
 #include "../shader/shader.hpp"
 namespace our::physics_utils {
     // =========== functions ===============================
-    /*
-        - get motion state of entity (rotation / position)
-        - set scaling of mesh component
-        - this function use to transform rigid body dynamics from our system to bullet engine system
-    */
-    btDefaultMotionState* getMotionStateEntity(Entity* entity) {
+    // get world transform of entity to world space (rotation / position)
+    // NOTE: only translate and rotate
+    btTransform getEntityWorldTransform(Entity* entity) {
         glm::mat3 transform =  entity->getLocalToWorldMatrix();
-        MeshRendererComponent* meshComponent = entity->getComponent<MeshRendererComponent>();
 
-        btVector3 btScaling = btVector3(entity->localTransform.scale.x, entity->localTransform.scale.y, entity->localTransform.scale.z);
         btVector3 btRotation = btVector3(entity->localTransform.rotation.x, entity->localTransform.rotation.y, entity->localTransform.rotation.z);
         btVector3 btPosition = btVector3(entity->localTransform.position.x, entity->localTransform.position.y, entity->localTransform.position.z);
         
         btQuaternion btRotationQuat;
         btRotationQuat.setEuler(btRotation.y(), btRotation.x(), btRotation.z());
 
-        btDefaultMotionState* motionstate = new btDefaultMotionState(btTransform(btRotationQuat, btPosition));
+        return btTransform(btRotationQuat, btPosition);
+    }
+
+    // set scaling of mesh collision component to same as entity transform scaling
+    void setCollisionScalingByEntity(Entity* entity) {
+        MeshRendererComponent* meshComponent = entity->getComponent<MeshRendererComponent>();
+        btVector3 btScaling = btVector3(entity->localTransform.scale.x, entity->localTransform.scale.y, entity->localTransform.scale.z);
         meshComponent->mesh->shape->setLocalScaling(btScaling);
+    }   
+
+
+    // prepare entity to enter to dynamic world
+    btDefaultMotionState* prepareMotionStateEntity(Entity* entity) {
+        btDefaultMotionState* motionstate = new btDefaultMotionState(getEntityWorldTransform(entity));
+        setCollisionScalingByEntity(entity);
+        
         return motionstate;
     }
 

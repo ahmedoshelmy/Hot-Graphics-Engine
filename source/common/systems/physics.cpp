@@ -3,9 +3,14 @@
 #include "components/free-camera-controller.hpp"
 #include "components/camera.hpp"
 #include <btBulletDynamicsCommon.h>
+#include <btBulletCollisionCommon.h>
+#include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 #include "../physics/physics-utils.hpp"
 
+
 namespace our {
+    
 
     bool PhysicsSystem::checkCollision(const glm::vec3 &box1_min, const glm::vec3 &box1_max,
                                        const glm::vec3 &box2_min, const glm::vec3 &box2_max) {
@@ -129,6 +134,13 @@ namespace our {
         // The physics world.
         dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
         dynamicsWorld->setGravity(btVector3(0,-9.81f,0));
+
+        ghost = new btGhostObject();
+        ghost->setCollisionShape(new btBoxShape(btVector3(1.0, 1.0, 1.0)));
+        ghost->setUserPointer((void *)0);
+        mp_ids[0] = "GHOST";
+        
+        dynamicsWorld->addCollisionObject(ghost);
         // mydebugdrawer = new BulletDebugDrawer_OpenGL();
         // dynamicsWorld->setDebugDrawer(mydebugdrawer);
         // ======================= start creating rigid bodies
@@ -140,7 +152,7 @@ namespace our {
             // create rigid body and set it's id
             btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(
                 0,                                     // mass, in kg. 0 -> Static object, will never move.
-                physics_utils::getMotionStateEntity(entity),       // get motion state (local to world & set scaling of collision shape)
+                physics_utils::prepareMotionStateEntity(entity),       // get motion state (local to world & set scaling of collision shape)
                 meshComponent->mesh->shape,            // collision shape of body
                 btVector3(0,0,0)                      // local inertia
             );
@@ -156,19 +168,23 @@ namespace our {
 
     unsigned int PhysicsSystem::getCameraCollidedMesh(World *world, float deltaTime, float distance) {
         
+        Entity * camera = world->getEntity("player"); // camera
+
+        if(!camera) return 0;
+
         dynamicsWorld->stepSimulation(deltaTime, 7);
         // =========== ray test ======
-        Entity * player = world->getEntity("player");
-        glm::vec3 out_origin = player->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0f, 1.0f);
-        glm::vec3 out_direction = player->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, -1.0f, 0.0f);
+        glm::vec3 out_origin = camera->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0f, 1.0f);
+        glm::vec3 out_direction = camera->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, -1.0f, 0.0f);
 
         glm::vec3 out_end = out_origin + out_direction * distance;
 
-        // if you want to get by mouse uncomment
+        // if you want it by mouse instead of camera -> uncomment
 
         // glm::vec3 out_origin = getMouseWorldSpace(camera);
         // glm::vec3 out_direction = normalize(out_origin);
         // glm::vec3 out_end = out_origin + out_direction * 100000.0f;
+
         btCollisionWorld::ClosestRayResultCallback RayCallback(
             btVector3(out_origin.x, out_origin.y, out_origin.z), 
             btVector3(out_end.x, out_end.y, out_end.z)
@@ -189,7 +205,16 @@ namespace our {
     }
 
     unsigned int  PhysicsSystem::getPersonCollidedMesh(World *world, float deltaTime) {
-        return 0;
+        dynamicsWorld->stepSimulation(deltaTime, 7);
+
+        Entity * camera      = world->getEntity("player"); 
+        btTransform camerTransform = physics_utils::getEntityWorldTransform(camera);
+
+        ghost->setWorldTransform(camerTransform);
+        collisionCallback.collided_id = 0;
+        dynamicsWorld->contactTest(ghost, collisionCallback);
+
+        return collisionCallback.collided_id;
     }
 
     void PhysicsSystem::destroy() {
@@ -197,6 +222,9 @@ namespace our {
             dynamicsWorld->removeRigidBody(body.second); 
             delete body.second;
         }
+        dynamicsWorld->removeCollisionObject(ghost);
+        delete ghost; 
+
         delete broadphase;
         delete collisionConfiguration;
         delete dispatcher;

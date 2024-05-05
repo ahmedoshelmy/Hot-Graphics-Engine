@@ -15,10 +15,17 @@
 
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
+#include <BulletDynamics/Character/btKinematicCharacterController.h>
 
 namespace our {
 
-    
+    struct bulletCollisionCallback : public btCollisionWorld::ContactResultCallback {
+        unsigned int collided_id;
+		virtual btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1) {
+            collided_id = (size_t)colObj1Wrap->getCollisionObject()->getUserPointer(); 
+    		return 1.f;
+        }
+    };
     // The Collision system is responsible for detecting collision between objects
     class PhysicsSystem {
     public:
@@ -36,16 +43,21 @@ namespace our {
         std::map<unsigned int, btRigidBody*> rigidBodies;
         std::map<unsigned int, std::string> mp_ids; // mesh id => entity name
         // BulletDebugDrawer_OpenGL* mydebugdrawer;
-
+        // btKinematicCharacterController character;
         // Initialize the renderer 
+        btCollisionObject *ghost;
+        bulletCollisionCallback collisionCallback;
+
+
         void initialize(World* world);
         
         // This should be called every frame to update all entities containing a CollisionComponent.
         void update(World *world, float deltaTime) {
-            std::cout << "Camera hit: " << mp_ids[ getCameraCollidedMesh(world, deltaTime, 1.0f)] << "\n";
-            // For each entity in the world
             Entity * player = world->getEntity("player");
             if (!player) return;
+            unsigned int mesh_selected = getCameraCollidedMesh(world, deltaTime, 1.0f);
+            unsigned int mesh_hit = getPersonCollidedMesh(world, deltaTime) ;
+            // For each entity in the world
             auto *rigidBody = player->getComponent<RigidBodyComponent>();
             auto player_pos = player->localTransform.position;
             if (!rigidBody) return;
@@ -77,5 +89,5 @@ namespace our {
         unsigned int  getPersonCollidedMesh(World *world, float deltaTime) ; // return mesh id that person collided with
         
     };
-
-}
+    
+}   
