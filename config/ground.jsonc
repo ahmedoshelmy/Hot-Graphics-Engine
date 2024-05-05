@@ -973,7 +973,7 @@
           ,
           {
             "type": "Ground or Stairs Component",
-            "dy": 2
+            "dy": 1
           }
 
         ]

@@ -104,7 +104,7 @@ namespace our {
         glm::vec3 front = glm::vec3(M * glm::vec4(0, 0, -1, 0)),
                 up = glm::vec3(M * glm::vec4(0, 1, 0, 0)),
                 right = glm::vec3(M * glm::vec4(1, 0, 0, 0));
-
+        float prev_y = player->localTransform.position.y;
         glm::vec3 &player_pos = player->localTransform.position;
         if (app->getKeyboard().isPressed(GLFW_KEY_W))
             player_pos -= front * (deltaTime * current_sensitivity.z );
@@ -117,6 +117,8 @@ namespace our {
 
         if (app->getKeyboard().isPressed(GLFW_KEY_D))
             player_pos -= right * (deltaTime * current_sensitivity.x );
+
+        player_pos.y = prev_y;
     }
 
 
@@ -254,6 +256,7 @@ namespace our {
 
         if(RayCallback.hasHit()) {
             unsigned int id = (size_t)RayCallback.m_collisionObject->getUserPointer();
+            hit_fraction = RayCallback.m_closestHitFraction;
             if(isGroundOrStairs[id]) return id;
         } 
         // std::cout << (int)(should_move) << "\n";

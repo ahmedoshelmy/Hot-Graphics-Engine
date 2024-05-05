@@ -25,9 +25,11 @@ namespace our {
 
     struct bulletCollisionCallback : public btCollisionWorld::ContactResultCallback {
         unsigned int collided_id;
+
         float distance = 0.0;
 		virtual btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1) {
             collided_id = (size_t)colObj1Wrap->getCollisionObject()->getUserPointer(); 
+            distance = cp.getDistance();
     		return 1.f;
         }
     };
@@ -58,7 +60,9 @@ namespace our {
         float delta = 1.0f;
         float deltaReverseSpeed = 20.0f;
         int minusOrPlus = 1;
-
+        float hit_fraction = 0.0f;
+        float constDist = 4.0f;
+        float factorDist = 10.0f;
 
         void initialize(World* world);
         
@@ -69,39 +73,38 @@ namespace our {
             auto *controller = player->getComponent<FpsCameraControllerComponent>();
             glm::vec3 current_sensitivity = controller->positionSensitivity;
 
-            unsigned int mesh_selected = getCameraCollidedMesh(world, deltaTime, 1000.0f);
+            // unsigned int mesh_selected = getCameraCollidedMesh(world, deltaTime, 1000.0f);
             unsigned int mesh_hit =  getPersonCollidedMesh(world, deltaTime) ;
+            unsigned int ground_id = allowMoveOnGround(world, deltaTime, factorDist);
 
-
-            unsigned int ground_id = allowMoveOnGround(world, deltaTime, 5.0f);
             Entity *groundEntity = world->getEntity(mp_ids[ground_id]);
             GroundOrStairsComponent *ground = groundEntity != nullptr ? groundEntity->getComponent<GroundOrStairsComponent>() : nullptr; 
-            glm::vec3 cameraForward =  player->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, -1.0, 0.0);
 
-            if((ground != nullptr && !ground->dy && mesh_hit) || (ground == nullptr && mesh_hit)) reverseMovement(deltaTime, app, player);
-            // if(onGround) reverseMovement(deltaTime, app, player, 1.0);
-            if(ground != nullptr  && ground->dy) {
+            
+
+            if((ground != nullptr && !ground->dy && mesh_hit) || (ground == nullptr && mesh_hit)) 
+                reverseMovement(deltaTime, app, player);
+            // if stairs 
+            if(ground != nullptr && ground->dy) {
+                glm::vec3 cameraForward =  player->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, -1.0, 0.0);
+                bool isUp = cameraForward.x < 0;
+                float dist = factorDist * hit_fraction;
+
                 MeshRendererComponent* stairs_mesh = groundEntity->getComponent<MeshRendererComponent>();
-                if( app->getKeyboard().isPressed(GLFW_KEY_W))
-                    player->localTransform.position.y -= 1.0f * glm::sign(cameraForward.x) * (deltaTime * current_sensitivity.z );
-                else if(app->getKeyboard().isPressed(GLFW_KEY_S))
-                    player->localTransform.position.y += 0.5f * glm::sign(cameraForward.x) * (deltaTime * current_sensitivity.z );
-            }  
-            // else if(ground != nullptr) {
-            //     player->localTransform.position.y = 5.0f + groundEntity->localTransform.position.y;
-            // }
-            // std::cout << "hit: " << mp_ids[ground_id] << "\n";
-            std::cout << cameraForward.x << " " << cameraForward.y << " " << cameraForward.z << "\n";
-            // For each entity in the world
-            auto *rigidBody = player->getComponent<RigidBodyComponent>();
-            auto player_pos = player->localTransform.position;
-            if (!rigidBody) return;
-            for (auto &entity: world->getEntities()) {
-                if (entity->name == "player") continue;
-                if(checkCollisionRayCasting()){
-                    entity->addComponent<TriggerComponent>();
+
+                if(((isUp && app->getKeyboard().isPressed(GLFW_KEY_W)) || (!isUp && app->getKeyboard().isPressed(GLFW_KEY_S))) 
+                    && dist <= 5.0f) 
+                {
+                    player->localTransform.position.y += ground->dy  * (deltaTime * current_sensitivity.z );
                 }
-            }
+                else if(((!isUp && app->getKeyboard().isPressed(GLFW_KEY_W)) || (isUp && app->getKeyboard().isPressed(GLFW_KEY_S))) 
+                    && dist >= 5.0f) 
+                {
+                    player->localTransform.position.y -= ground->dy  * (deltaTime * current_sensitivity.z );
+                }
+            }  
+            // std::cout << " hit: " << mp_ids[ground_id] << " " << hit_fraction << " " << dist <<  "\n";
+            // std::cout << glm::sign(cameraForward.x) << " " << glm::sign(cameraForward.y) << " " << glm::sign(cameraForward.z) << "\n";
         }
 
         void destroy();
@@ -132,6 +135,8 @@ namespace our {
             ImGui::InputFloat("floor closest distance", &closestDistance, 0.01, 0.02, 3, 0);
             ImGui::InputFloat("delta", &delta, 0.01, 0.02, 3, 0);
             ImGui::InputFloat("delta reverse speed", &deltaReverseSpeed, 0.01, 0.02, 3, 0);
+            ImGui::InputFloat("constDist", &constDist, 0.01, 0.02, 3, 0);
+            ImGui::InputFloat("factorDist", &factorDist, 0.01, 0.02, 3, 0);
             ImGui::InputInt("minus or plus", &minusOrPlus, 0.1, 0.2, 0);
             ImGui::End();
         }
