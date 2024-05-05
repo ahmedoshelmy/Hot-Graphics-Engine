@@ -493,18 +493,13 @@
     "world": [
       {
         "name": "player",
-        "position": [0, 5, 10],
+        "position": [3, 5, 10],
         "components": [
           {
             "type": "Camera"
           },
           {
-            "type": "Free Camera Controller"
-          },
-          {
-            "type": "RigidBody",
-            "shape": "Sphere",
-            "radius": 5
+            "type": "FPS Camera Controller"
           }
         ],
 
@@ -977,7 +972,8 @@
           }
           ,
           {
-            "type": "Ground or Stairs Component"
+            "type": "Ground or Stairs Component",
+            "dy": 2
           }
 
         ]

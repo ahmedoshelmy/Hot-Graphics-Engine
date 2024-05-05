@@ -1,7 +1,7 @@
 #include "physics.hpp"
-#include "components/mesh-renderer.hpp"
-#include "components/ground-or-stairs.hpp"
-#include "components/free-camera-controller.hpp"
+// #include "components/mesh-renderer.hpp"
+// #include "components/ground-or-stairs.hpp"
+
 #include "components/camera.hpp"
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
@@ -97,8 +97,8 @@ namespace our {
         return distance < radius1 + radius2;
     }
 
-    void PhysicsSystem::reverseMovement(float deltaTime,  Application* app, Entity * player) {
-        auto *controller = player->getComponent<FreeCameraControllerComponent>();
+    void PhysicsSystem::reverseMovement(float deltaTime,  Application* app, Entity * player, float deltaReverseSpeed) {
+        auto *controller = player->getComponent<FpsCameraControllerComponent>();
         glm::vec3 current_sensitivity = controller->positionSensitivity;
         glm::mat4 M = player->localTransform.toMat4();
         glm::vec3 front = glm::vec3(M * glm::vec4(0, 0, -1, 0)),
@@ -107,16 +107,16 @@ namespace our {
 
         glm::vec3 &player_pos = player->localTransform.position;
         if (app->getKeyboard().isPressed(GLFW_KEY_W))
-            player_pos -= front * (deltaTime * current_sensitivity.z);
+            player_pos -= front * (deltaTime * current_sensitivity.z );
 
         if (app->getKeyboard().isPressed(GLFW_KEY_S))
-            player_pos += front * (deltaTime * current_sensitivity.z);
+            player_pos += front * (deltaTime * current_sensitivity.z );
 
         if (app->getKeyboard().isPressed(GLFW_KEY_A))
-            player_pos += right * (deltaTime * current_sensitivity.x);
+            player_pos += right * (deltaTime * current_sensitivity.x );
 
         if (app->getKeyboard().isPressed(GLFW_KEY_D))
-            player_pos -= right * (deltaTime * current_sensitivity.x);
+            player_pos -= right * (deltaTime * current_sensitivity.x );
     }
 
 
@@ -137,7 +137,7 @@ namespace our {
         dynamicsWorld->setGravity(btVector3(0,-9.81f,0));
 
         ghost = new btGhostObject();
-        ghost->setCollisionShape(new btBoxShape(btVector3(1.0, 2.0, 1.5)));
+        ghost->setCollisionShape(new btSphereShape(1.0f));
         ghost->setUserPointer((void *)0);
         mp_ids[0] = "GHOST";
         
@@ -148,6 +148,7 @@ namespace our {
         for(auto entity : world->getEntities()){
             // get mesh componenent & skip if it is not
             MeshRendererComponent* meshComponent = entity->getComponent<MeshRendererComponent>();
+            GroundOrStairsComponent* groundComponent = entity->getComponent<GroundOrStairsComponent>();
             if(meshComponent == nullptr) continue;
             unsigned int mesh_id = meshComponent->mesh->id; // mesh id
             // create rigid body and set it's id
@@ -158,19 +159,18 @@ namespace our {
                 btVector3(0,0,0)                      // local inertia
             );
             btRigidBody *rigidBody = new btRigidBody(rigidBodyCI);
-            // add to the world & set pointer to the mesh id
-            dynamicsWorld->addCollisionObject(rigidBody);
             rigidBody->setUserPointer((void*)(mesh_id));
-
+            // store debugging information and maps
             rigidBodies[mesh_id] = rigidBody; // store pointer to it (no need for now but to delete it later)
             mp_ids[mesh_id] = entity->name;   // set mesh id to entity name for debugging
+            isGroundOrStairs[mesh_id] = (groundComponent != nullptr);
+            // add to the world & set pointer to the mesh id
+            dynamicsWorld->addCollisionObject(rigidBody);
 
-            // ========== if it's ground or stairs set isGroundOrStairs = true
-            isGroundOrStairs[mesh_id] = (entity->getComponent<GroundOrStairsComponent>() != nullptr);
 
         }
     }
-
+    // perform ray picking using ray cast from camera within certain distance
     unsigned int PhysicsSystem::getCameraCollidedMesh(World *world, float deltaTime, float distance) {
         
         Entity * camera = world->getEntity("player"); // camera
@@ -209,6 +209,7 @@ namespace our {
 
     }
 
+    // perform collision with any mesh
     unsigned int  PhysicsSystem::getPersonCollidedMesh(World *world, float deltaTime) {
         dynamicsWorld->stepSimulation(deltaTime, 7);
 
@@ -218,40 +219,45 @@ namespace our {
         ghost->setWorldTransform(camerTransform);
         collisionCallback.collided_id = 0;
         dynamicsWorld->contactTest(ghost, collisionCallback);
-
         return collisionCallback.collided_id;
     }
 
-    bool PhysicsSystem::allowMoveOnGround(World *world, float deltaTime, float distance ) {
+    unsigned int PhysicsSystem::allowMoveOnGround(World *world, float deltaTime, float distance ) {
+        /*
+            - this function work by cast a ray from camera origin to ground *
+            - but since it could be wrong only on origin (I want to add kinda of tolerance) 
+                - I try 4 times with translation dx, dy 
+                - if non hit ground or stairs (prevent move) 
+        */
+       // get gamera origin & if not camera exist don't
         Entity * camera = world->getEntity("player"); // camera
-
         if(!camera) return 0;
-
         dynamicsWorld->stepSimulation(deltaTime, 7);
         // =========== ray test ======
-        glm::vec3 out_origin = camera->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0f, 1.0f); // origin of camera in the world
+        // glm::vec3 out_origin = camera->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0f, 1.0f); // origin of camera in the world
         glm::vec3 out_direction =  glm::vec4(0.0, -1.0, 0.0f, 0.0f); // in -ve y axis (down)
 
-        glm::vec3 out_end = out_origin + out_direction * distance;
+        
+        glm::vec3 origin = camera->getLocalToWorldMatrix() * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f); 
+        glm::vec3 out_end = origin + out_direction * distance;
 
         btCollisionWorld::ClosestRayResultCallback RayCallback(
-            btVector3(out_origin.x, out_origin.y, out_origin.z), 
+            btVector3(origin.x, origin.y, origin.z), 
             btVector3(out_end.x, out_end.y, out_end.z)
         );
 
         dynamicsWorld->rayTest(
-            btVector3(out_origin.x, out_origin.y, out_origin.z), 
+            btVector3(origin.x, origin.y, origin.z), 
             btVector3(out_end.x, out_end.y, out_end.z), 
             RayCallback
         );
 
-
         if(RayCallback.hasHit()) {
             unsigned int id = (size_t)RayCallback.m_collisionObject->getUserPointer();
-            return isGroundOrStairs[id];
+            if(isGroundOrStairs[id]) return id;
         } 
-        
-        return 0; // return if no objects
+        // std::cout << (int)(should_move) << "\n";
+        return 0;
     }
 
     void PhysicsSystem::destroy() {
