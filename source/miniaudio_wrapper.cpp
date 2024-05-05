@@ -3,8 +3,8 @@
 #include  "miniaudio_wrapper.hpp"
 
 namespace audio_wrapper {
-
-     void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount) {
+    bool play_song = false;
+    void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount) {
         ma_decoder* pDecoder = (ma_decoder*)pDevice->pUserData;
         if (pDecoder == NULL) {
             return;
@@ -45,11 +45,15 @@ namespace audio_wrapper {
             ma_decoder_uninit(&decoder);
             return ;
         }
+        play_song = true;
     };
 
     void MiniAudioWrapper::stopSong() {
-        ma_device_uninit(&device);
-        ma_decoder_uninit(&decoder);
+        if(play_song) {
+            ma_device_uninit(&device);  
+            ma_decoder_uninit(&decoder);
+        } 
+        play_song = false;
     }
 
 

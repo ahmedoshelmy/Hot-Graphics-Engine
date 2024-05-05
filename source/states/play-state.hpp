@@ -49,6 +49,8 @@ class Playstate: public our::State {
         // We initialize the camera controller system since it needs a pointer to the app
         cameraControllerFree.enter(getApp());
         cameraControllerFps.enter(getApp());
+        // initalize physics
+        physicsSystem.initialize(&world);
         // initalize lighting constants
         // Then we initialize the renderer
 
@@ -61,7 +63,7 @@ class Playstate: public our::State {
         movementSystem.update(&world, (float)deltaTime);
         cameraControllerFree.update(&world, (float)deltaTime);
         cameraControllerFps.update(&world, (float)deltaTime);
-//        physicsSystem.update(&world, (float)deltaTime);
+        physicsSystem.update(&world, getApp(), (float)deltaTime);
         pickingSystem.update(&world, getApp(),pickedItem,&renderer);
         drawerOpenerSystem.update(&world, getApp(),pickedItem,&renderer,(float)deltaTime);
         
@@ -78,6 +80,7 @@ class Playstate: public our::State {
     }
 
     void onImmediateGui(){ 
+        physicsSystem.showGUI(&world);
         lightSystem.showGUI(&world);
         renderer.showGUI(&world);
     }      

@@ -8,6 +8,7 @@
 #include "fps-camera-controller.hpp"
 #include "movement.hpp"
 #include "rigid-body.hpp"
+#include "ground-or-stairs.hpp"
 #include "pickable.hpp"
 #include "knob-component.hpp"
 
@@ -33,6 +34,8 @@ namespace our {
             component = entity->addComponent<LightComponent>();
         } else if (type == RigidBodyComponent::getID()) {
             component = entity->addComponent<RigidBodyComponent>();
+        } else if (type == GroundOrStairsComponent::getID() ) {
+            component = entity->addComponent<GroundOrStairsComponent>();
         } else if (type == PickableComponent::getID()) {
             component = entity->addComponent<PickableComponent>();
         }else if (type == KnobComponent::getID()) {

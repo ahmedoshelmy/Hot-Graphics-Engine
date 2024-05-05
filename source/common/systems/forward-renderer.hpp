@@ -16,6 +16,7 @@
 #include <queue>
 namespace our
 {
+
     
     // The render command stores command that tells the renderer that it should draw
     // the given mesh at the given localToWorld matrix using the given material
@@ -80,10 +81,11 @@ namespace our
         Texture2D* primitiveCastingTarget, *depthCastingTarget;
         TexturedMaterial* castingMaterial;
         std::map<unsigned int, std::string> mp;
-        std::string picked_item;
         // need application for picking objects
         Application* app;
+        
     public:
+        std::string picked_item;
         // Initialize the renderer including the sky and the Postprocessing objects.
         // windowSize is the width & height of the window (in pixels).
         void initialize(glm::ivec2 windowSize, Application* app, const nlohmann::json& config);
@@ -159,5 +161,6 @@ namespace our
         void renderText(std::string text, float x, float y, float scale, glm::vec3 color, int text_align_x, int text_align_y);
         void checkTextCommands();
     };
-
 }
+
+
