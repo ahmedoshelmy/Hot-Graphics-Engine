@@ -48,6 +48,8 @@ namespace our {
         btCollisionObject *ghost;
         bulletCollisionCallback collisionCallback;
 
+        float closestDistance = 5.0f;
+
 
         void initialize(World* world);
         
@@ -56,8 +58,9 @@ namespace our {
             Entity * player = world->getEntity("player");
             if (!player) return;
             unsigned int mesh_selected = getCameraCollidedMesh(world, deltaTime, 1000.0f);
-            unsigned int mesh_hit = getPersonCollidedMesh(world, deltaTime) ;
-            bool isOnGround = allowMoveOnGround(world, deltaTime, 5.0f);
+            unsigned int mesh_hit = 0;// getPersonCollidedMesh(world, deltaTime) ;
+            bool isOnGround = allowMoveOnGround(world, deltaTime, closestDistance);
+            std::cout << "hit: " << mp_ids[mesh_hit] << " onGround: " << isOnGround << "\n";
             if(mesh_hit || !isOnGround) reverseMovement(deltaTime, app, player);
             // For each entity in the world
             auto *rigidBody = player->getComponent<RigidBodyComponent>();
@@ -90,6 +93,16 @@ namespace our {
         unsigned int  getCameraCollidedMesh(World *world, float deltaTime, float distance = 5.0f) ; // return mesh id that collided from camera within certain distance 
         unsigned int  getPersonCollidedMesh(World *world, float deltaTime) ; // return mesh id that person collided with
         bool allowMoveOnGround(World *world, float deltaTime, float distance = 5.0f);
+
+
+        void showGUI(World* world) {
+                
+            ImGui::Begin("Collision System");
+            ImGui::Text("Closest Distance from floor");
+            ImGui::InputFloat("cutOff", &closestDistance, 0.01, 0.02, 3, 0);
+
+            ImGui::End();
+        }
     };
     
 }   

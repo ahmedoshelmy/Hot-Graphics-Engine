@@ -16,11 +16,11 @@
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD2
 #include <imgui_impl/imgui_impl_glfw.h>
 #include <imgui_impl/imgui_impl_opengl3.h>
-#define NDEBUG
-#if !defined(NDEBUG)
+// #define NDEBUG
+// #if !defined(NDEBUG)
 // If NDEBUG (no debug) is not defined, enable OpenGL debug messages
 #define ENABLE_OPENGL_DEBUG_MESSAGES
-#endif
+// #endif
 
 #include "texture/screenshot.hpp"
 
@@ -96,8 +96,8 @@ void GLAPIENTRY opengl_callback(GLenum source, GLenum type, GLuint id, GLenum se
             _severity = "UNKNOWN"; break;
     }
 
-    std::cout << "OpenGL Debug Message " << id << " (type: " << _type << ") of " << _severity
-    << " raised from " << _source << ": " << message << std::endl;
+//    std::cout << "OpenGL Debug Message " << id << " (type: " << _type << ") of " << _severity
+//    << " raised from " << _source << ": " << message << std::endl;
 }
 
 void our::Application::configureOpenGL() {

@@ -23,7 +23,6 @@ class Mesh {
         static std::atomic<unsigned int>  ID;
         unsigned int id;
         // btCollisionShape* collisionShape;
-        btConvexHullShape* collisionShape;
         btTriangleIndexVertexArray* data;
         btBvhTriangleMeshShape* shape;
         glm::vec3 min, max; // They represent the minimum and maximum coordinates in the mesh
@@ -85,20 +84,20 @@ class Mesh {
             // It means we are ready now you can draw since we attached the Vertex Array to null
             glBindVertexArray(0);
 
-            for (auto &vertix : vertices)
-            {
-                this->min.x = std::min(this->min.x, vertix.position.x);
-                this->min.y = std::min(this->min.y, vertix.position.y);
-                this->min.z = std::min(this->min.z, vertix.position.z);
-                this->max.x = std::max(this->max.x, vertix.position.x);
-                this->max.y = std::max(this->max.y, vertix.position.y);
-                this->max.z = std::max(this->max.z, vertix.position.z);
-            }
+//            for (auto &vertix : vertices)
+//            {
+//                this->min.x = std::min(this->min.x, vertix.position.x);
+//                this->min.y = std::min(this->min.y, vertix.position.y);
+//                this->min.z = std::min(this->min.z, vertix.position.z);
+//                this->max.x = std::max(this->max.x, vertix.position.x);
+//                this->max.y = std::max(this->max.y, vertix.position.y);
+//                this->max.z = std::max(this->max.z, vertix.position.z);
+//            }
 
-            collisionShape = new btConvexHullShape();
-            for (auto &i : elements) {
-                collisionShape->addPoint(btVector3(vertices[i].position.x, vertices[i].position.y, vertices[i].position.z));
-            }
+            // collisionShape = new btConvexHullShape();
+            // for (auto &i : elements) {
+            //     collisionShape->addPoint(btVector3(vertices[i].position.x, vertices[i].position.y, vertices[i].position.z));
+            // }
 
             // first create a btTriangleIndexVertexArray
             // NOTE: we must track this pointer and delete it when all shapes are done with it!
@@ -171,7 +170,6 @@ class Mesh {
             glDeleteBuffers(1, &VBO);
             glDeleteBuffers(1, &EBO);
             glDeleteVertexArrays(1, &VAO);
-            delete collisionShape;
             delete data;
             delete shape;
         }

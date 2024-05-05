@@ -128,6 +128,8 @@ set(COMMON_COMPONENTS_SOURCES
         source/common/components/rigid-body.hpp
         source/common/components/trigger.cpp
         source/common/components/trigger.hpp
+        source/common/components/pickable.cpp
+        source/common/components/pickable.hpp
 
 )
 

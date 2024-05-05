@@ -9,6 +9,8 @@
 #include "movement.hpp"
 #include "rigid-body.hpp"
 #include "ground-or-stairs.hpp"
+#include "pickable.hpp"
+
 namespace our {
 
     // Given a json object, this function picks and creates a component in the given entity
@@ -29,11 +31,12 @@ namespace our {
             component = entity->addComponent<MeshRendererComponent>();
         } else if (type == LightComponent::getID()) {
             component = entity->addComponent<LightComponent>();
-        }
-        else if (type == RigidBodyComponent::getID()) {
+        } else if (type == RigidBodyComponent::getID()) {
             component = entity->addComponent<RigidBodyComponent>();
         } else if (type == GroundOrStairsComponent::getID() ) {
             component = entity->addComponent<GroundOrStairsComponent>();
+        } else if (type == PickableComponent::getID()) {
+            component = entity->addComponent<PickableComponent>();
         }
         if (component) component->deserialize(data);
     }

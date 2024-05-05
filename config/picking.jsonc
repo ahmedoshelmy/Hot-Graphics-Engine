@@ -66,6 +66,12 @@
                 "books_d": "assets/textures/Books/Books_d.png",
                 "books_n": "assets/textures/Books/Books_n.png",
                 "books_r_ao_m": "assets/textures/Books/Books_r_ao_m.png",
+                
+
+                "stairs_d": "assets/textures/Stairs/Stairs_d.png",
+                "stairs_n": "assets/textures/Stairs/Stairs_n.png",
+                "stairs_r_ao_m": "assets/textures/Stairs/Stairs_r_ao_m.png",
+
 
                 "white": "assets/textures/white.png",
                 "black": "assets/textures/black.png"
@@ -82,6 +88,8 @@
                 "ceiling_02" : "assets/models/ceiling_02.obj",
                 "booksetB": "assets/models/booksetB.obj",
                 "table_home": "assets/models/home_table.obj",
+                "stairs": "assets/models/stairs.obj",
+
                 "plane": "assets/models/plane.obj"
             },
             "samplers":{
@@ -172,6 +180,15 @@
                     "normalMap": "books_n",
                     "r_ao_m_Map": "books_r_ao_m",
                     "IOR": 0.45
+                },
+                "stairs": {
+                    "type": "lit",
+                    "shader": "light",
+                    "sampler": "default",
+                    "albedoMap": "stairs_d",
+                    "normalMap": "stairs_n",
+                    "r_ao_m_Map": "stairs_r_ao_m",
+                    "IOR": 0.45
                 }
                 
             }
@@ -256,9 +273,28 @@
                         "type": "Mesh Renderer",
                         "mesh": "home",
                         "material": "home"
+                    },
+                    {
+                        "type": "Ground or Stairs Component"
                     }
                 ]
             },
+            {
+                "name": "Stairs",
+                "position": [ 0, 0, 0],
+                "rotation": [ 0, 0, 0],
+                "scale": [ 5.0, 5.0, 5.0],
+                "components": [
+                  {
+                    "type": "Mesh Renderer",
+                    "mesh": "stairs",
+                    "material": "stairs"
+                  },
+                  {
+                    "type": "Ground or Stairs Component"
+                  }
+                ]
+              },
             {
                 "name": "Kitchen Floor",
                 "position": [0, 0, 0],
