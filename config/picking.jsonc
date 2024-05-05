@@ -196,7 +196,7 @@
         "world":[
             {
                 "name": "player",
-                "position": [0, 5, 10],
+                "position": [0, 2, 10],
                 "components": [
                     {
                         "type": "Camera"

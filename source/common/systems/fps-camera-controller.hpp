@@ -11,13 +11,14 @@ namespace our
     public:
         virtual void update(World* world, float deltaTime) {
             // move around
-            CameraComponent* camera = nullptr;
-            FpsCameraControllerComponent* controller = nullptr;
-            
-            camera = CameraControllerSystem::moveAround(world, deltaTime, controller);
+            CameraComponent* camera = world->getEntity("player")->getComponent<CameraComponent>();
             if(!camera) return;
+            float yBefore = camera->getOwner()->localTransform.position.y ;
+            
+            FpsCameraControllerComponent* controller = nullptr;
+            camera = CameraControllerSystem::moveAround(world, deltaTime, controller);
             //FPS Movement won't exit xz plane
-            camera->getOwner()->localTransform.position.y = 0;
+            camera->getOwner()->localTransform.position.y = yBefore;
         }
     };
 }

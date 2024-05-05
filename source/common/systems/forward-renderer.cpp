@@ -312,39 +312,6 @@ namespace our {
         ImGui::End();
     }
 
-    // ray intersect AABB slab
-    // void ForwardRenderer::pickingComponent(World* world, CameraComponent* camera, glm::ivec2 windowSize) {
-    //     PhysicsSystem phy;
-    //     // from viewport to normalized device coordinates
-    //     glm::vec3 o = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0f, 1.0f);
-    //     glm::vec3 ray = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, -1.0f, 0.0f);
-
-    //     std::string name = "closest null";
-    //     float closest_distance = std::numeric_limits<float>::max();
-    //     std::cout << "================================================= \n";
-    //     for(auto entity : world->getEntities()) {
-    //         if(entity->getComponent<MeshRendererComponent>() == nullptr) continue;
-    //         std::pair<glm::vec3, glm::vec3> bounding_box = phy.getCollisionBox(entity);
-    //         glm::vec3 l = bounding_box.first;
-    //         glm::vec3 h = bounding_box.second;
-    //         // get intersection of ray with planes
-    //         glm::vec3 t_low = (l - o) / ray;
-    //         glm::vec3 t_high = (h - o )/ ray;
-    //         // close and far
-    //         float t_close = std::max({std::min(t_low.x, t_high.x), std::min(t_low.y, t_high.y), std::min(t_low.z, t_high.z)});
-    //         float t_far = std::min({std::max(t_low.x, t_high.x), std::max(t_low.y, t_high.y), std::max(t_low.z, t_high.z)});
-
-    //         glm::vec3 p_close = o + t_close * ray;
-    //         glm::vec3 p_far = o + t_far * ray;
-
-    //         if(t_close <= t_far  && t_close >= 0 && t_close < closest_distance) {
-    //             closest_distance = t_close ;
-    //             name = entity->name;
-    //         }
-    //     }
-    //     std::cout << "Closest: " << name << " " << closest_distance << std::endl;
-
-    // }
    
     void ForwardRenderer::pickingPhaseRenderer(CameraComponent *camera) {
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, castingFBO);
