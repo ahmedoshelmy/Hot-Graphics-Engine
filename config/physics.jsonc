@@ -1036,7 +1036,8 @@
             "material": "stairs"
           },
           {
-            "type": "Ground or Stairs Component"
+            "type": "Ground or Stairs Component",
+            "dy": 1
           }
         ]
       },

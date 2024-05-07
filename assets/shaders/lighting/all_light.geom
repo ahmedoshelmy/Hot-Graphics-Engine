@@ -10,7 +10,7 @@ out mat3 TBN;
 uniform mat4 u_Projection;
 uniform mat4 u_View;
 uniform mat4 u_Model;
-
+uniform vec3 cameraForward;
 
 in DATA {
     vec3 Normal;
@@ -34,7 +34,15 @@ void main() {
     deltaUV0 = data_in[2].TexCoords - data_in[0].TexCoords;
     deltaUV1 = data_in[1].TexCoords - data_in[0].TexCoords;
 
+    vec3 N = normalize(vec3(u_Model * vec4(cross(edge1, edge0), 0.0f))); // recalculate normal vector to make sure it normal on edges
 
+    if(dot(N, cameraForward) == -1.0) {
+        edge0    = gl_in[1].gl_Position.xyz - gl_in[0].gl_Position.xyz;
+        edge1    = gl_in[2].gl_Position.xyz - gl_in[0].gl_Position.xyz;
+
+        deltaUV0 = data_in[1].TexCoords - data_in[0].TexCoords;
+        deltaUV1 = data_in[2].TexCoords - data_in[0].TexCoords;
+    }
 
     float invDet = 1.0f / (deltaUV0.x * deltaUV1.y - deltaUV1.x * deltaUV0.y);
 
@@ -43,8 +51,7 @@ void main() {
 
     vec3 T = normalize(vec3(u_Model * vec4(tangent, 0.0f)));
     vec3 B = normalize(vec3(u_Model * vec4(bitangent, 0.0f)));
-    vec3 N = normalize(vec3(u_Model * vec4(cross(edge1, edge0), 0.0f))); // recalculate normal vector to make sure it normal on edges
-    
+         N = normalize(vec3(u_Model * vec4(cross(edge1, edge0), 0.0f))); // recalculate normal vector to make sure it normal on edges
     TBN = mat3(T, B, N);
 
 

@@ -342,7 +342,7 @@ namespace our {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glm::mat4 VP = camera->getProjectionMatrix(windowSize) * camera->getViewMatrix();
-
+        glm::vec3 cameraForward = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, -1.0, 0.0);
         // getting mouse coordinates
 
         for (auto command: opaqueCommands) {
@@ -351,6 +351,7 @@ namespace our {
             // else command.material->shader->set("tint", glm::vec4(1.0, 1.0, 1.0, 1.0));
             if (dynamic_cast<LitMaterial *>(command.material) != nullptr) {
                 light_utils::setLightParameters(command.material->shader, lightSources);
+                command.material->shader->set("cameraForward", cameraForward);
                 command.material->shader->set("u_Model", command.localToWorld);
                 command.material->shader->set("u_View", camera->getViewMatrix());
                 command.material->shader->set("u_Projection", camera->getProjectionMatrix(windowSize));
