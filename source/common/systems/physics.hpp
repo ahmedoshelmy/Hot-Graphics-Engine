@@ -70,7 +70,10 @@ namespace our {
         void update(World *world, Application* app, float deltaTime) {
             Entity * player = world->getEntity("player");
             if (!player) return;
+            // controller of FPS camera if not exist (Free Camera) there's no collision or stairs walk
             auto *controller = player->getComponent<FpsCameraControllerComponent>();
+            if(!controller) return;
+
             glm::vec3 current_sensitivity = controller->positionSensitivity;
 
             // unsigned int mesh_selected = getCameraCollidedMesh(world, deltaTime, 1000.0f);

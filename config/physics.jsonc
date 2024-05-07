@@ -493,7 +493,7 @@
     "world": [
       {
         "name": "player",
-        "position": [0, 5, 10],
+        "position": [5, 5, 10],
         "components": [
           {
             "type": "Camera"
@@ -974,6 +974,9 @@
             "type": "Mesh Renderer",
             "mesh": "stairs",
             "material": "stairs"
+          },
+          {
+            "type": "Ground or Stairs Component"
           }
         ]
       },
