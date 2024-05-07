@@ -18,6 +18,7 @@ namespace our {
         else type = LightType::DIRECTIONAL;
 
         color = data.value("color", glm::vec3(0));
+        direction = data.value("direction", glm::vec3(0));
         cutOff = data.value("cutOff", 0.0f);
         outerCutOff = data.value("outerCutOff", 0.0f);
         attenuationConstant = data.value("attenuationConstant", 1.0f);

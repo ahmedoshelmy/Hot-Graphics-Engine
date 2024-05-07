@@ -18,6 +18,7 @@ namespace our {
         std::string name;
         LightType type; 
         glm::vec3 color; 
+        glm::vec3 direction;            // spot light where direction point to 
         float cutOff;                   // spot cutoff angle in degrees
         float outerCutOff;              // spot outer cutoff angle in degrees
         

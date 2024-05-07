@@ -249,7 +249,7 @@ namespace our {
                 LightCommand command;
                 command.type = lightRenderer->type;
                 command.position = lightRenderer->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0, 1.0f);
-                command.direction = lightRenderer->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0, 0.0f);
+                command.direction = lightRenderer->getOwner()->getLocalToWorldMatrix() * glm::vec4(lightRenderer->direction, 0.0);
                 command.light = lightRenderer;
                 lightSources.push_back(command);
             }
@@ -261,17 +261,7 @@ namespace our {
         // HINT: See how you wrote the CameraComponent::getViewMatrix, it should help you solve this one
         glm::vec3 cameraPosition = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0f, 1.0f);
         glm::vec3 cameraForward = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, -1.0f, 0.0f);
-        // std::cout << cameraPosition.x << " " << cameraPosition.y << " " << cameraPosition.z << '\n';
-        // std::cout << cameraForward.x << " " << cameraForward.y << " " << cameraForward.z << '\n';
-        // if it's flashlight set position to camera position, and direction to camera direction
-        for (auto &lightSrc: lightSources) {
-            if (lightSrc.light->type == LightType::FLASH) {
-                lightSrc.type = LightType::SPOT;
-                lightSrc.position = cameraPosition;
-                lightSrc.direction = cameraForward;
-            }
-        }
-
+        
         std::sort(transparentCommands.begin(), transparentCommands.end(), [cameraForward](const RenderCommand& first, const RenderCommand& second){
             float distanceFirst = glm::dot(cameraForward, first.center);
             float distanceSecond = glm::dot(cameraForward, second.center);

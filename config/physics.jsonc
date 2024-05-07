@@ -144,7 +144,17 @@
 
         "rabbits_d": "assets/textures/Bunny/Bunny_d.png",
         "rabbits_n": "assets/textures/Bunny/Bunny_n.png",
-        "rabbits_r_ao_m": "assets/textures/Bunny/Bunny_r_ao_m.png"
+        "rabbits_r_ao_m": "assets/textures/Bunny/Bunny_r_ao_m.png",
+
+        "fps_arm_d": "assets/textures/Hands/Hand_Albedo(1).png",
+        "fps_arm_n": "assets/textures/Hands/Hand_normals.png",
+        "fps_arm_r_ao_m": "assets/textures/Hands/Hand_r_ao_m.png",
+
+        "fps_flash_d": "assets/textures/Flashlight_2/Flashlight_2_Albedo.png",
+        "fps_flash_n": "assets/textures/Flashlight_2/Flashlight_2_Normals.png",
+        "fps_flash_r_ao_m": "assets/textures/Flashlight_2/Flashlight_2_r_ao_m.png",
+        "fps_flash_emissive": "assets/textures/Flashlight_2/Flashlight_2_Emessive.png"
+        
       },
       "meshes": {
         "key": "assets/models/key.obj",
@@ -181,7 +191,9 @@
         "basket": "assets/models/basket.obj",
         "board": "assets/models/board.obj",
         "guitar": "assets/models/guitar.obj",
-        "rabbits": "assets/models/rabbits.obj"
+        "rabbits": "assets/models/rabbits.obj",
+        "fps_arm": "assets/models/FPS_HAND.obj",
+        "fps_flash": "assets/models/fps_flash.obj"
       },
       "samplers": {
         "default": {},
@@ -487,6 +499,25 @@
           "normalMap": "rabbits_n",
           "r_ao_m_Map": "rabbits_r_ao_m",
           "IOR": 0.45
+        },
+        "fps_arm": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "fps_arm_d",
+          "normalMap": "fps_arm_n",
+          "r_ao_m_Map": "fps_arm_r_ao_m",
+          "IOR": 0.45
+        },
+        "fps_flash": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "fps_flash_d",
+          "normalMap": "fps_flash_n",
+          "emissiveMap": "fps_flash_emissive",
+          "r_ao_m_Map": "fps_flash_r_ao_m",
+          "IOR": 0.5
         }
       }
     },
@@ -499,7 +530,7 @@
             "type": "Camera"
           },
           {
-            "type": "Free Camera Controller"
+            "type": "FPS Camera Controller"
           },
           {
             "type": "RigidBody",
@@ -510,18 +541,74 @@
 
         "children": [
           {
-            "name": "hand",
-            "position": [1, -1, -1],
-            "rotation": [45, 45, 0],
-            "scale": [0.1, 0.1, 1.0],
+            "name": "Flash Light",
+            "position": [0, 0, -1],
+            "components": [
+              {
+                "type": "Light Component",
+                "lightType": "spot",
+                "color": [0.1, 0.1, 0.6],
+                "cutOff": 30.0,
+                "outerCutOff": 35.0,
+                "attenuationConstant": 1.0,
+                "attenuationLinear": 0.07,
+                "attenuationQuadratic": 0.0014,
+                "direction": [0, 0, -1],
+                "debug": true
+              }
+            ]
+          },
+          {
+            "name": "Directional Light",
+            "position": [20.0, 20.0, 20.0],
+            "components": [
+              {
+                "type": "Light Component",
+                "lightType": "directional",
+                "color": [0.3, 0.3, 0.3],
+                "debug": true
+              }
+            ]
+          },
+          // {
+          //   "name": "hand",
+          //   "position": [1, -1, -1],
+          //   "rotation": [45, 45, 0],
+          //   "scale": [0.1, 0.1, 1.0],
+          //   "components": [
+          //     {
+          //       "type": "Mesh Renderer",
+          //       "mesh": "cube",
+          //       "material": "metal"
+          //     }
+          //   ],
+          //   "children": []
+          // },
+          {
+            "name": "FPS arm",
+            "position": [0, -0.9, 0.1],
+            "rotation": [0, 180, 0],
+            "scale": [0.5, 0.5, 0.5],
             "components": [
               {
                 "type": "Mesh Renderer",
-                "mesh": "cube",
-                "material": "metal"
+                "mesh": "fps_arm",
+                "material": "fps_arm"
               }
-            ],
-            "children": []
+            ]
+          },
+          {
+            "name": "FPS Flash ",
+            "position": [0.003, -0.738, 0.055],
+            "rotation": [0, 180, 0],
+            "scale": [0.4, 0.4, 0.4],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "fps_flash",
+                "material": "fps_flash"
+              }
+            ]
           },
           {
             "name": "CrossHair",
@@ -551,35 +638,8 @@
           }
         ]
       },
-      {
-        "name": "Flash Light",
-        "position": [0, 0, 0],
-        "components": [
-          {
-            "type": "Light Component",
-            "lightType": "flash",
-            "color": [0.1, 0.1, 0.6],
-            "cutOff": 30.0,
-            "outerCutOff": 35.0,
-            "attenuationConstant": 1.0,
-            "attenuationLinear": 0.07,
-            "attenuationQuadratic": 0.0014,
-            "debug": true
-          }
-        ]
-      },
-      {
-        "name": "Directional Light",
-        "position": [2.0, 2.0, 2.0],
-        "components": [
-          {
-            "type": "Light Component",
-            "lightType": "directional",
-            "color": [0.3, 0.3, 0.3],
-            "debug": true
-          }
-        ]
-      },
+      
+      
       {
         "name": "Exterior Home",
         "position": [0, 0, 0],
