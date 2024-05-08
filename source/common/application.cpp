@@ -189,7 +189,8 @@ int our::Application::run(int run_for_frames) {
     std::cout << "GLSL VERSION    : " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
     std::cout << "WIDTH           : " <<     width << std::endl;
     std::cout << "HEIGHT          : " <<     height << std::endl;
-    
+    glEnable(GL_MULTISAMPLE);  
+
 #if defined(ENABLE_OPENGL_DEBUG_MESSAGES)
     // if we have OpenGL debug messages enabled, set the message callback
     glDebugMessageCallback(opengl_callback, nullptr);
