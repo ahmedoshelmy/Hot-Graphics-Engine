@@ -75,7 +75,7 @@ namespace our {
             // We will draw the sphere from the inside, so what options should we pick for the face culling.
             PipelineState skyCubePipelineState{};
             skyCubePipelineState.depthTesting.enabled = true;
-            skyCubePipelineState.depthTesting.enabled = true;
+            skyCubePipelineState.depthTesting.function = GL_LEQUAL;
 
             skyCubePipelineState.faceCulling.enabled = false;
             skyCubePipelineState.faceCulling.culledFace = GL_FRONT;
@@ -450,16 +450,11 @@ namespace our {
             //V = Create a model matrix for the sky such that it always follows the camera (sky sphere center = camera position)
             glm::mat4 skyModel(1.0f);
             skyModel = glm::translate(skyModel, cameraPosition);
-            //V = We want the sky to be drawn behind everything (in NDC space, z=1)
+            //We want the sky to be drawn behind everything (in NDC space, z=1)
             // We can acheive the is by multiplying by an extra matrix after the projection but what values should we put in it?
-            glm::mat4 alwaysBehindTransform = glm::mat4(
-                    1.0f, 0.0f, 0.0f, 0.0f,
-                    0.0f, 1.0f, 0.0f, 0.0f,
-                    0.0f, 0.0f, 0.0f, 0.0f,
-                    0.0f, 0.0f, 1.0f, 1.0f
-            );
+            //* it's more easy to do it in vertex shader (just select .xyww) as it will always make it behind
             //V = set the "transform" uniform
-            this->skyMaterialCube->shader->set("transform", alwaysBehindTransform *VP* skyModel);
+            this->skyMaterialCube->shader->set("transform", VP * skyModel);
             //V = draw the sky sphere
             this->skyCube->draw();
         }
