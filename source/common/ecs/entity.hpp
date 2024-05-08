@@ -111,9 +111,9 @@ namespace our {
         void showGUI() {
             if (debug && name != "") {
                 if (ImGui::CollapsingHeader(name.c_str())) {
-                    ImGui::InputFloat3("position", glm::value_ptr(localTransform.position), 3, 0.0f);
-                    ImGui::InputFloat3("rotation", glm::value_ptr(localTransform.rotation), 3, 0.0f);
-                    ImGui::InputFloat3("scaling", glm::value_ptr(localTransform.scale), 3, 0.0f);
+                    ImGui::InputFloat3(("position "+name).c_str(), glm::value_ptr(localTransform.position), 3, 0.0f);
+                    ImGui::InputFloat3(("rotation "+name).c_str(), glm::value_ptr(localTransform.rotation), 3, 0.0f);
+                    ImGui::InputFloat3(("scaling  "+name).c_str(), glm::value_ptr(localTransform.scale), 3, 0.0f);
                 }
             }
         }

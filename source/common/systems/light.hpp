@@ -23,8 +23,8 @@ namespace our
                 if(light->debug) {
                     ImGui::Begin(light->name.c_str());
                     ImGui::Text("Light Component");
-                    ImGui::SliderFloat3("position", glm::value_ptr(light->getOwner()->localTransform.position), 0.0f, 1.0f, "%.3f", 1.0f);
-                    ImGui::SliderFloat3("color", glm::value_ptr(light->color), 0.0f, 1.0f, "%.3f", 1.0f);
+                    ImGui::InputFloat3("position", glm::value_ptr(light->getOwner()->localTransform.position), 3, 0);
+                    ImGui::ColorEdit3("color", glm::value_ptr(light->color), 0.0);
                     ImGui::SliderFloat("cutOff", &light->cutOff, 0.0, 180.0, "%.3f", 1.0f);
                     ImGui::SliderFloat("outerCutOff", &light->outerCutOff, 0.0, 180.0, "%.3f", 1.0f);
                     ImGui::SliderFloat("attenuationConstant", &light->attenuationConstant, 0.0, 180.0, "%.3f", 1.0f);

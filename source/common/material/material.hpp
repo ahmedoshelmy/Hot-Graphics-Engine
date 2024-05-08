@@ -2,6 +2,7 @@
 
 #include "pipeline-state.hpp"
 #include "../texture/texture2d.hpp"
+#include "../texture/texture3d.hpp"
 #include "../texture/sampler.hpp"
 #include "../shader/shader.hpp"
 
@@ -52,6 +53,15 @@ namespace our {
 
         void setup() const override;
         void deserialize(const nlohmann::json& data) override;
+    };
+    // this material responsible for holding 6 textures
+    class Textured3DMaterial : public Material {
+    public:
+        Texture3D* texture;
+        Sampler* sampler;
+        void setup() const override;
+        // no need to read texture & sampler as i specify
+        // void deserialize(const nlohmann::json& data) override;
     };
 
     // class PickingMaterial : public TexturedMaterial {

@@ -60,6 +60,53 @@ namespace our {
             this->skyMaterial->transparent = false;
         }
 
+        // Then we check if there is a sky texture in the configuration
+        if (config.contains("skyCube")) {
+            // First, we load the mesh a cube which will be used to draw the sky
+            this->skyCube = mesh_utils::loadOBJ("assets/models/cube.obj");
+
+            // We can draw the sky using the shader used to draw cube textured objects
+            ShaderProgram *skyCubeShader = new ShaderProgram();
+            skyCubeShader->attach("assets/shaders/textured3d.vert", GL_VERTEX_SHADER);
+            skyCubeShader->attach("assets/shaders/textured3d.frag", GL_FRAGMENT_SHADER);
+            skyCubeShader->link();
+
+            // Hints: the sky will be draw after the opaque objects so we would need depth testing but which depth funtion should we pick?
+            // We will draw the sphere from the inside, so what options should we pick for the face culling.
+            PipelineState skyCubePipelineState{};
+            skyCubePipelineState.depthTesting.enabled = true;
+            skyCubePipelineState.depthTesting.enabled = true;
+
+            skyCubePipelineState.faceCulling.enabled = false;
+            skyCubePipelineState.faceCulling.culledFace = GL_FRONT;
+
+            // Load the sky texture (note that we don't need mipmaps since we want to avoid any unnecessary blurring while rendering the sky)
+            std::string skyTexturesFile[6] = {
+                "assets/textures/skycube/abovetheclouds_mountains_Left.bmp",
+                "assets/textures/skycube/abovetheclouds_mountains_Right.bmp",
+                "assets/textures/skycube/abovetheclouds_mountains_Top.bmp",
+                "assets/textures/skycube/abovetheclouds_mountains_Bottom.bmp",
+                "assets/textures/skycube/abovetheclouds_mountains_Back.bmp",
+                "assets/textures/skycube/abovetheclouds_mountains_Front.bmp",
+            };
+            Texture3D *skyTexture = texture_utils::loadCube(skyTexturesFile);
+            // Setup a sampler for the sky 
+            Sampler *skySampler = new Sampler();
+            skySampler->set(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            skySampler->set(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            skySampler->set(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+            skySampler->set(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            skySampler->set(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            // Combine all the aforementioned objects (except the mesh) into a material 
+            this->skyMaterialCube = new Textured3DMaterial();
+            this->skyMaterialCube->shader = skyCubeShader;
+            this->skyMaterialCube->texture = skyTexture;
+            this->skyMaterialCube->sampler = skySampler;
+            this->skyMaterialCube->pipelineState = skyCubePipelineState;
+            this->skyMaterialCube->transparent = false;
+        }
+
+
         // Then we check if there is a postprocessing shader in the configuration
         if(config.contains("postprocess")){
             //Create a framebuffer
@@ -194,6 +241,13 @@ namespace our {
             delete skyMaterial->texture;
             delete skyMaterial->sampler;
             delete skyMaterial;
+        }
+        if(skyMaterialCube) {
+            delete skyCube;
+            delete skyMaterialCube->shader;
+            delete skyMaterialCube->texture;
+            delete skyMaterialCube->sampler;
+            delete skyMaterialCube;
         }
         // Delete all objects related to post processing
         if (postprocessMaterial) {
@@ -383,6 +437,31 @@ namespace our {
             this->skyMaterial->shader->set("transform", alwaysBehindTransform * VP * skyModel);
             //V = draw the sky sphere
             this->skySphere->draw();
+        }
+
+        if(this->skyMaterialCube) {
+            skyMaterialCube->setup();
+
+            //remove translation from view matrix
+            // glm::mat4 view =   glm::mat4(glm::mat3(camera->getViewMatrix()));
+            // glm::mat4 projection =  camera->getProjectionMatrix(windowSize);
+
+            glm::vec3 cameraPosition = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0, 1.0);
+            //V = Create a model matrix for the sky such that it always follows the camera (sky sphere center = camera position)
+            glm::mat4 skyModel(1.0f);
+            skyModel = glm::translate(skyModel, cameraPosition);
+            //V = We want the sky to be drawn behind everything (in NDC space, z=1)
+            // We can acheive the is by multiplying by an extra matrix after the projection but what values should we put in it?
+            glm::mat4 alwaysBehindTransform = glm::mat4(
+                    1.0f, 0.0f, 0.0f, 0.0f,
+                    0.0f, 1.0f, 0.0f, 0.0f,
+                    0.0f, 0.0f, 0.0f, 0.0f,
+                    0.0f, 0.0f, 1.0f, 1.0f
+            );
+            //V = set the "transform" uniform
+            this->skyMaterialCube->shader->set("transform", alwaysBehindTransform *VP* skyModel);
+            //V = draw the sky sphere
+            this->skyCube->draw();
         }
         
         //Draw all the transparent commands

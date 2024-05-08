@@ -63,6 +63,15 @@ namespace our {
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
     }
 
+    void Textured3DMaterial::setup() const {
+        Material::setup();
+        glActiveTexture(GL_TEXTURE0);
+        texture->bind();
+        if (sampler)
+            sampler->bind(0);
+        shader->set("tex", 0);
+    }
+
 
     void LitMaterial::setup() const {
         Material::setup();

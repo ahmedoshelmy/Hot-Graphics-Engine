@@ -1,6 +1,7 @@
 #pragma once
 
 #include "texture2d.hpp"
+#include "texture3d.hpp"
 #include <string>
 
 #include <glad/gl.h>
@@ -11,4 +12,6 @@ namespace our::texture_utils {
     Texture2D* empty(glm::ivec2 size, GLenum internal_format = GL_RGBA, GLenum format = GL_RGBA, GLenum type = GL_UNSIGNED_BYTE);
     // This function loads an image and sends its data to the given Texture2D 
     Texture2D* loadImage(const std::string& filename, bool generate_mipmap = true);
+
+    Texture3D* loadCube(const std::string filename[]);
 }

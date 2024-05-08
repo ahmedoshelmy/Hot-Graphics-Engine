@@ -53,3 +53,39 @@ our::Texture2D* our::texture_utils::loadImage(const std::string& filename, bool 
     stbi_image_free(pixels); //Free image data after uploading to GPU
     return texture;
 }
+
+// this function load 6 images and 
+our::Texture3D* our::texture_utils::loadCube(const std::string filenames[]) {
+    // Create a texture
+    our::Texture3D* texture = new our::Texture3D();
+    texture->bind();
+    // to store size and channel
+    glm::ivec2 size;
+    int channels;
+    // to store pixels to give to gpu for later
+    unsigned char *pixels;  
+
+
+    for(unsigned int i = 0; i < 6; i++)
+    {
+        // stbi_set_flip_vertically_on_load(true);
+        pixels = stbi_load(filenames[i].c_str(), &size.x, &size.y, &channels, 0);
+        if(pixels == nullptr){
+            std::cerr << "Failed to load image: " << filenames[i] << std::endl;
+            return nullptr;
+        }
+
+        glTexImage2D(
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
+            0, GL_RGB, size.x, size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels
+        );
+
+        stbi_image_free(pixels); //Free image data after uploading to GPU
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);  
+    return texture;
+}

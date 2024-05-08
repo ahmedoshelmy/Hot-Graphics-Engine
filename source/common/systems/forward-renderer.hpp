@@ -68,6 +68,9 @@ namespace our
         // Objects used for rendering a skybox
         Mesh* skySphere;
         TexturedMaterial* skyMaterial;
+        // Objects used for rendering a skycube
+        Mesh* skyCube;
+        Textured3DMaterial* skyMaterialCube;
         // Objects used for testing
         Mesh* whiteBoxMesh;
         TintedMaterial* whiteBoxMaterial;

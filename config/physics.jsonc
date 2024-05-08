@@ -10,7 +10,8 @@
   },
   "scene": {
     "renderer": {
-      "sky": "assets/textures/skybox/sky_forest.jpeg",
+      // "sky": "assets/textures/skybox/sky_forest.jpeg",
+      "skyCube": "",
       "postprocess": "assets/shaders/postprocess/vignette.frag"
     },
     "assets": {
@@ -560,7 +561,7 @@
           },
           {
             "name": "Directional Light",
-            "position": [20.0, 20.0, 20.0],
+            "position": [-100.0, 100.0, 100.0],
             "components": [
               {
                 "type": "Light Component",
