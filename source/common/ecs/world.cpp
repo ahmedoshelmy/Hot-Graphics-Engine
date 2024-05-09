@@ -1,4 +1,5 @@
 #include "world.hpp"
+unsigned int our::World::ID;
 
 namespace our {
 
@@ -6,6 +7,7 @@ namespace our {
     // If parent pointer is not null, the new entities will be have their parent set to that given pointer
     // If any of the entities has children, this function will be called recursively for these children
     void World::deserialize(const nlohmann::json& data, Entity* parent){
+        World::ID = 0;
         if(!data.is_array()) return;
         for(const auto& entityData : data){
             //TODO: (Req 8) Create an entity, make its parent "parent" and call its deserialize with "entityData".

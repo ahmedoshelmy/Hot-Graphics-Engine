@@ -11,7 +11,7 @@
 
 
 namespace our {
-    
+
 
     bool PhysicsSystem::checkCollision(const glm::vec3 &box1_min, const glm::vec3 &box1_max,
                                        const glm::vec3 &box2_min, const glm::vec3 &box2_max) {
@@ -142,7 +142,7 @@ namespace our {
         ghost->setCollisionShape(new btSphereShape(1.0f));
         ghost->setUserPointer((void *)0);
         mp_ids[0] = "GHOST";
-        
+
         dynamicsWorld->addCollisionObject(ghost);
         // mydebugdrawer = new BulletDebugDrawer_OpenGL();
         // dynamicsWorld->setDebugDrawer(mydebugdrawer);
@@ -161,11 +161,11 @@ namespace our {
                 btVector3(0,0,0)                      // local inertia
             );
             btRigidBody *rigidBody = new btRigidBody(rigidBodyCI);
-            rigidBody->setUserPointer((void*)(mesh_id));
+            rigidBody->setUserPointer((void*)(entity->id));
             // store debugging information and maps
-            rigidBodies[mesh_id] = rigidBody; // store pointer to it (no need for now but to delete it later)
-            mp_ids[mesh_id] = entity->name;   // set mesh id to entity name for debugging
-            isGroundOrStairs[mesh_id] = (groundComponent != nullptr);
+            rigidBodies[entity->id] = rigidBody; // store pointer to it (no need for now but to delete it later)
+            mp_ids[entity->id] = entity->name;   // set mesh id to entity name for debugging
+            isGroundOrStairs[entity->id] = (groundComponent != nullptr);
             // add to the world & set pointer to the mesh id
             dynamicsWorld->addCollisionObject(rigidBody);
 
@@ -174,7 +174,7 @@ namespace our {
     }
     // perform ray picking using ray cast from camera within certain distance
     unsigned int PhysicsSystem::getCameraCollidedMesh(World *world, float deltaTime, float distance) {
-        
+
         Entity * camera = world->getEntity("player"); // camera
 
         if(!camera) return 0;
@@ -193,20 +193,20 @@ namespace our {
         // glm::vec3 out_end = out_origin + out_direction * 100000.0f;
 
         btCollisionWorld::ClosestRayResultCallback RayCallback(
-            btVector3(out_origin.x, out_origin.y, out_origin.z), 
+            btVector3(out_origin.x, out_origin.y, out_origin.z),
             btVector3(out_end.x, out_end.y, out_end.z)
         );
 
         dynamicsWorld->rayTest(
-            btVector3(out_origin.x, out_origin.y, out_origin.z), 
-            btVector3(out_end.x, out_end.y, out_end.z), 
+            btVector3(out_origin.x, out_origin.y, out_origin.z),
+            btVector3(out_end.x, out_end.y, out_end.z),
             RayCallback
         );
 
 
         if(RayCallback.hasHit()) {
             return (size_t)RayCallback.m_collisionObject->getUserPointer();
-        } 
+        }
         return 0; // return if no objects
 
     }
@@ -215,7 +215,7 @@ namespace our {
     unsigned int  PhysicsSystem::getPersonCollidedMesh(World *world, float deltaTime) {
         dynamicsWorld->stepSimulation(deltaTime, 7);
 
-        Entity * camera      = world->getEntity("player"); 
+        Entity * camera      = world->getEntity("player");
         btTransform camerTransform = physics_utils::getEntityWorldTransform(camera);
 
         ghost->setWorldTransform(camerTransform);
@@ -239,18 +239,18 @@ namespace our {
         // glm::vec3 out_origin = camera->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, 0.0f, 1.0f); // origin of camera in the world
         glm::vec3 out_direction =  glm::vec4(0.0, -1.0, 0.0f, 0.0f); // in -ve y axis (down)
 
-        
-        glm::vec3 origin = camera->getLocalToWorldMatrix() * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f); 
+
+        glm::vec3 origin = camera->getLocalToWorldMatrix() * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
         glm::vec3 out_end = origin + out_direction * distance;
 
         btCollisionWorld::ClosestRayResultCallback RayCallback(
-            btVector3(origin.x, origin.y, origin.z), 
+            btVector3(origin.x, origin.y, origin.z),
             btVector3(out_end.x, out_end.y, out_end.z)
         );
 
         dynamicsWorld->rayTest(
-            btVector3(origin.x, origin.y, origin.z), 
-            btVector3(out_end.x, out_end.y, out_end.z), 
+            btVector3(origin.x, origin.y, origin.z),
+            btVector3(out_end.x, out_end.y, out_end.z),
             RayCallback
         );
 
@@ -258,24 +258,32 @@ namespace our {
             unsigned int id = (size_t)RayCallback.m_collisionObject->getUserPointer();
             hit_fraction = RayCallback.m_closestHitFraction;
             if(isGroundOrStairs[id]) return id;
-        } 
+        }
         // std::cout << (int)(should_move) << "\n";
         return 0;
     }
 
     void PhysicsSystem::destroy() {
         for(auto& body : rigidBodies) {
-            dynamicsWorld->removeRigidBody(body.second); 
+            dynamicsWorld->removeRigidBody(body.second);
             delete body.second;
         }
         dynamicsWorld->removeCollisionObject(ghost);
-        delete ghost; 
+        delete ghost;
 
         delete broadphase;
         delete collisionConfiguration;
         delete dispatcher;
         delete solver;
         delete dynamicsWorld;
+    }
+
+    bool PhysicsSystem::isOpenDoor(Entity * entity) {
+        auto * knobComponent = entity->getComponent<KnobComponent>();
+        if(!knobComponent) return false;
+        std::cout<<" "<<knobComponent->open<<"\n";
+        return knobComponent->open;
+
     }
 
 }

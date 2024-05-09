@@ -52,10 +52,10 @@ class Menustate: public our::State {
     float time;
     // An array of the button that we can interact with
     std::array<Button, 4> buttons;
-    // audio_wrapper::MiniAudioWrapper player;
+     audio_wrapper::MiniAudioWrapper player;
 
     void onInitialize() override {
-        // player.playSong("assets/music/1- Midnight Dreams.mp3");
+//         player.playSong("assets/music/1- Midnight Dreams.mp3");
         // First, we create a material for the menu's background
         menuMaterial = new our::TexturedMaterial();
 

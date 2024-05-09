@@ -12,7 +12,7 @@ namespace our {
         // when deleteMarkedEntities is called
         std::unordered_map<std::string, Entity *> entityByName;
     public:
-
+        static unsigned int ID;
         World() = default;
 
         // This will deserialize a json array of entities and add the new entities to the current world
@@ -29,6 +29,7 @@ namespace our {
             // and don't forget to insert it in the suitable container.
             Entity *entity = new Entity();
             entity->world = this;
+            entity->id = ++ID;
             entities.insert(entity);
             return entity;
 
