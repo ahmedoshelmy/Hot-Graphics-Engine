@@ -88,7 +88,7 @@ namespace our
         Application* app;
         
     public:
-        std::string picked_item;
+        std::string picked_item, selectedItem, prevSelectedItem = "NON-WORLD";
         // Initialize the renderer including the sky and the Postprocessing objects.
         // windowSize is the width & height of the window (in pixels).
         void initialize(glm::ivec2 windowSize, Application* app, const nlohmann::json& config);

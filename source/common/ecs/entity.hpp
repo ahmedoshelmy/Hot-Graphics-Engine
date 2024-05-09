@@ -1,6 +1,7 @@
 #pragma once
 
 #include "component.hpp"
+#include "components/camera.hpp"
 #include "transform.hpp"
 #include <list>
 #include <iterator>
@@ -8,7 +9,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
-
+// #include "../imgui-utils.hpp"
 namespace our {
 
     class World; // A forward declaration of the World Class
@@ -109,16 +110,7 @@ namespace our {
         }
 
 
-        void showGUI() {
-            if (debug && name != "") {
-                if (ImGui::CollapsingHeader(name.c_str())) {
-                    ImGui::InputFloat3(("position "+name).c_str(), glm::value_ptr(localTransform.position), 3, 0.0f);
-                    ImGui::InputFloat3(("rotation "+name).c_str(), glm::value_ptr(localTransform.rotation), 3, 0.0f);
-                    ImGui::InputFloat3(("scaling  "+name).c_str(), glm::value_ptr(localTransform.scale), 3, 0.0f);
-                }
-            }
-        }
-
+        void showGUI(CameraComponent* camera);
         // This adds a parent for the entity like the hand is a child for the person and the object(e.g. key) is a child for the hand
         void addParent(Entity *child) {
             this->parent = child;

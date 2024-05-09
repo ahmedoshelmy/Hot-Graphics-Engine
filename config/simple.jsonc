@@ -1,0 +1,256 @@
+{
+  "start-scene": "play",
+  "window": {
+    "title": "Locked Away",
+    "size": {
+      "width": 1920,
+      "height": 1080
+    },
+    "fullscreen": false
+  },
+  "scene": {
+    "renderer": {
+      // "sky": "assets/textures/skybox/sky_forest.jpeg",
+      "skyCube": "",
+      "postprocess": "assets/shaders/postprocess/vignette.frag"
+    },
+    "assets": {
+      "shaders": {
+        "tinted": {
+          "vs": "assets/shaders/tinted.vert",
+          "fs": "assets/shaders/tinted.frag"
+        },
+        "textured": {
+          "vs": "assets/shaders/textured.vert",
+          "fs": "assets/shaders/textured.frag"
+        },
+        "light": {
+          "vs": "assets/shaders/lighting/all_light.vert",
+          "fs": "assets/shaders/lighting/basic_pbr_light.frag",
+          "gs": "assets/shaders/lighting/all_light.geom"
+        },
+        "house_exterior": {
+          "vs": "assets/shaders/lighting/all_light.vert",
+          "fs": "assets/shaders/room_one/house_exterior.frag",
+          "gs": "assets/shaders/lighting/all_light.geom"
+        },
+        "crosshair": {
+          "vs": "assets/shaders/tinted.vert",
+          "fs": "assets/shaders/crosshair.frag"
+        }
+      },
+      "textures": {
+        
+        "books_d": "assets/textures/Books/Books_d.png",
+        "books_n": "assets/textures/Books/Books_n.png",
+        "books_r_ao_m": "assets/textures/Books/Books_r_ao_m.png",
+        
+        "rabbits_d": "assets/textures/Bunny/Bunny_d.png",
+        "rabbits_n": "assets/textures/Bunny/Bunny_n.png",
+        "rabbits_r_ao_m": "assets/textures/Bunny/Bunny_r_ao_m.png",
+
+        "fps_arm_d": "assets/textures/Hands/Hand_Albedo(1).png",
+        "fps_arm_n": "assets/textures/Hands/Hand_normals.png",
+        "fps_arm_r_ao_m": "assets/textures/Hands/Hand_r_ao_m.png",
+
+        "fps_flash_d": "assets/textures/Flashlight_2/Flashlight_2_Albedo.png",
+        "fps_flash_n": "assets/textures/Flashlight_2/Flashlight_2_Normals.png",
+        "fps_flash_r_ao_m": "assets/textures/Flashlight_2/Flashlight_2_r_ao_m.png",
+        "fps_flash_emissive": "assets/textures/Flashlight_2/Flashlight_2_Emessive.png"
+      },
+      "meshes": {
+        "cube": "assets/models/cube.obj",
+        
+        "booksetB": "assets/models/booksetB.obj",
+        "rabbits": "assets/models/rabbits.obj",
+        "fps_arm": "assets/models/FPS_HAND.obj",
+        "fps_flash": "assets/models/fps_flash.obj"
+      },
+      "samplers": {
+        "default": {},
+        "pixelated": {
+          "MAG_FILTER": "GL_NEAREST"
+        }
+      },
+      "materials": {
+        "metal": {
+          "type": "tinted",
+          "shader": "tinted",
+          "tint": [0.45, 0.4, 0.5, 1]
+        },
+        "crosshair": {
+          "type": "tinted",
+          "shader": "crosshair",
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            },
+            "blending": {
+              "enabled": true,
+              "sourceFactor": "GL_SRC_ALPHA",
+              "destinationFactor": "GL_ONE_MINUS_SRC_ALPHA"
+            },
+            "depthMask": false
+          },
+          "transparent": true,
+          "tint": [0.45, 0.4, 0.5, 0.5]
+        },
+        "books": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "books_d",
+          "normalMap": "books_n",
+          "r_ao_m_Map": "books_r_ao_m",
+          "IOR": 0.45
+        },
+
+        "rabbits": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "rabbits_d",
+          "normalMap": "rabbits_n",
+          "r_ao_m_Map": "rabbits_r_ao_m",
+          "IOR": 0.45
+        },
+        "fps_arm": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "fps_arm_d",
+          "normalMap": "fps_arm_n",
+          "r_ao_m_Map": "fps_arm_r_ao_m",
+          "IOR": 0.45
+        },
+        "fps_flash": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "fps_flash_d",
+          "normalMap": "fps_flash_n",
+          "emissiveMap": "fps_flash_emissive",
+          "r_ao_m_Map": "fps_flash_r_ao_m",
+          "IOR": 0.5
+        }
+      }
+    },
+    "world": [
+      {
+        "name": "player",
+        "position": [5, 5, 10],
+        "components": [
+          {
+            "type": "Camera"
+          },
+          {
+            "type": "FPS Camera Controller"
+          }
+        ],
+
+        "children": [
+          {
+            "name": "Flash Light",
+            "position": [0, 0, -1],
+            "components": [
+              {
+                "type": "Light Component",
+                "lightType": "spot",
+                "color": [0.1, 0.1, 0.6],
+                "cutOff": 30.0,
+                "outerCutOff": 35.0,
+                "attenuationConstant": 1.0,
+                "attenuationLinear": 0.07,
+                "attenuationQuadratic": 0.0014,
+                "direction": [0, 0, -1],
+                "debug": true
+              }
+            ]
+          },
+
+          {
+            "name": "FPS arm",
+            "position": [0, -0.9, 0.1],
+            "rotation": [0, 180, 0],
+            "scale": [0.5, 0.5, 0.5],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "fps_arm",
+                "material": "fps_arm"
+              }
+            ]
+          },
+          {
+            "name": "FPS Flash ",
+            "position": [0.003, -0.738, 0.055],
+            "rotation": [0, 180, 0],
+            "scale": [0.4, 0.4, 0.4],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "fps_flash",
+                "material": "fps_flash"
+              }
+            ]
+          },
+          {
+            "name": "CrossHair",
+            "position": [0, 0, 0],
+            "rotation": [0, 0, 0],
+            "scale": [1, 1, 1],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "cube",
+                "material": "crosshair"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Directional Light",
+        "position": [-100.0, 100.0, 100.0],
+        "components": [
+          {
+            "type": "Light Component",
+            "lightType": "directional",
+            "color": [0.3, 0.3, 0.3],
+            "debug": true
+          }
+        ]
+      },
+
+      {
+        "name": "BookSetB",
+        "position": [-27, 6, -34],
+        "rotation": [0, 0, 0],
+        "scale": [500, 500, 500],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "booksetB",
+            "material": "books"
+          }
+        ]
+      },
+      {
+        "name": "Rabbits",
+        "position": [-1.0, 0.5, -16.0],
+        "rotation": [0, 270, 0],
+        "scale": [5.0, 5.0, 5.0],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "rabbits",
+            "material": "rabbits"
+          }
+        ]
+      }
+    ]
+  }
+}
