@@ -42,6 +42,13 @@ set(IMGUI_SOURCES
         vendor/imgui/imgui_impl/imgui_impl_opengl3.cpp
 )
 
+# A variable with all source files of ImGuizmo
+set(IMGUIZMO_SOURCES
+        vendor/ImGuizmo/ImCurveEdit.cpp
+        vendor/ImGuizmo/ImGradient.cpp
+        vendor/ImGuizmo/ImGuizmo.cpp
+        vendor/ImGuizmo/ImSequencer.cpp
+)
 # ReactPhysics3D
 #add_subdirectory(vendor/reactphysics3D)
 
@@ -49,7 +56,7 @@ set(IMGUI_SOURCES
 add_subdirectory(vendor/utils/freetype-2.13.2)
 
 # Combine all vendor source files together into a single variable
-set(VENDOR_SOURCES ${GLAD_SOURCE} ${IMGUI_SOURCES})
+set(VENDOR_SOURCES ${GLAD_SOURCE} ${IMGUI_SOURCES} ${IMGUIZMO_SOURCES})
 
 # A variable with all our source files that are common between executable targets (examples)
 set(COMMON_SOURCES
@@ -63,6 +70,7 @@ set(COMMON_SOURCES
         source/common/asset-loader.cpp
         source/common/asset-loader.hpp
         source/common/deserialize-utils.hpp
+        source/common/imgui-utils.hpp
 
         source/common/shader/shader.hpp
         source/common/shader/shader.cpp
@@ -172,6 +180,7 @@ include_directories(
         vendor/bullet3-3.25/src
         vendor/utils/freetype-2.13.2/include
 #        vendor/reactphysics3D/include
+        vendor/ImGuizmo
 )
 
 

@@ -335,24 +335,51 @@ namespace our {
         //Set the color mask to true and the depth mask to true (to ensure the glClear will affect the framebuffer)
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
         glDepthMask(GL_TRUE);
-        // If there is a postprocess material, bind the framebuffer
 
+        // ============================= picking phase =====================
         // bind casting frame buffer
         pickingPhaseRenderer(camera);
-
+        // read pixel that camera point on (since camera always point to center)
         PixelInfo pixel = readPixel(windowSize.x / 2, windowSize.y / 2);
+        // get picked entity name
         picked_item = mp[pixel.ObjectID];
         pickedItem = picked_item;
-        // std::cout << mp[pixel.ObjectID] << "\n";
+        // ============================= renderer phase =====================
         rendererPhaseRenderer(camera);
+        // ============================= debugging ImGUI phase =====================
+        // if left click on entity
+        if(app->getMouse().justPressed(GLFW_MOUSE_BUTTON_2) ) {
+            // read mouse coords
+            // since opengl read y from (0_top) where opposite happen in renderer (0_bottom) we need to reverse directions
+            glm::vec2 mouse_coord = app->getMouse().getMousePosition();
+            mouse_coord.y = windowSize.y - mouse_coord.y;
+            // read pixel info
+            PixelInfo mouse_pixel = readPixel(mouse_coord.x, mouse_coord.y);
+            // get selected item with previouse
+            prevSelectedItem = selectedItem;
+            selectedItem = mp[mouse_pixel.ObjectID];
+            
+        } 
     }
 
     void ForwardRenderer::showGUI(World *world) {
+        Entity* player = world->getEntity("player");
+        CameraComponent* camera = player->getComponent<CameraComponent>();
+        // for show other widgets
         bool showDemoWindow = true;
         ImGui::ShowDemoWindow(&showDemoWindow);
         ImGui::Begin("Entities");
-
-        for (auto entity: world->getEntities()) entity->showGUI();
+        // loop on all entities and call it's gui
+        for (auto entity: world->getEntities()) {
+            if(selectedItem == entity->name && prevSelectedItem == selectedItem) {
+                ImGui::SetNextTreeNodeOpen(false);
+                selectedItem = "NON-WORLD";
+            }
+            else if(selectedItem == entity->name)
+                ImGui::SetNextTreeNodeOpen(true);
+            entity->showGUI(camera);
+        }
+        
         ImGui::End();
     }
 

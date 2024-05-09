@@ -25,7 +25,7 @@ class Mesh {
         // btCollisionShape* collisionShape;
         btTriangleIndexVertexArray* data;
         btBvhTriangleMeshShape* shape;
-        glm::vec3 min, max; // They represent the minimum and maximum coordinates in the mesh
+        glm::vec3 origin, min, max; // They represent the origin in the mesh, and the min, max of bounding box of mesh
 
         // The constructor takes two vectors:
         // - vertices which contain the vertex data.
@@ -84,15 +84,21 @@ class Mesh {
             // It means we are ready now you can draw since we attached the Vertex Array to null
             glBindVertexArray(0);
 
-           for (auto &vertix : vertices)
-           {
-               this->min.x = std::min(this->min.x, vertix.position.x);
-               this->min.y = std::min(this->min.y, vertix.position.y);
-               this->min.z = std::min(this->min.z, vertix.position.z);
-               this->max.x = std::max(this->max.x, vertix.position.x);
-               this->max.y = std::max(this->max.y, vertix.position.y);
-               this->max.z = std::max(this->max.z, vertix.position.z);
-           }
+            //    for (auto &vertix : vertices)
+            //    {
+            //        this->min.x = std::min(this->min.x, vertix.position.x);
+            //        this->min.y = std::min(this->min.y, vertix.position.y);
+            //        this->min.z = std::min(this->min.z, vertix.position.z);
+            //        this->max.x = std::max(this->max.x, vertix.position.x);
+            //        this->max.y = std::max(this->max.y, vertix.position.y);
+            //        this->max.z = std::max(this->max.z, vertix.position.z);
+            //    }
+
+            for(auto i : elements) {
+                origin += vertices[i].position;
+            }
+            origin /= elementCount;
+            
 
             // collisionShape = new btConvexHullShape();
             // for (auto &i : elements) {

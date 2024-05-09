@@ -1,7 +1,7 @@
 #include "entity.hpp"
 #include "../deserialize-utils.hpp"
 #include "../components/component-deserializer.hpp"
-
+#include "../imgui-utils.hpp"
 #include <glm/gtx/euler_angles.hpp>
 
 namespace our {
@@ -34,6 +34,22 @@ namespace our {
                 for(auto& component: components){
                     deserializeComponent(component, this);
                 }
+            }
+        }
+    }
+
+
+    void Entity::showGUI(CameraComponent* camera) {
+        if (debug && name != "") {
+            //TODO: fix it so one only can change
+            MeshRendererComponent* meshComponent = this->getComponent<MeshRendererComponent>();
+            if (meshComponent && camera ) {
+                ImGui::PushID(meshComponent->mesh->id);
+                if(ImGui::TreeNode(name.c_str())) {
+                    imgui_utils::EditTransform(camera, this, meshComponent->mesh->origin);
+                    ImGui::TreePop();
+                }
+                ImGui::PopID();
             }
         }
     }
