@@ -493,7 +493,7 @@
     "world": [
       {
         "name": "player",
-        "position": [3, 5, 10],
+        "position": [5, 5, 10],
         "components": [
           {
             "type": "Camera"

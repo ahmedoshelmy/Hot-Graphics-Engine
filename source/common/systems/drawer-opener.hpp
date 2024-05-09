@@ -26,7 +26,7 @@ namespace our {
             currentTime += deltaTime;
             Entity *entity = world->getEntity(pickedObject);
             if (!entity)return;
-            auto *knobComponent = entity->getComponent<KnobComponent>();
+            auto * knobComponent = entity->getComponent<KnobComponent>();
             if (!knobComponent) return;
             // Here there should be delay between opening and closing (Toggling effect) To make it more realistic
             if (app->getKeyboard().isPressed(GLFW_KEY_O) && prevTime + 2 < currentTime) {
@@ -41,7 +41,7 @@ namespace our {
                     position.z += 2;
                     rotation = knobComponent->openRotation;
                 }
-                knobComponent->open ^= 1;
+                knobComponent->open ^=1 ;
                 prevTime = currentTime;
             }
         }
