@@ -1,10 +1,11 @@
 # Keyboard Keys
 
 - WASD to move 
-- P to pick things in the inventory 
+- Pick objects to the inventory with right mouse click 
+- When picking other object the object in the hand goes to the inventory 
 - I to show the inventory
-- C to hide the inventory 
-- O to open and close doors 
+- ESC to hide the inventory 
+- Open doors with right click mouse  
 - Q to go up 
 - E to go down 
 

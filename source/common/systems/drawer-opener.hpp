@@ -30,7 +30,7 @@ namespace our {
             auto *knobComponent = entity->getComponent<KnobComponent>();
             if (!knobComponent) return;
             // Here there should be delay between opening and closing (Toggling effect) To make it more realistic
-            if (app->getKeyboard().isPressed(GLFW_KEY_O) && prevTime + 2 < currentTime) {
+            if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_RIGHT)&& prevTime + 2 < currentTime) {
                 auto &position = entity->localTransform.position;
                 auto &rotation = entity->localTransform.rotation;
                 if (knobComponent->open) {

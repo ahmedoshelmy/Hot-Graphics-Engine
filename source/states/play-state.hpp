@@ -84,10 +84,10 @@ class Playstate: public our::State {
         // Get a reference to the keyboard object
         auto& keyboard = getApp()->getKeyboard();
 
-        if(keyboard.justPressed(GLFW_KEY_ESCAPE)){
-            // If the escape  key is pressed in this frame, go to the play state
-            getApp()->changeState("menu");
-        }
+//        if(keyboard.justPressed(GLFW_KEY_ESCAPE)){
+//            // If the escape  key is pressed in this frame, go to the play state
+//            getApp()->changeState("menu");
+//        }
 
         if (clockController.getCurrentTime() >= clockController.getEndGameInterval()) {
             getApp()->changeState("lose");
