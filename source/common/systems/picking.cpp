@@ -30,24 +30,23 @@ namespace our {
     void PickingSystem::update(our::World *world, our::Application *app, std::string pickedObject,  std::string & inHandItem, TextRenderer * renderer) {
         if(!this->renderer) this->renderer = renderer;
         // Check that the user clicked on P
-        if (app->getKeyboard().isPressed(GLFW_KEY_P)) {
+        if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
             if (isPickable(pickedObject)) {
                 addToInventory(world, pickedObject);
             }
         }
-
         if (app->getKeyboard().isPressed(GLFW_KEY_I)) {
             showInventory(world);
             inventoryState = true;
         }
-        if (app->getKeyboard().isPressed(GLFW_KEY_C)) {
+        if (app->getKeyboard().isPressed(GLFW_KEY_ESCAPE)) {
             hideInventory(world);
             inventoryState = false;
         }
         if (inventoryState) {
             if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1)) {
                 glm::vec2 mousePosition = app->getMouse().getMousePosition();
-                std::cout<<mousePosition.x<<" "<<mousePosition.y<<"\n";
+//                std::cout<<mousePosition.x<<" "<<mousePosition.y<<"\n";
                 std::string clickedItem = getClickedInventoryItem(world, mousePosition.x, mousePosition.y);
                 std::cout<<clickedItem<<" ";
                 if (!clickedItem.empty() ) {
