@@ -16,6 +16,7 @@
 #include "systems/locked-away.hpp"
 #include <systems/physics.hpp>
 #include <systems/picking.hpp>
+#include <systems/clock-controller.hpp>
 
 
 // This state shows how to use the ECS framework and deserialization.
@@ -26,6 +27,7 @@ class Playstate: public our::State {
     our::World world;
     our::ForwardRenderer renderer;
     our::TextRenderer textRenderer;
+    our::ClockController clockController;
     our::FreeCameraControllerSystem cameraControllerFree;
     our::FpsCameraControllerSystem cameraControllerFps;
     our::MovementSystem movementSystem;
@@ -37,8 +39,6 @@ class Playstate: public our::State {
     bool showDemoWindow = false;
     std::string pickedItem ;
     our::GameState gameState;
-    double currentTime = 0;
-    double endGameInterval = 5*60; // 5 minutes
 
     void onInitialize() override {
         gameState = our::GameState::PLAY;
@@ -63,13 +63,10 @@ class Playstate: public our::State {
         auto size = getApp()->getFrameBufferSize();
         renderer.initialize(size, getApp(), config["renderer"]);
         textRenderer.initialize(getApp()->getWindowSize());
+        clockController.initialize(getApp()->getWindowSize());
     }
 
     void onDraw(double deltaTime) override {
-        int minutes = (endGameInterval - currentTime) / 60; 
-        int seconds = ((int)endGameInterval - (int)currentTime) % 60;
-        std::string showTime = "0" + std::to_string(minutes) + " : " + (seconds < 10 ? "0" : "") + std::to_string(seconds);
-        textRenderer.addTextCommand(showTime, 0.05, 1620, 1000, 1.2, glm::vec3(0.3, 0.3, 0.3), 1, 1);
         // Here, we just run a bunch of systems to control the world logic
         movementSystem.update(&world, (float)deltaTime);
         cameraControllerFree.update(&world, (float)deltaTime);
@@ -80,6 +77,7 @@ class Playstate: public our::State {
         // And finally we use the renderer system to draw the scene
         renderer.render(&world, pickedItem, deltaTime);
         pickingSystem.update(&world, getApp(),pickedItem, &textRenderer);
+        clockController.render(&textRenderer, deltaTime);
         textRenderer.render(deltaTime);
 
         // Get a reference to the keyboard object
@@ -90,10 +88,9 @@ class Playstate: public our::State {
             getApp()->changeState("menu");
         }
 
-        currentTime += deltaTime;
-        // if (currentTime >= endGameInterval) {
-        //     getApp()->changeState("lose");
-        // }
+        if (clockController.getCurrentTime() >= clockController.getEndGameInterval()) {
+            getApp()->changeState("lose");
+        }
     }
 
     void onImmediateGui(){
@@ -115,4 +112,6 @@ class Playstate: public our::State {
         // and we delete all the loaded assets to free memory on the RAM and the VRAM
         our::clearAllAssets();
     }
+
+    
 };

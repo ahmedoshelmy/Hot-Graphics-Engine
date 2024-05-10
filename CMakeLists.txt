@@ -155,6 +155,7 @@ set(COMMON_SYSTEMS_SOURCES
         source/common/systems/fps-camera-controller.hpp
         source/common/systems/movement.hpp
         source/common/systems/light.hpp
+        source/common/systems/clock-controller.hpp
 
         source/miniaudio_wrapper.hpp
         source/miniaudio_wrapper.cpp
