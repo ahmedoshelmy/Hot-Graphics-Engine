@@ -3,6 +3,7 @@
 #include "../ecs/world.hpp"
 #include "application.hpp"
 #include "forward-renderer.hpp"
+#include <systems/drawer-opener.hpp>
 #include <iostream>
 
 namespace our {
@@ -20,9 +21,10 @@ namespace our {
     public:
         // This should be called every frame to update all entities containing a CollisionComponent.
         void update(World *world, double deltaTime, GameState *gameState, ForwardRenderer *renderer) {
-            currentTime += deltaTime;
-            if (currentTime >= endGameInterval) {
-                *gameState = GameState::LOSE;
+            Entity * door1 = world->getEntity("door1");
+            auto * knobComponent = door1->getComponent<KnobComponent>();
+            if(knobComponent->open){
+                *gameState = GameState::WIN;
             }
         }
 

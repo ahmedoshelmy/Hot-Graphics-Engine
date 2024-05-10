@@ -1,5 +1,5 @@
 {
-  "start-scene": "menu",
+  "start-scene": "play",
   "window": {
     "title": "Locked Away",
     "size": {
@@ -10,7 +10,8 @@
   },
   "scene": {
     "renderer": {
-      "sky": "assets/textures/skybox/sky_forest.jpeg",
+      // "sky": "assets/textures/skybox/sky_forest.jpeg",
+      "skyCube": "",
       "postprocess": "assets/shaders/postprocess/vignette.frag"
     },
     "assets": {
@@ -39,7 +40,7 @@
         }
       },
       "textures": {
-        "key": "assets/textures/key.png",
+
         "inventory": "assets/textures/old-map-vintage-texture-free-background.jpg",
         "hand": "assets/textures/hand.jpeg",
         "lady": "assets/textures/OldLady_baseColor.png",
@@ -144,7 +145,34 @@
 
         "rabbits_d": "assets/textures/Bunny/Bunny_d.png",
         "rabbits_n": "assets/textures/Bunny/Bunny_n.png",
-        "rabbits_r_ao_m": "assets/textures/Bunny/Bunny_r_ao_m.png"
+        "rabbits_r_ao_m": "assets/textures/Bunny/Bunny_r_ao_m.png",
+
+        "fps_arm_d": "assets/textures/Hands/Hand_Albedo(1).png",
+        "fps_arm_n": "assets/textures/Hands/Hand_normals.png",
+        "fps_arm_r_ao_m": "assets/textures/Hands/Hand_r_ao_m.png",
+
+        "fps_flash_d": "assets/textures/Flashlight_2/Flashlight_2_Albedo.png",
+        "fps_flash_n": "assets/textures/Flashlight_2/Flashlight_2_Normals.png",
+        "fps_flash_r_ao_m": "assets/textures/Flashlight_2/Flashlight_2_r_ao_m.png",
+        "fps_flash_emissive": "assets/textures/Flashlight_2/Flashlight_2_Emessive.png",
+
+
+        "drawer_d": "assets/textures/Drawer/drawer_base.png",
+        "drawer_n": "assets/textures/Drawer/drawer_normal.png",
+        "drawer_r_ao_m": "assets/textures/Drawer/drawer_roughness.png",
+
+
+        "door": "assets/textures/door.png",
+
+        "key": "assets/textures/key.png",
+
+        "rusted_key_d": "assets/textures/Key/RustedKey/rusted_key_diffuse.png",
+        "rusted_key_n": "assets/textures/Key/RustedKey/rusted_key_normal.png",
+        "rusted_key_r_ao_m": "assets/textures/Key/RustedKey/rusted_key_roughness.png",
+
+        "basic_key_d": "assets/textures/Key/BasicKey/basic_key_diffuse.jpeg",
+        "basic_key_n": "assets/textures/Key/BasicKey/basic_key_normal.png",
+        "basic_key_r_ao_m": "assets/textures/Key/BasicKey/basic_key_glossy.png"
       },
       "meshes": {
         "key": "assets/models/key.obj",
@@ -181,7 +209,11 @@
         "basket": "assets/models/basket.obj",
         "board": "assets/models/board.obj",
         "guitar": "assets/models/guitar.obj",
-        "rabbits": "assets/models/rabbits.obj"
+        "rabbits": "assets/models/rabbits.obj",
+        "fps_arm": "assets/models/FPS_HAND.obj",
+        "fps_flash": "assets/models/fps_flash.obj",
+        "door": "assets/models/door.obj"
+
       },
       "samplers": {
         "default": {},
@@ -487,13 +519,54 @@
           "normalMap": "rabbits_n",
           "r_ao_m_Map": "rabbits_r_ao_m",
           "IOR": 0.45
+        },
+        "fps_arm": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "fps_arm_d",
+          "normalMap": "fps_arm_n",
+          "r_ao_m_Map": "fps_arm_r_ao_m",
+          "IOR": 0.45
+        },
+        "fps_flash": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "fps_flash_d",
+          "normalMap": "fps_flash_n",
+          "emissiveMap": "fps_flash_emissive",
+          "r_ao_m_Map": "fps_flash_r_ao_m",
+          "IOR": 0.5
+        },
+        "door": {
+          "type": "lit",
+          "shader": "light",
+          "albedoMap": "door",
+          "normalMap": "drawer_n",
+          "r_ao_m_Map": "drawer_r_ao_m",
+          "sampler": "default"
+        },
+        "rustedKey": {
+          "type": "textured",
+          "shader": "textured",
+          "sampler": "default",
+          "tint": [1, 1, 1, 1],
+          "texture": "rusted_key_d"
+        },
+        "basicKey": {
+          "type": "textured",
+          "shader": "textured",
+          "sampler": "default",
+          "tint": [1, 1, 1, 1],
+          "texture": "basic_key_d"
         }
       }
     },
     "world": [
       {
         "name": "player",
-        "position": [5, 5, 10],
+        "position": [-14, 19, 6.75],
         "components": [
           {
             "type": "Camera"
@@ -502,21 +575,76 @@
             "type": "FPS Camera Controller"
           }
         ],
-
         "children": [
           {
-            "name": "hand",
-            "position": [1, -1, -1],
-            "rotation": [45, 45, 0],
-            "scale": [0.1, 0.1, 1.0],
+            "name": "Flash Light",
+            "position": [0, 0, -1],
+            "components": [
+              {
+                "type": "Light Component",
+                "lightType": "spot",
+                "color": [0.1, 0.1, 0.6],
+                "cutOff": 30.0,
+                "outerCutOff": 35.0,
+                "attenuationConstant": 1.0,
+                "attenuationLinear": 0.07,
+                "attenuationQuadratic": 0.0014,
+                "direction": [0, 0, -1],
+                "debug": true
+              }
+            ]
+          },
+          {
+            "name": "Directional Light",
+            "position": [-100.0, 100.0, 100.0],
+            "components": [
+              {
+                "type": "Light Component",
+                "lightType": "directional",
+                "color": [0.3, 0.3, 0.3],
+                "debug": true
+              }
+            ]
+          },
+          // {
+          //   "name": "hand",
+          //   "position": [1, -1, -1],
+          //   "rotation": [45, 45, 0],
+          //   "scale": [0.1, 0.1, 1.0],
+          //   "components": [
+          //     {
+          //       "type": "Mesh Renderer",
+          //       "mesh": "cube",
+          //       "material": "metal"
+          //     }
+          //   ],
+          //   "children": []
+          // },
+          {
+            "name": "FPS arm",
+            "position": [0, -0.9, 0.1],
+            "rotation": [0, 180, 0],
+            "scale": [0.5, 0.5, 0.5],
             "components": [
               {
                 "type": "Mesh Renderer",
-                "mesh": "cube",
-                "material": "metal"
+                "mesh": "fps_arm",
+                "material": "fps_arm"
               }
-            ],
-            "children": []
+            ]
+          },
+          {
+            "name": "FPS Flash ",
+            "position": [0.003, -0.738, 0.055],
+            "rotation": [0, 180, 0],
+            "scale": [0.4, 0.4, 0.4],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "fps_flash",
+                "material": "fps_flash"
+              }
+            ]
           },
           {
             "name": "CrossHair",
@@ -543,35 +671,6 @@
                 "material": "inventory"
               }
             ]
-          }
-        ]
-      },
-      {
-        "name": "Flash Light",
-        "position": [0, 0, 0],
-        "components": [
-          {
-            "type": "Light Component",
-            "lightType": "flash",
-            "color": [0.1, 0.1, 0.6],
-            "cutOff": 30.0,
-            "outerCutOff": 35.0,
-            "attenuationConstant": 1.0,
-            "attenuationLinear": 0.07,
-            "attenuationQuadratic": 0.0014,
-            "debug": true
-          }
-        ]
-      },
-      {
-        "name": "Directional Light",
-        "position": [2.0, 2.0, 2.0],
-        "components": [
-          {
-            "type": "Light Component",
-            "lightType": "directional",
-            "color": [0.3, 0.3, 0.3],
-            "debug": true
           }
         ]
       },
@@ -647,9 +746,9 @@
             "mesh": "floor_garage",
             "material": "concrete"
           },
-            {
-                "type": "Ground or Stairs Component"
-            }
+          {
+            "type": "Ground or Stairs Component"
+          }
         ]
       },
       {
@@ -676,53 +775,7 @@
             "mesh": "booksetB",
             "material": "books"
           }
-          
-        ]
-      },
-      {
-        "name": "key",
-        "position": [1, 5, -34],
-        "rotation": [0, 0, 0],
-        "scale": [0.2, 0.2, 0.2],
-        "components": [
-          {
-            "type": "Mesh Renderer",
-            "mesh": "key",
-            "material": "key"
-          },
-          {
-            "type": "Pickable",
-            "inventoryMousePosition": [440, 375],
-            "inventoryScale": [0.03, 0.03, 0.03],
-            "inventoryRotation": [1.8, 3.1, -0.05],
-            "inventoryPosition": [-1.6, 0.1, -0.5],
-            "handScale": [0.9, 0.9, -0.09],
-            "handRotation": [0, 0, 0],
-            "handPosition": [-1, -1.5, -1]
-          }
-        ]
-      },
-      {
-        "name": "flashlight",
-        "position": [1, 5, -34],
-        "rotation": [0, 0, 0],
-        "scale": [30, 30, 30],
-        "components": [
-          {
-            "type": "Mesh Renderer",
-            "mesh": "flashlight",
-            "material": "flashlight"
-          },
-          {
-            "type": "Pickable",
-            "inventoryMousePosition": [740, 375],
-            "inventoryScale": [5, 5, 5],
-            "inventoryRotation": [0, 0.1, 0.1],
-            "inventoryPosition": [-0.6, 0.2, -0.55],
-            "handPosition": [-1, -1.5, -1],
-            "handRotation": [3, 1.57, 2],
-            "handScale": [30, 30, 30]
-          }
+
         ]
       },
       {
@@ -969,13 +1022,11 @@
             "type": "Mesh Renderer",
             "mesh": "stairs",
             "material": "stairs"
-          }
-          ,
+          },
           {
             "type": "Ground or Stairs Component",
             "dy": 1
           }
-
         ]
       },
       {
@@ -1027,6 +1078,605 @@
             "type": "Mesh Renderer",
             "mesh": "chair",
             "material": "chair"
+          }
+        ]
+      },
+      {
+        "name": "door1",
+        "position": [
+          21.1,
+          6,
+          4
+        ],
+        "rotation": [
+          0,
+          180,
+          0
+        ],
+        "scale": [
+          0.1,
+          0.12,
+          0.12
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "door",
+            "material": "door"
+          },
+          {
+            "type": "Knob",
+            "closedPosition": [
+              21.1,
+              6,
+              4
+            ],
+            "openRotation": [
+              0,
+              90,
+              0
+            ],
+            "openPosition": [
+              19,
+              6,
+              6
+            ],
+            "closedRotation": [
+              0,
+              180,
+              0
+            ],
+            "key": "key1"
+          }
+        ]
+      },
+      {
+        "name": "door2",
+        "position": [
+          -6,
+          6,
+          22
+        ],
+        "rotation": [
+          0,
+          -90,
+          0
+        ],
+        "scale": [
+          0.1,
+          0.12,
+          0.12
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "door",
+            "material": "door"
+          },
+          {
+            "type": "Knob",
+            "closedPosition": [
+              -6,
+              6,
+              22
+            ],
+            "openRotation": [
+              0,
+              -180,
+              0
+            ],
+            "openPosition": [
+              19,
+              6,
+              6
+            ],
+            "closedRotation": [
+              0,
+              -90,
+              0
+            ],
+            "key": "key2"
+
+          }
+        ]
+      },
+      {
+        "name": "door3",
+        "position": [
+          -3.941,
+          6,
+          -6.002
+        ],
+        "rotation": [
+          0,
+          -90,
+          0
+        ],
+        "scale": [
+          0.1,
+          0.12,
+          0.12
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "door",
+            "material": "door"
+          },
+          {
+            "type": "Knob",
+            "closedPosition": [
+              -6,
+              6,
+              22
+            ],
+            "openRotation": [
+              0,
+              -180,
+              0
+            ],
+            "openPosition": [
+              19,
+              6,
+              6
+            ],
+            "closedRotation": [
+              0,
+              -90,
+              0
+            ],
+            "key": "key3"
+          }
+        ]
+      },
+      {
+        "name": "door4",
+        "position": [
+          15.506,
+          6.943,
+          14.867
+        ],
+        "rotation": [
+          0,
+          90,
+          0
+        ],
+        "scale": [
+          0.1,
+          0.12,
+          0.11
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "door",
+            "material": "door"
+          },
+          {
+            "type": "Knob",
+            "closedPosition": [
+              -6,
+              6,
+              22
+            ],
+            "openRotation": [
+              0,
+              -180,
+              0
+            ],
+            "openPosition": [
+              19,
+              6,
+              6
+            ],
+            "closedRotation": [
+              0,
+              -90,
+              0
+            ],
+            "key": "key4"
+          }
+        ]
+      },
+      {
+        "name": "door5",
+        "position": [
+          -3.8,
+          19.8,
+          -6.6
+        ],
+        "rotation": [
+          0,
+          -90,
+          0
+        ],
+        "scale": [
+          0.1,
+          0.12,
+          0.12
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "door",
+            "material": "door"
+          },
+          {
+            "type": "Knob",
+            "closedPosition": [
+              -6,
+              6,
+              22
+            ],
+            "openRotation": [
+              0,
+              -180,
+              0
+            ],
+            "openPosition": [
+              19,
+              6,
+              6
+            ],
+            "closedRotation": [
+              0,
+              -90,
+              0
+            ],
+            "key": "key5"
+          }
+        ]
+      },
+      {
+        "name": "door6",
+        "position": [
+          -0.168,
+          20.111,
+          14.958                ],
+        "rotation": [
+          0,
+          -180,
+          0
+        ],
+        "scale": [
+          0.1,
+          0.12,
+          0.080
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "door",
+            "material": "door"
+          },
+          {
+            "type": "Knob",
+            "closedPosition": [
+              -6,
+              6,
+              22
+            ],
+            "openRotation": [
+              0,
+              -180,
+              0
+            ],
+            "openPosition": [
+              19,
+              6,
+              6
+            ],
+            "closedRotation": [
+              0,
+              -90,
+              0
+            ],
+            "key": "key6"
+          }
+        ]
+      },
+      {
+        "name": "door7", //+90 to open , +2 z
+        "position": [
+          -6.901,
+          19.326,
+          4.751
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          0.1,
+          0.12,
+          0.09
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "door",
+            "material": "door"
+          },
+          {
+            "type": "Knob",
+            "closedPosition": [
+              -6,
+              6,
+              22
+            ],
+            "openRotation": [
+              0,
+              -180,
+              0
+            ],
+            "openPosition": [
+              19,
+              6,
+              6
+            ],
+            "closedRotation": [
+              0,
+              -90,
+              0
+            ],
+            "key": "key7"
+          }
+        ]
+      },
+      {
+        "name": "door8",
+        "position": [
+          0.497,
+          19.333,
+          20.591
+        ],
+        "rotation": [
+          0,
+          -180,
+          0
+        ],
+        "scale": [
+          0.274,
+          0.12,
+          0.1
+        ],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "door",
+            "material": "door"
+          },
+          {
+            "type": "Knob",
+            "closedPosition": [
+              -6,
+              6,
+              22
+            ],
+            "openRotation": [
+              0,
+              -180,
+              0
+            ],
+            "openPosition": [
+              19,
+              6,
+              6
+            ],
+            "closedRotation": [
+              0,
+              -90,
+              0
+            ],
+            "key": "key8"
+          }
+        ]
+      },
+      {
+        "name": "key1",
+        "position": [1, 0.5, -34],
+        "rotation": [-4.5, 0, 0],
+        "scale": [0.2, 0.2, 0.2],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "key",
+            "material": "key"
+          },
+          {
+            "type": "Pickable",
+            "inventoryMousePosition": [440, 375],
+            "inventoryScale": [0.03, 0.03, 0.03],
+            "inventoryRotation": [1.8, 3.1, -0.05],
+            "inventoryPosition": [-1.6, 0.1, -0.5],
+            "handScale": [0.05,0.03, 0.05],
+            "handRotation": [0, -17.7, -131.889],
+            "handPosition": [0.033, -0.144, -0.7]
+          }
+        ]
+      },
+      {
+        "name": "key2",
+        "position": [-2.379,1.533, 35],
+        "rotation": [90, 0, 0],
+        "scale": [0.1, 0.1, 0.1],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "key",
+            "material": "rustedKey"
+          },
+          {
+            "type": "Pickable",
+            "inventoryMousePosition": [740, 375],
+            "inventoryScale": [0.03, 0.03, 0.03],
+            "inventoryRotation": [1.8, 3.1, -0.05],
+            "inventoryPosition": [-0.6, 0.2, -0.5],
+            "handScale": [0.05,0.03, 0.05],
+            "handRotation": [0, -17.7, -131.889],
+            "handPosition": [0.033, -0.144, -0.7]
+          }
+        ]
+      },
+      {
+        "name": "key3",
+        "position": [7.493, 2.7, 35],
+        "rotation": [-90, 0, 0],
+        "scale": [0.1, 0.1, 0.1],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "key",
+            "material": "basicKey"
+          },
+          {
+            "type": "Pickable",
+            "inventoryMousePosition": [1040, 375],
+            "inventoryScale": [0.03, 0.03, 0.03],
+            "inventoryRotation": [1.8, 3.1, -0.05],
+            "inventoryPosition": [0.4, 0.2, -0.5],
+            "handScale": [0.05,0.03, 0.05],
+            "handRotation": [0, -17.7, -131.889],
+            "handPosition": [0.033, -0.144, -0.7]
+          }
+        ]
+      },
+      {
+        "name": "key4",
+        "position": [17.546,14.473, 14.988],
+        "rotation": [90, 90, 0],
+        "scale": [0.1, 0.1, 0.1],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "key",
+            "material": "key"
+          },
+          {
+            "type": "Pickable",
+            "inventoryMousePosition": [1340, 375],
+            "inventoryScale": [0.03, 0.03, 0.03],
+            "inventoryRotation": [1.8, 3.1, -0.05],
+            "inventoryPosition": [1.4, 0.1, -0.5],
+            "handScale": [0.05,0.03, 0.05],
+            "handRotation": [0, -17.7, -131.889],
+            "handPosition": [0.033, -0.144, -0.7]
+          }
+        ]
+      },
+      {
+        "name": "key5",
+        "position": [-2.155,14.617, 33.496],
+        "rotation": [90, 0, 0],
+        "scale": [0.1, 0.1, 0.1],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "key",
+            "material": "rustedKey"
+          },
+          {
+            "type": "Pickable",
+            "inventoryMousePosition": [440, 525],
+            "inventoryScale": [0.03, 0.03, 0.03],
+            "inventoryRotation": [1.8, 3.1, -0.05],
+            "inventoryPosition": [-1.6, 0.2, 0],
+            "handScale": [0.05,0.03, 0.05],
+            "handRotation": [0, -17.7, -131.889],
+            "handPosition": [0.033, -0.144, -0.7]
+          }
+        ]
+      },
+      {
+        "name": "key6",
+        "position": [-15.484,15.848, -31.204],
+        "rotation": [90, 0, 0],
+        "scale": [0.1, 0.1, 0.1],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "key",
+            "material": "basicKey"
+          },
+          {
+            "type": "Pickable",
+            "inventoryMousePosition": [740, 525],
+            "inventoryScale": [0.03, 0.03, 0.03],
+            "inventoryRotation": [1.8, 3.1, -0.05],
+            "inventoryPosition": [-0.6, 0.2, -0],
+            "handScale": [0.05,0.03, 0.05],
+            "handRotation": [0, -17.7, -131.889],
+            "handPosition": [0.033, -0.144, -0.7]
+          }
+        ]
+      },
+      {
+        "name": "key7",
+        "position": [-21.579,14.640, -11.054],
+        "rotation": [-98, -0.814, -1517.4],
+        "scale": [0.1, 0.1, 0.1],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "key",
+            "material": "key"
+          },
+          {
+            "type": "Pickable",
+            "inventoryMousePosition": [1040, 525],
+            "inventoryScale": [0.03, 0.03, 0.03],
+            "inventoryRotation": [1.8, 3.1, -0.05],
+            "inventoryPosition": [0.4, 0.1, 0],
+            "handScale": [0.05,0.03, 0.05],
+            "handRotation": [0, -17.7, -131.889],
+            "handPosition": [0.033, -0.144, -0.7]
+          }
+        ]
+      },
+      {
+        "name": "key8",
+        "position": [-9.163,14.967, 17.397],
+        "rotation": [105.9, 314.3, 10.54],
+        "scale": [0.1, 0.1, 0.1],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "key",
+            "material": "rustedKey"
+          },
+          {
+            "type": "Pickable",
+            "inventoryMousePosition": [1340, 525],
+            "inventoryScale": [0.03, 0.03, 0.03],
+            "inventoryRotation": [1.8, 3.1, -0.05],
+            "inventoryPosition": [1.4, 0.2, 0],
+            "handScale": [0.05,0.03, 0.05],
+            "handRotation": [0, -17.7, -131.889],
+            "handPosition": [0.033, -0.144, -0.7]
+          }
+        ]
+      },
+      {
+        "name": "key9",
+        "position": [-9.163,19.967, 17.397],
+        "rotation": [105.9, 314.3, 10.54],
+        "scale": [0.1, 0.1, 0.1],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "key",
+            "material": "basicKey"
+          },
+          {
+            "type": "Pickable",
+            "inventoryMousePosition": [440, 670],
+            "inventoryScale": [0.03, 0.03, 0.03],
+            "inventoryRotation": [1.8, 3.1, -0.05],
+            "inventoryPosition": [-1.6, 0.2, 0.5],
+            "handScale": [0.05,0.03, 0.05],
+            "handRotation": [0, -17.7, -131.889],
+            "handPosition": [0.033, -0.144, -0.7]
           }
         ]
       }

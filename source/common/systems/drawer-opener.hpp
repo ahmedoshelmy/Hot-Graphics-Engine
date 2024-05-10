@@ -21,12 +21,13 @@ namespace our {
 
         // This should be called every frame to update all entities containing a CollisionComponent.
         void
-        update(World *world, Application *app, std::string pickedObject, ForwardRenderer *renderer, double deltaTime) {
+        update(World *world, Application *app, const std::string &pickedObject,  const std::string &objectInHand ,ForwardRenderer *renderer,
+               double deltaTime) {
             // For each entity in the world
             currentTime += deltaTime;
             Entity *entity = world->getEntity(pickedObject);
             if (!entity)return;
-            auto * knobComponent = entity->getComponent<KnobComponent>();
+            auto *knobComponent = entity->getComponent<KnobComponent>();
             if (!knobComponent) return;
             // Here there should be delay between opening and closing (Toggling effect) To make it more realistic
             if (app->getKeyboard().isPressed(GLFW_KEY_O) && prevTime + 2 < currentTime) {
@@ -35,14 +36,20 @@ namespace our {
                 if (knobComponent->open) {
                     position.x -= 2;
                     position.z -= 2;
-                    rotation = knobComponent->closedRotation;
-                } else {
+                    rotation.y += glm::pi<float>() /2.0;
+//                    rotation = knobComponent->closedRotation;
+                    knobComponent->open ^= 1;
+                    prevTime = currentTime;
+
+                } else if (knobComponent->key == objectInHand) {
                     position.x += 2;
                     position.z += 2;
-                    rotation = knobComponent->openRotation;
+                    rotation.y -= glm::pi<float>() /2.0;
+//                    rotation = knobComponent->openRotation;
+                    knobComponent->open ^= 1;
+                    prevTime = currentTime;
+
                 }
-                knobComponent->open ^=1 ;
-                prevTime = currentTime;
             }
         }
 

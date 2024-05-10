@@ -190,7 +190,7 @@ namespace our {
         textRenderCommand.color = color;
         textRenderCommand.text_align_x = text_align_x;
         textRenderCommand.text_align_y = text_align_y;
-        std::cout<<"RENDER TEXT " << text << "\n";
+//        std::cout<<"RENDER TEXT " << text << "\n";
         textCommands.push(textRenderCommand);
     }
 

@@ -13,6 +13,7 @@ namespace our {
         glm::vec3 closedPosition;
         glm::vec3 openRotation;
         glm::vec3 closedRotation;
+        std::string key;
 
         static std::string getID() { return "Knob"; }
 

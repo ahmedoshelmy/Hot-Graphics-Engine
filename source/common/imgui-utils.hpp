@@ -27,14 +27,14 @@ namespace imgui_utils {
         ImGui::SameLine();
         if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
             mCurrentGizmoOperation = ImGuizmo::SCALE;
-       
 
-        
+
+
         float matrix[16];
         glm::vec3 origin =  entity->localTransform.scale * geom_origin;
         ImGuizmo::RecomposeMatrixFromComponents(glm::value_ptr(entity->localTransform.position + origin), glm::value_ptr(entity->localTransform.rotation), glm::value_ptr(entity->localTransform.scale), matrix);
         ImGui::InputFloat3(("Tr##"+entity->name).c_str(), glm::value_ptr(entity->localTransform.position), 3);
-        ImGui::InputFloat3(("Rt##"+entity->name).c_str(), glm::value_ptr(entity->localTransform.rotation), 3);
+        ImGui::InputFloat3(("Rt##"+entity->name).c_str(),  glm::value_ptr(entity->localTransform.rotation), 3);
         ImGui::InputFloat3(("Sc##"+entity->name).c_str(), glm::value_ptr(entity->localTransform.scale), 3);
 
         if (mCurrentGizmoOperation != ImGuizmo::SCALE)

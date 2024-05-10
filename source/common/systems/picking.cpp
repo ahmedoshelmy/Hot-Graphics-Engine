@@ -7,7 +7,7 @@ namespace our {
 
 
     void PickingSystem::pick(World *world, const std::string &item_name) {
-        Entity *hand = world->getEntity("hand");
+        Entity *hand = world->getEntity("player");
         Entity *object = world->getEntity(item_name);
         // insert child to hand
         object->addParent(hand);
@@ -27,7 +27,7 @@ namespace our {
 
     }
 
-    void PickingSystem::update(our::World *world, our::Application *app, std::string pickedObject, TextRenderer * renderer) {
+    void PickingSystem::update(our::World *world, our::Application *app, std::string pickedObject,  std::string & inHandItem, TextRenderer * renderer) {
         if(!this->renderer) this->renderer = renderer;
         // Check that the user clicked on P
         if (app->getKeyboard().isPressed(GLFW_KEY_P)) {
@@ -47,13 +47,16 @@ namespace our {
         if (inventoryState) {
             if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1)) {
                 glm::vec2 mousePosition = app->getMouse().getMousePosition();
+                std::cout<<mousePosition.x<<" "<<mousePosition.y<<"\n";
                 std::string clickedItem = getClickedInventoryItem(world, mousePosition.x, mousePosition.y);
-                if (!clickedItem.empty()) {
+                std::cout<<clickedItem<<" ";
+                if (!clickedItem.empty() ) {
                     if (!itemInRightHand.empty())addToInventory(world, itemInRightHand);
                     pick(world, clickedItem);
                 }
             }
         }
+        inHandItem = itemInRightHand;
 
 //        std::cout << mousePosition.x << " " << mousePosition.y << "\n";
 
@@ -119,6 +122,7 @@ namespace our {
         int xStride = 100, yStride = 25;
         for (auto &entityName: inventoryEntities) {
             auto entity = world->getEntity(entityName);
+            if(!entity)continue;
             auto *pickableComponent = entity->getComponent<PickableComponent>();
             if (!pickableComponent)continue;
             if (mouseX >= pickableComponent->inventoryMousePosition.x - xStride &&

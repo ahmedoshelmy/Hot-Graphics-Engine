@@ -38,6 +38,7 @@ class Playstate: public our::State {
     our::LockedAwaySystem lockedAwaySystem;
     bool showDemoWindow = false;
     std::string pickedItem ;
+    std::string inHandItem;
     our::GameState gameState;
 
     void onInitialize() override {
@@ -72,11 +73,11 @@ class Playstate: public our::State {
         cameraControllerFree.update(&world, (float)deltaTime);
         cameraControllerFps.update(&world, (float)deltaTime);
         physicsSystem.update(&world, getApp(), (float)deltaTime);
-        drawerOpenerSystem.update(&world, getApp(), pickedItem, &renderer, (float)deltaTime);
-        // lockedAwaySystem.update(&world, deltaTime, &gameState, &renderer);
+        drawerOpenerSystem.update(&world, getApp(), pickedItem, inHandItem,&renderer, (float)deltaTime);
+        lockedAwaySystem.update(&world, deltaTime, &gameState, &renderer);
         // And finally we use the renderer system to draw the scene
         renderer.render(&world, pickedItem, deltaTime);
-        pickingSystem.update(&world, getApp(),pickedItem, &textRenderer);
+        pickingSystem.update(&world, getApp(),pickedItem, inHandItem,&textRenderer);
         clockController.render(&textRenderer, deltaTime);
         textRenderer.render(deltaTime);
 
@@ -90,6 +91,9 @@ class Playstate: public our::State {
 
         if (clockController.getCurrentTime() >= clockController.getEndGameInterval()) {
             getApp()->changeState("lose");
+        }
+        if (gameState == our::GameState::WIN) {
+            getApp()->changeState("win");
         }
     }
 

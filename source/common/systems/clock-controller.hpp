@@ -21,7 +21,7 @@ namespace our {
 
         double currentTime;
         double endSoonInterval = 0.2*60; 
-        double endGameInterval = 5*60; 
+        double endGameInterval = 50*60;
 
     public:
         void initialize(glm::ivec2 windowSize) {
