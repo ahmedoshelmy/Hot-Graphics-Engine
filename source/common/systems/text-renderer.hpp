@@ -51,7 +51,6 @@ namespace our {
         void render(double deltaTime) {
             currentTime += deltaTime;
             renderText("Welcome To Locked Away", 25.0f, 100.0f, 0.5f, glm::vec3(1.0f, 1.0f, 1.0f), 0, 1);
-            // renderText("You Picked Up A Key", 25.0f, 100.0f, 0.2f, glm::vec3(1.0f, 1.0f, 1.0f), 0, 0);
             checkTextCommands();
         }
 
@@ -64,6 +63,12 @@ namespace our {
                                     glm::vec3 color = TextRenderer::color, int text_align_x = TextRenderer::text_align_x, int text_align_y = TextRenderer::text_align_y);
 
         void checkTextCommands();
+
+        void destroy() {
+            glDeleteVertexArrays(1, &VAO);
+            glDeleteBuffers(1, &VBO);
+            delete textShader;
+        }
 
     };
 

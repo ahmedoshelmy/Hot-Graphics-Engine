@@ -8,7 +8,7 @@
 #include "../material/material.hpp"
 #include "../mesh/mesh.hpp"
 #include "../application.hpp"
-
+#include "../mesh/mesh-utils.hpp"
 namespace our {
 
     // The System is responsible for opening drawers where keys might be hidden
@@ -17,58 +17,51 @@ namespace our {
     
         TintedMaterial * dangerMaterial;
         Mesh* rectangle;
+        glm::mat4 transform; // contrain transform matrix of shader
+
         double currentTime = 0.0;
-        double endSoonInterval = 1*60; 
+        double endSoonInterval = 3*60; 
         double endGameInterval = 1.1*60; 
 
     public:
         void initialize(glm::ivec2 windowSize) {
             this->windowSize = windowSize;
-
+            // create material of 
             dangerMaterial = new TintedMaterial();
             dangerMaterial->shader = new ShaderProgram();
             dangerMaterial->shader->attach("assets/shaders/tinted.vert", GL_VERTEX_SHADER);
             dangerMaterial->shader->attach("assets/shaders/danger.frag", GL_FRAGMENT_SHADER);
             dangerMaterial->shader->link();
-
+            // tinted with red
             dangerMaterial->tint = glm::vec4(0.5, 0.0, 0.0, 0.0);
+            // close depth testing as it appear above all
             dangerMaterial->pipelineState.depthTesting.enabled = false;
+            // enable blending for transparency
             dangerMaterial->pipelineState.blending.enabled = true;
+            // create mesh rectangle that take whole screen
+            rectangle = mesh_utils::rectangle();
 
-            // Then we create a rectangle whose top-left corner is at the origin and its size is 1x1.
-            // Note that the texture coordinates at the origin is (0.0, 1.0) since we will use the 
-            // projection matrix to make the origin at the the top-left corner of the screen.
-            rectangle = new our::Mesh({
-                {{0.0f, 0.0f, 0.0f}, {255, 255, 255, 255}, {0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
-                {{1.0f, 0.0f, 0.0f}, {255, 255, 255, 255}, {1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
-                {{1.0f, 1.0f, 0.0f}, {255, 255, 255, 255}, {1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
-                {{0.0f, 1.0f, 0.0f}, {255, 255, 255, 255}, {0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
-            },{
-                0, 1, 2, 2, 3, 0,
-            });
-
-
-
+            // transform matrix that show rectangle and make it always centered & take full screen 
+            transform = glm::mat4(1.0);
+            transform = glm::scale(transform, glm::vec3(2));
+            transform = glm::translate(transform,  glm::vec3(-0.5, -0.5, 0.0));
         }
 
         void render(TextRenderer* textRenderer, double deltaTime) {
             currentTime += deltaTime;
+            // show clock
             showClock(textRenderer);
-
+            // if time enter the danger time show flash of red
             if(endGameInterval - currentTime <= endSoonInterval) {
-                // show clock
-                // transform matrix that show rectangle
-                glm::mat4 transform = glm::mat4(1.0);
-                transform = glm::scale(transform, glm::vec3(2));
-                transform = glm::translate(transform,  glm::vec3(-0.5, -0.5, 0.0));
                 // renderer rectangle
                 dangerMaterial->setup();
                 dangerMaterial->shader->set("transform", transform);
                 dangerMaterial->shader->set("time", (float)currentTime);
                 // used to increase frequence
-                float remainPercentage =  (endSoonInterval - (endGameInterval - currentTime )) / endSoonInterval ;
-                remainPercentage = glm::mix(2.5f, 5.0f, remainPercentage);
-                dangerMaterial->shader->set("remainTime", remainPercentage);
+                float frequencyPulse =  (endSoonInterval - (endGameInterval - currentTime )) / endSoonInterval ;
+                frequencyPulse = glm::mix(2.5f, 5.0f, frequencyPulse);
+                dangerMaterial->shader->set("frequencyPulse", frequencyPulse);
+                
                 rectangle->draw();
             }
         }
@@ -86,6 +79,11 @@ namespace our {
         double getEndSoonInterval() const { return endSoonInterval; }
         double getEndGameInterval() const { return endGameInterval; }
 
+        void destroy() {
+            delete rectangle;
+            delete dangerMaterial->shader;
+            delete dangerMaterial;
+        }
     };
 
 }

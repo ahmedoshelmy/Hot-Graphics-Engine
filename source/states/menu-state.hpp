@@ -6,6 +6,7 @@
 #include <texture/texture-utils.hpp>
 #include <material/material.hpp>
 #include <mesh/mesh.hpp>
+#include <mesh/mesh-utils.hpp>
 
 #include <functional>
 #include <array>
@@ -99,15 +100,7 @@ class Menustate: public our::State {
         // Then we create a rectangle whose top-left corner is at the origin and its size is 1x1.
         // Note that the texture coordinates at the origin is (0.0, 1.0) since we will use the 
         // projection matrix to make the origin at the the top-left corner of the screen.
-        rectangle = new our::Mesh({
-            {{0.0f, 0.0f, 0.0f}, {255, 255, 255, 255}, {0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
-            {{1.0f, 0.0f, 0.0f}, {255, 255, 255, 255}, {1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
-            {{1.0f, 1.0f, 0.0f}, {255, 255, 255, 255}, {1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
-            {{0.0f, 1.0f, 0.0f}, {255, 255, 255, 255}, {0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
-        },{
-            0, 1, 2, 2, 3, 0,
-        });
-
+        rectangle = our::mesh_utils::rectangle();
         // Reset the time elapsed since the state is entered.
         time = 0;
 

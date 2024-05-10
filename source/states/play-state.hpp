@@ -104,6 +104,11 @@ class Playstate: public our::State {
     void onDestroy() override {
         // Don't forget to destroy the renderer
         renderer.destroy();
+        // destroy text renderer
+        textRenderer.destroy();
+        // destroy clock controller
+        clockController.destroy();
+        physicsSystem.destroy();
         // On exit, we call exit for the camera controller system to make sure that the mouse is unlocked
         cameraControllerFree.exit();
         cameraControllerFps.exit();

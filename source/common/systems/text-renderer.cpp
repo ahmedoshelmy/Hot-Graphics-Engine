@@ -9,6 +9,7 @@ namespace our {
 
     void TextRenderer::initialize(glm::ivec2 windowSize) {
         this->windowSize = windowSize;
+        this->currentTime = 0;
         // Text Renderer Initialization
         textShader = new ShaderProgram();
         textShader->attach("assets/shaders/text/text.vert", GL_VERTEX_SHADER);

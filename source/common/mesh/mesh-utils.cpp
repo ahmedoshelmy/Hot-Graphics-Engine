@@ -123,3 +123,14 @@ our::Mesh* our::mesh_utils::sphere(const glm::ivec2& segments){
 
     return new our::Mesh(vertices, elements);
 }
+
+our::Mesh* our::mesh_utils::rectangle() {
+    return new our::Mesh({
+        {{0.0f, 0.0f, 0.0f}, {255, 255, 255, 255}, {0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
+        {{1.0f, 0.0f, 0.0f}, {255, 255, 255, 255}, {1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
+        {{1.0f, 1.0f, 0.0f}, {255, 255, 255, 255}, {1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
+        {{0.0f, 1.0f, 0.0f}, {255, 255, 255, 255}, {0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
+    },{
+        0, 1, 2, 2, 3, 0,
+    });
+}
