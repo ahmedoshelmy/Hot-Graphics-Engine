@@ -1,5 +1,5 @@
 {
-    "start-scene": "menu",
+    "start-scene": "play",
     "window": {
         "title": "Locked Away",
         "size": {
@@ -551,11 +551,6 @@
                     },
                     {
                         "type": "FPS Camera Controller"
-                    },
-                    {
-                        "type": "RigidBody",
-                        "shape": "Sphere",
-                        "radius": 5
                     }
                 ],
 

@@ -8,6 +8,7 @@
 #include <systems/fps-camera-controller.hpp>
 #include <systems/movement.hpp>
 #include <systems/light.hpp>
+#include <systems/text-renderer.hpp>
 #include <asset-loader.hpp>
 #include <material/material.hpp>
 #include "mesh/mesh-utils.hpp"
@@ -24,6 +25,7 @@ class Playstate: public our::State {
     bool showGUI = true;
     our::World world;
     our::ForwardRenderer renderer;
+    our::TextRenderer textRenderer;
     our::FreeCameraControllerSystem cameraControllerFree;
     our::FpsCameraControllerSystem cameraControllerFps;
     our::MovementSystem movementSystem;
@@ -35,6 +37,8 @@ class Playstate: public our::State {
     bool showDemoWindow = false;
     std::string pickedItem ;
     our::GameState gameState;
+    double currentTime = 0;
+    double endGameInterval = 20; // 2 minutes
 
     void onInitialize() override {
         gameState = our::GameState::PLAY;
@@ -58,6 +62,7 @@ class Playstate: public our::State {
 
         auto size = getApp()->getFrameBufferSize();
         renderer.initialize(size, getApp(), config["renderer"]);
+        textRenderer.initialize(getApp()->getWindowSize());
     }
 
     void onDraw(double deltaTime) override {
@@ -66,11 +71,12 @@ class Playstate: public our::State {
         cameraControllerFree.update(&world, (float)deltaTime);
         cameraControllerFps.update(&world, (float)deltaTime);
         physicsSystem.update(&world, getApp(), (float)deltaTime);
-        pickingSystem.update(&world, getApp(),pickedItem,&renderer);
-        drawerOpenerSystem.update(&world, getApp(),pickedItem,&renderer,(float)deltaTime);
-        lockedAwaySystem.update(&world,deltaTime,&gameState,&renderer);
+        drawerOpenerSystem.update(&world, getApp(), pickedItem, &renderer, (float)deltaTime);
+        // lockedAwaySystem.update(&world, deltaTime, &gameState, &renderer);
         // And finally we use the renderer system to draw the scene
-        renderer.render(&world,pickedItem,deltaTime);
+        renderer.render(&world, pickedItem, deltaTime);
+        pickingSystem.update(&world, getApp(),pickedItem, &textRenderer);
+        textRenderer.render(deltaTime);
 
         // Get a reference to the keyboard object
         auto& keyboard = getApp()->getKeyboard();
@@ -79,6 +85,11 @@ class Playstate: public our::State {
             // If the escape  key is pressed in this frame, go to the play state
             getApp()->changeState("menu");
         }
+
+        currentTime += deltaTime;
+        // if (currentTime >= endGameInterval) {
+        //     getApp()->changeState("lose");
+        // }
     }
 
     void onImmediateGui(){
@@ -86,6 +97,7 @@ class Playstate: public our::State {
         lightSystem.showGUI(&world);
         renderer.showGUI(&world);
         lockedAwaySystem.showGUI(&world);
+        textRenderer.showGUI();
     }
 
     void onDestroy() override {

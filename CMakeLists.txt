@@ -146,6 +146,7 @@ set(COMMON_COMPONENTS_SOURCES
 
 # A variable with all systems
 set(COMMON_SYSTEMS_SOURCES
+        source/common/systems/text-renderer.hpp
         source/common/systems/forward-renderer.hpp
         source/common/systems/forward-renderer.cpp
         source/common/systems/camera-controller.hpp

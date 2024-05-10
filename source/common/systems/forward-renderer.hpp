@@ -44,18 +44,13 @@ namespace our
             printf("Object %d draw %d prim %d\n", ObjectID, DrawID, PrimID);
         }
     };
-    struct TextRenderCommand {
-        float initialTime;
-        float duration ;
-        std::string text;
-    };
+    
 
     // A forward renderer is a renderer that draw the object final color directly to the framebuffer
     // In other words, the fragment shader in the material should output the color that we should see on the screen
     // This is different from more complex renderers that could draw intermediate data to a framebuffer before computing the final color
     // In this project, we only need to implement a forward renderer
     class ForwardRenderer {
-         std::queue<TextRenderCommand > textCommands;
          double currentTime ;
 
         // These window size will be used on multiple occasions (setting the viewport, computing the aspect ratio, etc.)
@@ -146,23 +141,9 @@ namespace our
         void pickingPhaseRenderer(CameraComponent *camera) ;
         void rendererPhaseRenderer(CameraComponent *camera) ;
         PixelInfo readPixel(unsigned int x, unsigned int y);
-        void renderText(std::string text, double seconds);
 
     private:
-        struct Character {
-            unsigned int TextureID; // ID handle of the glyph texture
-            glm::ivec2   Size;      // Size of glyph
-            glm::ivec2   Bearing;   // Offset from baseline to left/top of glyph
-            unsigned int Advance;   // Horizontal offset to advance to next glyph
-        };
-
-        // Objects used for text rendering
-
-        std::map<GLchar, Character> Characters;
-        GLuint VAO, VBO;
-        ShaderProgram* textShader;
-        void renderText(std::string text, float x, float y, float scale, glm::vec3 color, int text_align_x, int text_align_y);
-        void checkTextCommands();
+       
     };
 }
 
