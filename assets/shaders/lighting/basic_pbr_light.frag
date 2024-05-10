@@ -6,7 +6,16 @@ uniform vec4 tint = vec4(1.0, 1.0, 1.0, 1.0);
 void main()
 {
     vec3 albedo = pow(texture(material.albedoMap, TexCoords).rgb, vec3(2.2));
-    
+    if(material.enableColorMasking) {
+        vec3 colorMask =  pow(texture(material.colorMaskTexture, TexCoords).rgb, vec3(2.2));
+        vec3 colorOut = mix( mix( mix(
+                            albedo * material.color4, 
+                            albedo * material.color1, 
+            colorMask.r
+        ), albedo * material.color2, colorMask.g 
+        ), albedo * material.color3, colorMask.b);
+        albedo = colorOut;
+    }
     vec3 r_ao_m = pow(texture(material.r_ao_m_Map, TexCoords).rgb, vec3(2.2));
     float roughness = r_ao_m.r;
     float ao = r_ao_m.g;

@@ -83,8 +83,15 @@ namespace our {
         shader->set("material.emissive", 4);
         if (emissiveMap)shader->set("material.enableEmissive", true);
         else shader->set("material.enableEmissive", false);
-        if (colorMaskTexture)shader->set("material.enableColorMasking", true);
-        else shader->set("material.enableColorMasking", false);
+        if (colorMaskTexture) {
+            shader->set("material.enableColorMasking", true);
+            shader->set("material.color1", colorMasking[0]);
+            shader->set("material.color2", colorMasking[1]);
+            shader->set("material.color3", colorMasking[2]);
+            shader->set("material.color4", colorMasking[3]);
+        }
+        else 
+            shader->set("material.enableColorMasking", false);
 
 
         glActiveTexture(GL_TEXTURE0);
@@ -126,6 +133,10 @@ namespace our {
         normalMap = AssetLoader<Texture2D>::get(data.value("normalMap", ""));
         r_ao_m_Map = AssetLoader<Texture2D>::get(data.value("r_ao_m_Map", ""));
         emissiveMap = AssetLoader<Texture2D>::get(data.value("emissiveMap", ""));
+        colorMasking[0] = data.value("color1", glm::vec3(1.0, 1.0, 1.0));
+        colorMasking[1] = data.value("color2", glm::vec3(1.0, 1.0, 1.0));
+        colorMasking[2] = data.value("color3", glm::vec3(1.0, 1.0, 1.0));
+        colorMasking[3] = data.value("color4", glm::vec3(1.0, 1.0, 1.0));
         IOR = data.value("IOR", 0.03);
 
 

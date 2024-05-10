@@ -27,6 +27,10 @@ struct Material {
     sampler2D  emissive;
     bool  enableEmissive;
     bool  enableColorMasking;
+    vec3 color1;
+    vec3 color2;
+    vec3 color3;
+    vec3 color4;
     float IOR;
 };
 uniform Material material;

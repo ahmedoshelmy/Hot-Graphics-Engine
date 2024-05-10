@@ -1,24 +1,28 @@
 #include ../lighting/pbr.frag
 
 
-#define color1 vec3(0.970, 0.940, 0.877)
-#define color2 vec3(0.129, 0.163, 0.195)
-#define color3 vec3(0.645, 0.283, 0.072)
-#define color4 vec3(1)
+// #define color1 vec3(0.970, 0.940, 0.877)
+// #define color2 vec3(0.129, 0.163, 0.195)
+// #define color3 vec3(0.645, 0.283, 0.072)
+// #define color4 vec3(1)
+
+
 
 
 void main()
 {
     vec3 albedo = pow(texture(material.albedoMap, TexCoords).rgb, vec3(2.2));
     // ==== masking
-    vec3 colorMask =  pow(texture(material.colorMaskTexture, TexCoords).rgb, vec3(2.2));
-    vec3 colorOut = mix( mix( mix(
-                        albedo * color4, 
-                        albedo * color1, 
-        colorMask.r
-    ), albedo * color2, colorMask.g 
-    ), albedo * color3, colorMask.b);
-    albedo = colorOut;
+    if(material.enableColorMasking) {
+        vec3 colorMask =  pow(texture(material.colorMaskTexture, TexCoords).rgb, vec3(2.2));
+        vec3 colorOut = mix( mix( mix(
+                            albedo * material.color4, 
+                            albedo * material.color1, 
+            colorMask.r
+        ), albedo * material.color2, colorMask.g 
+        ), albedo * material.color3, colorMask.b);
+        albedo = colorOut;
+    }
     // ==== masking
 
 
