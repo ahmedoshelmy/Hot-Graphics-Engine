@@ -133,6 +133,6 @@ namespace our {
     }
 
     void PickingSystem::showMessage(std::string text, double time) {
-        renderer->renderText(text, time);
+        renderer->addTextCommand(text, time);
     }
 }

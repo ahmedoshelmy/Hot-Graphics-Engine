@@ -38,7 +38,7 @@ class Playstate: public our::State {
     std::string pickedItem ;
     our::GameState gameState;
     double currentTime = 0;
-    double endGameInterval = 20; // 2 minutes
+    double endGameInterval = 5*60; // 5 minutes
 
     void onInitialize() override {
         gameState = our::GameState::PLAY;
@@ -66,6 +66,10 @@ class Playstate: public our::State {
     }
 
     void onDraw(double deltaTime) override {
+        int minutes = (endGameInterval - currentTime) / 60; 
+        int seconds = ((int)endGameInterval - (int)currentTime) % 60;
+        std::string showTime = "0" + std::to_string(minutes) + " : " + (seconds < 10 ? "0" : "") + std::to_string(seconds);
+        textRenderer.addTextCommand(showTime, 0.05, 1620, 1000, 1.2, glm::vec3(0.3, 0.3, 0.3), 1, 1);
         // Here, we just run a bunch of systems to control the world logic
         movementSystem.update(&world, (float)deltaTime);
         cameraControllerFree.update(&world, (float)deltaTime);
