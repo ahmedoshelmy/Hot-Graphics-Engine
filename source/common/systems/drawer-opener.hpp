@@ -15,6 +15,7 @@ namespace our {
 
     // The System is responsible for opening drawers where keys might be hidden
     class DrawerOpenerSystem {
+        audio_wrapper::MiniAudioWrapper player;
         double currentTime = 0;
         double prevTime = 0;
     public:
@@ -25,6 +26,12 @@ namespace our {
                double deltaTime) {
             // For each entity in the world
             currentTime += deltaTime;
+
+            // Checking audio player
+            if(currentTime -  prevTime >= 10){
+                player.stopSong();
+            }
+
             Entity *entity = world->getEntity(pickedObject);
             if (!entity)return;
             auto *knobComponent = entity->getComponent<KnobComponent>();
@@ -40,15 +47,15 @@ namespace our {
 //                    rotation = knobComponent->closedRotation;
                     knobComponent->open ^= 1;
                     prevTime = currentTime;
-
-                } else if (knobComponent->key == objectInHand) {
+                } else if (knobComponent->key == objectInHand)
+                {
                     position.x += 2;
                     position.z += 2;
                     rotation.y -= glm::pi<float>() /2.0;
 //                    rotation = knobComponent->openRotation;
                     knobComponent->open ^= 1;
                     prevTime = currentTime;
-
+                    player.playSong("assets/music/HORROR DOOR OPENING SOUND EFFECT.mp3");
                 }
             }
         }
