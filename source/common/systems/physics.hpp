@@ -87,7 +87,7 @@ namespace our {
 
 
             if((ground != nullptr && !ground->dy && mesh_hit) || (ground == nullptr && mesh_hit)){
-                std::cout<<mp_ids[mesh_hit]<<"\n";
+                // std::cout<<mp_ids[mesh_hit]<<"\n";
                 if(!isOpenDoor(world->getEntity(mp_ids[mesh_hit])))
                     reverseMovement(deltaTime, app, player);
             }

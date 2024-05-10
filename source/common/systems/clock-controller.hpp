@@ -19,13 +19,14 @@ namespace our {
         Mesh* rectangle;
         glm::mat4 transform; // contrain transform matrix of shader
 
-        double currentTime = 0.0;
-        double endSoonInterval = 3*60; 
-        double endGameInterval = 1.1*60; 
+        double currentTime;
+        double endSoonInterval = 0.2*60; 
+        double endGameInterval = 5*60; 
 
     public:
         void initialize(glm::ivec2 windowSize) {
             this->windowSize = windowSize;
+            this->currentTime = 0.0;
             // create material of 
             dangerMaterial = new TintedMaterial();
             dangerMaterial->shader = new ShaderProgram();
@@ -50,7 +51,8 @@ namespace our {
         void render(TextRenderer* textRenderer, double deltaTime) {
             currentTime += deltaTime;
             // show clock
-            showClock(textRenderer);
+            if(endGameInterval > currentTime + 0.05)
+                showClock(textRenderer);
             // if time enter the danger time show flash of red
             if(endGameInterval - currentTime <= endSoonInterval) {
                 // renderer rectangle
