@@ -11,7 +11,14 @@
   "scene": {
     "renderer": {
       // "sky": "assets/textures/skybox/sky_forest.jpeg",
-      "skyCube": "",
+      "skyCube": {
+        "left": "assets/textures/skycube/abovetheclouds_mountains_Left.jpg",
+        "right": "assets/textures/skycube/abovetheclouds_mountains_Right.jpg",
+        "top": "assets/textures/skycube/abovetheclouds_mountains_Top.jpg",
+        "bottom": "assets/textures/skycube/abovetheclouds_mountains_Bottom.jpg",
+        "front": "assets/textures/skycube/abovetheclouds_mountains_Front.jpg",
+        "back": "assets/textures/skycube/abovetheclouds_mountains_Back.jpg"
+      },
       "postprocess": "assets/shaders/postprocess/vignette.frag"
     },
     "assets": {

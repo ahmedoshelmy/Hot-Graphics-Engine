@@ -61,6 +61,8 @@ namespace our {
 
         // Then we check if there is a sky texture in the configuration
         if (config.contains("skyCube")) {
+            auto skyCubeData = config["skyCube"];
+            // if(!data.is_object())
             // First, we load the mesh a cube which will be used to draw the sky
             this->skyCube = mesh_utils::loadOBJ("assets/models/cube.obj");
 
@@ -80,14 +82,15 @@ namespace our {
             skyCubePipelineState.faceCulling.culledFace = GL_FRONT;
 
             // Load the sky texture (note that we don't need mipmaps since we want to avoid any unnecessary blurring while rendering the sky)
-            std::string skyTexturesFile[6] = {
-                "assets/textures/skycube/abovetheclouds_mountains_Left.bmp",
-                "assets/textures/skycube/abovetheclouds_mountains_Right.bmp",
-                "assets/textures/skycube/abovetheclouds_mountains_Top.bmp",
-                "assets/textures/skycube/abovetheclouds_mountains_Bottom.bmp",
-                "assets/textures/skycube/abovetheclouds_mountains_Back.bmp",
-                "assets/textures/skycube/abovetheclouds_mountains_Front.bmp",
-            };
+            std::string skyTexturesFile[6];
+
+            skyTexturesFile[0] = skyCubeData.value("left", "");
+            skyTexturesFile[1] = skyCubeData.value("right", "");
+            skyTexturesFile[2] = skyCubeData.value("top", "");
+            skyTexturesFile[3] = skyCubeData.value("bottom", "");
+            skyTexturesFile[4] = skyCubeData.value("back", "");
+            skyTexturesFile[5] = skyCubeData.value("front", "");
+            
             Texture3D *skyTexture = texture_utils::loadCube(skyTexturesFile);
             // Setup a sampler for the sky 
             Sampler *skySampler = new Sampler();
