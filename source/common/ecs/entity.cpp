@@ -47,13 +47,23 @@ namespace our {
                 ImGui::PushID(meshComponent->mesh->id);
                 if(ImGui::TreeNode(name.c_str())) {
                     imgui_utils::EditTransform(camera, this, meshComponent->mesh->origin);
+
+
+                    if(auto meshMaterial = dynamic_cast<LitMaterial *>(meshComponent->material); meshMaterial) {
+                        ImGui::InputFloat("Albedo Intensity", &meshMaterial->albedoIntensity, 0.02f, 0.1f, 3);
+                        ImGui::InputFloat("IOR", &meshMaterial->IOR, 0.02f, 0.1f, 3);
+                        if(meshMaterial->colorMaskTexture) {
+                            ImGui::ColorEdit3("Color 1", glm::value_ptr(meshMaterial->colorMasking[0]));
+                            ImGui::ColorEdit3("Color 2", glm::value_ptr(meshMaterial->colorMasking[1]));
+                            ImGui::ColorEdit3("Color 3", glm::value_ptr(meshMaterial->colorMasking[2]));
+                            ImGui::ColorEdit3("Color 4", glm::value_ptr(meshMaterial->colorMasking[3]));
+                        }
+                    }
                     ImGui::TreePop();
                 }
                 ImGui::PopID();
 
-                if(auto meshMaterial = dynamic_cast<LitMaterial *>(meshComponent->material); meshMaterial) {
-                    // ImGui
-                }
+                
             }
         }
     }

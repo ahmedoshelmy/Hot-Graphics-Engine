@@ -606,6 +606,7 @@
           "albedoMap": "fps_arm_d",
           "normalMap": "fps_arm_n",
           "r_ao_m_Map": "fps_arm_r_ao_m",
+          "albedoIntensity": 0.5,
           "IOR": 0.45
         },
         "fps_flash": {
@@ -616,6 +617,7 @@
           "normalMap": "fps_flash_n",
           "emissiveMap": "fps_flash_emissive",
           "r_ao_m_Map": "fps_flash_r_ao_m",
+          "albedoIntensity": 0.5,
           "IOR": 0.5
         },
         "door": {
@@ -717,8 +719,8 @@
               {
                 "type": "Light Component",
                 "lightType": "spot",
-                "color": [0.1, 0.1, 0.6],
-                "cutOff": 30.0,
+                "color": [0.09, 0.09, 0.23],
+                "cutOff": 0.0,
                 "outerCutOff": 35.0,
                 "attenuationConstant": 0,
                 "attenuationLinear": 0,
