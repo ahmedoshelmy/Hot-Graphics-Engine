@@ -78,7 +78,6 @@ namespace our {
         shader->set("material.albedoMap", 0);
         shader->set("material.colorMaskTexture", 1);
         shader->set("material.r_ao_m_Map", 2);
-        shader->set("material.normalMap", 3);
         shader->set("material.IOR", IOR);
         shader->set("material.emissive", 4);
         if (emissiveMap)shader->set("material.enableEmissive", true);
@@ -90,9 +89,16 @@ namespace our {
             shader->set("material.color3", colorMasking[2]);
             shader->set("material.color4", colorMasking[3]);
         }
-        else 
+        else {
             shader->set("material.enableColorMasking", false);
-
+        }
+        
+        if(normalMap) {
+            shader->set("material.enableNormalTexture", true);
+            shader->set("material.normalMap", 3);
+        } else {
+            shader->set("material.enableNormalTexture", false);
+        }
 
         glActiveTexture(GL_TEXTURE0);
         albedoMap->bind();

@@ -27,6 +27,7 @@ struct Material {
     sampler2D  emissive;
     bool  enableEmissive;
     bool  enableColorMasking;
+    bool enableNormalTexture;
     vec3 color1;
     vec3 color2;
     vec3 color3;
@@ -190,9 +191,13 @@ vec3 getLightRadiance(Light light) {
 
 
 vec3 calcLight(vec3 albedo, float roughness, float metallic) {
-    // vec3 N = normalize(TBN * (texture(material.normalMap, TexCoords).rgb * 2.0 - 1.0));   
-    // vec3 N = normalize(Normal); 
-    vec3 N = getNormalFromMap();
+    vec3 N =    vec3(0.0);
+    if(material.enableNormalTexture) {
+        // N = normalize(TBN * (texture(material.normalMap, TexCoords).rgb * 2.0 - 1.0));   
+        N = getNormalFromMap();
+    } else {
+        N = normalize(Normal); 
+    }
     vec3 V = normalize(cameraPos - FragPos);
 
     vec3 Lo = vec3(0.0);
