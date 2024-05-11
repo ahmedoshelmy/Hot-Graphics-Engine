@@ -70,7 +70,7 @@ namespace our {
         Sampler* sampler;
         glm::vec3 colorMasking[4];
         float IOR;
-
+        float albedoIntensity = 0.05;
         void setup() const override;
         void deserialize(const nlohmann::json& data) override;
     };

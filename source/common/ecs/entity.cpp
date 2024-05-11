@@ -50,6 +50,10 @@ namespace our {
                     ImGui::TreePop();
                 }
                 ImGui::PopID();
+
+                if(auto meshMaterial = dynamic_cast<LitMaterial *>(meshComponent->material); meshMaterial) {
+                    // ImGui
+                }
             }
         }
     }

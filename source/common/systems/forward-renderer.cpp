@@ -293,9 +293,9 @@ namespace our {
 
         ImGui::End();
 
-        ImGui::Begin("Darkness");
-        ImGui::InputFloat("Darkness Factor",&darkness_factor,0.1f,0.2f);
-        ImGui::End();
+        // ImGui::Begin("Darkness");
+        // ImGui::InputFloat("Darkness Factor",&darkness_factor,0.1f,0.2f);
+        // ImGui::End();
 
 
     }
@@ -322,7 +322,7 @@ namespace our {
                 command.material->shader->set("u_Model", command.localToWorld);
                 command.material->shader->set("u_View", camera->getViewMatrix());
                 command.material->shader->set("u_Projection", camera->getProjectionMatrix(windowSize));
-                command.material->shader->set("darkness_factor",darkness_factor);
+                // command.material->shader->set("darkness_factor",darkness_factor);
             } else {
                 command.material->shader->set("transform", VP * command.localToWorld);
             }

@@ -33,6 +33,7 @@ struct Material {
     vec3 color3;
     vec3 color4;
     float IOR;
+    float albedoIntensity;
 };
 uniform Material material;
 

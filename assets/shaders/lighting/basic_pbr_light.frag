@@ -1,7 +1,7 @@
 #include pbr.frag
 
 uniform vec4 tint = vec4(1.0, 1.0, 1.0, 1.0);
-uniform float darkness_factor = 0.005;
+// uniform float darkness_factor = 0.005;
 
 void main()
 {
@@ -23,7 +23,7 @@ void main()
 
     vec3 Lo = calcLight(albedo, roughness, metallic);
 
-    vec3 ambient = vec3(darkness_factor) * albedo * ao;
+    vec3 ambient = vec3(material.albedoIntensity) * albedo * ao;
     vec3 color = ambient + Lo;
     vec3 emissive = vec3(0);
     if(material.enableEmissive){

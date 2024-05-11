@@ -76,6 +76,7 @@ namespace our {
     void LitMaterial::setup() const {
         Material::setup();
         shader->set("material.albedoMap", 0);
+        shader->set("material.albedoIntensity", albedoIntensity);
         shader->set("material.colorMaskTexture", 1);
         shader->set("material.r_ao_m_Map", 2);
         shader->set("material.IOR", IOR);
@@ -146,6 +147,7 @@ namespace our {
         colorMasking[2] = data.value("color3", glm::vec3(1.0, 1.0, 1.0));
         colorMasking[3] = data.value("color4", glm::vec3(1.0, 1.0, 1.0));
         IOR = data.value("IOR", 0.03);
+        albedoIntensity = data.value("albedoIntensity", albedoIntensity);
 
 
     }
