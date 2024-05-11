@@ -281,7 +281,6 @@ namespace our {
     bool PhysicsSystem::isOpenDoor(Entity * entity) {
         auto * knobComponent = entity->getComponent<KnobComponent>();
         if(!knobComponent) return false;
-        std::cout<<" "<<knobComponent->open<<"\n";
         return knobComponent->open;
 
     }

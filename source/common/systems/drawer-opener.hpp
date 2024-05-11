@@ -15,47 +15,41 @@ namespace our {
 
     // The System is responsible for opening drawers where keys might be hidden
     class DrawerOpenerSystem {
-        audio_wrapper::MiniAudioWrapper player;
         double currentTime = 0;
         double prevTime = 0;
     public:
 
         // This should be called every frame to update all entities containing a CollisionComponent.
         void
-        update(World *world, Application *app, const std::string &pickedObject,  const std::string &objectInHand ,ForwardRenderer *renderer,
+        update(World *world, Application *app, const std::string &pickedObject, const std::string &objectInHand,
+               std::string & songName, float & songDuration,  ForwardRenderer *renderer,
                double deltaTime) {
             // For each entity in the world
             currentTime += deltaTime;
-
-            // Checking audio player
-            if(currentTime -  prevTime >= 10){
-                player.stopSong();
-            }
-
             Entity *entity = world->getEntity(pickedObject);
             if (!entity)return;
             auto *knobComponent = entity->getComponent<KnobComponent>();
             if (!knobComponent) return;
             // Here there should be delay between opening and closing (Toggling effect) To make it more realistic
-            if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_RIGHT)&& prevTime + 2 < currentTime) {
+            if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_RIGHT) && prevTime + 2 < currentTime) {
                 auto &position = entity->localTransform.position;
                 auto &rotation = entity->localTransform.rotation;
                 if (knobComponent->open) {
                     position.x -= 2;
                     position.z -= 2;
-                    rotation.y += glm::pi<float>() /2.0;
+                    rotation.y += glm::pi<float>() / 2.0;
 //                    rotation = knobComponent->closedRotation;
                     knobComponent->open ^= 1;
                     prevTime = currentTime;
-                } else if (knobComponent->key == objectInHand)
-                {
+                } else if (knobComponent->key == objectInHand) {
                     position.x += 2;
                     position.z += 2;
-                    rotation.y -= glm::pi<float>() /2.0;
+                    rotation.y -= glm::pi<float>() / 2.0;
 //                    rotation = knobComponent->openRotation;
                     knobComponent->open ^= 1;
                     prevTime = currentTime;
-                    player.playSong("assets/music/HORROR DOOR OPENING SOUND EFFECT.mp3");
+                    songDuration = 1.5;
+                    songName ="assets/music/HORROR DOOR OPENING SOUND EFFECT.mp3";
                 }
             }
         }
