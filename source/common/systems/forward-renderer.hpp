@@ -64,10 +64,11 @@ namespace our
         GLuint postprocessFrameBuffer, postProcessVertexArray;
         Texture2D *colorTarget, *depthTarget;
         TexturedMaterial* postprocessMaterial;
-
+        float filmGrainAmount = -0.03; // for film grain postprocess amount
+        float deltaTime;
         // Lighting
         float darkness_factor;
-
+        
         // need application for picking objects
         Application* app;
         

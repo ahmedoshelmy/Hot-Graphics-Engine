@@ -191,6 +191,7 @@ namespace our {
 
     void ForwardRenderer::render(World *world, double deltaTime) {
         currentTime += deltaTime;
+        this->deltaTime = deltaTime; // to send for film grain post processor to be more random
         // First of all, we search for a camera and for all the mesh renderers
         CameraComponent *camera = nullptr;
         opaqueCommands.clear();
@@ -293,9 +294,9 @@ namespace our {
 
         ImGui::End();
 
-        // ImGui::Begin("Darkness");
-        // ImGui::InputFloat("Darkness Factor",&darkness_factor,0.1f,0.2f);
-        // ImGui::End();
+        ImGui::Begin("Film Grain Postprocess");
+        ImGui::InputFloat("Film Grain Amount", &filmGrainAmount, 0.1f, 0.2f);
+        ImGui::End();
 
 
     }
@@ -390,6 +391,8 @@ namespace our {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             //Setup the postprocess material and draw the fullscreen triangle
             postprocessMaterial->setup();
+            postprocessMaterial->shader->set("amount", filmGrainAmount);
+            postprocessMaterial->shader->set("iFrameTime", this->deltaTime);
             glBindVertexArray(postProcessVertexArray);
             glDrawArrays(GL_TRIANGLES, 0, 3);
         }
