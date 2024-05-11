@@ -64,7 +64,10 @@ namespace our
         GLuint postprocessFrameBuffer, postProcessVertexArray;
         Texture2D *colorTarget, *depthTarget;
         TexturedMaterial* postprocessMaterial;
-       
+
+        // Lighting
+        float darkness_factor;
+
         // need application for picking objects
         Application* app;
         
