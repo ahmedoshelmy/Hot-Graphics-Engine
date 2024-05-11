@@ -359,7 +359,6 @@ namespace our {
             hit_fraction = RayCallback.m_closestHitFraction;
             if(isGroundOrStairs[id]) return id;
         }
-        // std::cout << (int)(should_move) << "\n";
         return 0;
     }
 

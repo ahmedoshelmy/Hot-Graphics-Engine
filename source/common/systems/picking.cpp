@@ -50,8 +50,6 @@ namespace our {
             else
                 crossMaterial->tint = glm::vec4(0.45, 0.4, 0.5, 0.5);
         }
-
-        // Check that the user clicked on P
         if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
             if (isEntityPickable) {
                 addToInventory(world, pickedObject);
@@ -81,19 +79,6 @@ namespace our {
             }
         }
         app->inHandItem = itemInRightHand;
-
-//        std::cout << mousePosition.x << " " << mousePosition.y << "\n";
-
-
-
-
-        // This should handle the picking of different things including keys and boxes
-//        Entity *Key1 = world->getEntity("key1");
-//        auto triggerComponent = Key1->getComponent<TriggerComponent>();
-//        if (triggerComponent) {
-//            Key1->deleteComponent<TriggerComponent>();
-//            // Handle Logic of either picking it or adding it to the inventory
-//        }
     }
 
     void PickingSystem::addToInventory(World *world, std::string item_name) {
