@@ -46,6 +46,8 @@ namespace our {
         if (app->getKeyboard().isPressed(GLFW_KEY_I)) {
             showInventory(world);
             inventoryState = true;
+            songDuration = 1 ;
+            songName = "assets/music/inventory.mp3";
         }
         if (app->getKeyboard().isPressed(GLFW_KEY_ESCAPE)) {
             hideInventory(world);
