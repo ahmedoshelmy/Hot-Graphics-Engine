@@ -1855,7 +1855,7 @@
       },
       {
         "name": "granny1",
-        "position": [3.858, 13.641,15.966],
+        "position": [3.858,  11.822,15.966],
         "rotation": [0,90, 0],
         "scale": [4, 4, 4],
         "components": [
@@ -1868,7 +1868,7 @@
       },
       {
         "name": "granny2",
-        "position": [7.164, 14.469,30.640],
+        "position": [7.164, 11.822,22.350],
         "rotation": [0,90, 0],
         "scale": [4, 4, 4],
         "components": [
@@ -1881,7 +1881,7 @@
       },
       {
         "name": "granny3",
-        "position": [-15.484, 14.469,-31.204],
+        "position": [-15.484, 11.822,-31.204],
         "rotation": [0,90, 0],
         "scale": [4, 4, 4],
         "components": [
