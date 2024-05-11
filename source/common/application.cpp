@@ -151,7 +151,7 @@ our::WindowConfiguration our::Application::getWindowConfiguration() {
 // run_for_frames decides how many frames should be run before the application automatically closes.
 // if run_for_frames == 0, the application runs indefinitely till manually closed.
 int our::Application::run(int run_for_frames) {
-//    player.playSong("assets/music/1- Midnight Dreams.mp3");
+    player.playSong("assets/music/1- Midnight Dreams.mp3");
 
     // Set the function to call when an error occurs.
     glfwSetErrorCallback(glfw_error_callback);

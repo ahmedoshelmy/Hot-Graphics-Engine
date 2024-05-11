@@ -109,9 +109,11 @@ namespace our {
         r_ao_m_Map->bind();
         sampler->bind(2);
 
-        glActiveTexture(GL_TEXTURE3);
-        normalMap->bind();
-        sampler->bind(3);
+        if(normalMap){
+            glActiveTexture(GL_TEXTURE3);
+            normalMap->bind();
+            sampler->bind(3);
+        }
 
         if (emissiveMap) {
             glActiveTexture(GL_TEXTURE4);

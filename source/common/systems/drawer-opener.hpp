@@ -38,18 +38,22 @@ namespace our {
                     position.x -= 2;
                     position.z -= 2;
                     rotation.y += glm::pi<float>() / 2.0;
-//                    rotation = knobComponent->closedRotation;
                     knobComponent->open ^= 1;
                     prevTime = currentTime;
                 } else if (knobComponent->key == objectInHand) {
                     position.x += 2;
                     position.z += 2;
                     rotation.y -= glm::pi<float>() / 2.0;
-//                    rotation = knobComponent->openRotation;
                     knobComponent->open ^= 1;
                     prevTime = currentTime;
-                    songDuration = 1.5;
-                    songName ="assets/music/HORROR DOOR OPENING SOUND EFFECT.mp3";
+                    if(entity->name == "door8"){
+                        songName ="assets/music/Terror Transition.mp3";
+                        songDuration = 8;
+                    }else{
+                        songName ="assets/music/HORROR DOOR OPENING SOUND EFFECT.mp3";
+                        songDuration = 1.5;
+                    }
+
                 }
             }
         }

@@ -14,7 +14,7 @@ namespace our {
         void update(World *world, float deltaTime, const std::string &audioName, const float &duration) {
             currentTime += deltaTime;
             if (!audioName.empty() && currentTime - lastPlayedTime >= 1 ) {
-                audioPlayer.playSong(audioName.c_str());
+                audioPlayer.playSong(audioName.c_str(),false);
                 lastDuration = duration;
                 lastPlayedTime = currentTime;
             }
