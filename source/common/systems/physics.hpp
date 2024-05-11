@@ -23,7 +23,16 @@
 
 #include <systems/drawer-opener.hpp>
 namespace our {
+    struct PixelInfo {
+        unsigned int ObjectID = 0;
+        unsigned int DrawID = 0;
+        unsigned int PrimID = 0;
 
+        void Print()
+        {
+            printf("Object %d draw %d prim %d\n", ObjectID, DrawID, PrimID);
+        }
+    };
     struct bulletCollisionCallback : public btCollisionWorld::ContactResultCallback {
         unsigned int collided_id;
 
@@ -56,7 +65,7 @@ namespace our {
         // Initialize the renderer 
         btCollisionObject *ghost;
         bulletCollisionCallback collisionCallback;
-
+        // store info for avoid collision
         float closestDistance = 5.0f;
         float delta = 1.0f;
         float deltaReverseSpeed = 20.0f;
@@ -64,62 +73,29 @@ namespace our {
         float hit_fraction = 0.0f;
         float constDist = 4.0f;
         float factorDist = 10.0f;
+        // store entity names of selected Items
+        std::string cameraSelected, prevCameraSelected;
+        std::string mouseSelected,  prevMouseSelected;
 
-        void initialize(World* world);
+        // Objects for accelerated GPU picking
+        GLuint castingFBO, castingVAO;
+        Texture2D* primitiveCastingTarget, *depthCastingTarget;
+        TexturedMaterial* castingMaterial;
+        std::map<unsigned int, std::string> mapped_entities;
+        // These window size will be used on multiple occasions picking
+        glm::ivec2 windowSize;
+    public:
+    
+        void initialize(World* world, glm::ivec2 windowSize);
 
         // This should be called every frame to update all entities containing a CollisionComponent.
-        void update(World *world, Application* app, float deltaTime) {
-            Entity * player = world->getEntity("player");
-            if (!player) return;
-            // controller of FPS camera if not exist (Free Camera) there's no collision or stairs walk
-            auto *controller = player->getComponent<FpsCameraControllerComponent>();
-            if(!controller) return;
-
-            glm::vec3 current_sensitivity = controller->positionSensitivity;
-
-            // unsigned int mesh_selected = getCameraCollidedMesh(world, deltaTime, 1000.0f);
-            unsigned int mesh_hit =  getPersonCollidedMesh(world, deltaTime) ;
-            unsigned int ground_id = allowMoveOnGround(world, deltaTime, factorDist);
-
-            Entity *groundEntity = world->getEntity(mp_ids[ground_id]);
-            GroundOrStairsComponent *ground = groundEntity != nullptr ? groundEntity->getComponent<GroundOrStairsComponent>() : nullptr;
-
-
-
-            if((ground != nullptr && !ground->dy && mesh_hit) || (ground == nullptr && mesh_hit)){
-                // std::cout<<mp_ids[mesh_hit]<<"\n";
-                if(!isOpenDoor(world->getEntity(mp_ids[mesh_hit])))
-                    reverseMovement(deltaTime, app, player);
-            }
-            // if stairs
-            if(ground != nullptr && ground->dy) {
-                glm::vec3 cameraForward =  player->getLocalToWorldMatrix() * glm::vec4(0.0, 0.0, -1.0, 0.0);
-                bool isUp = cameraForward.x < 0;
-                float dist = factorDist * hit_fraction;
-
-                MeshRendererComponent* stairs_mesh = groundEntity->getComponent<MeshRendererComponent>();
-
-                if(((isUp && app->getKeyboard().isPressed(GLFW_KEY_W)) || (!isUp && app->getKeyboard().isPressed(GLFW_KEY_S)))
-                    && dist <= 5.0f)
-                {
-                    player->localTransform.position.y += ground->dy  * (deltaTime * current_sensitivity.z );
-                }
-                else if(((!isUp && app->getKeyboard().isPressed(GLFW_KEY_W)) || (isUp && app->getKeyboard().isPressed(GLFW_KEY_S)))
-                    && dist >= 5.0f)
-                {
-                    player->localTransform.position.y -= ground->dy  * (deltaTime * current_sensitivity.z );
-                }
-            }
-            // std::cout << " hit: " << mp_ids[ground_id] << " " << hit_fraction << " " << dist <<  "\n";
-            // std::cout << glm::sign(cameraForward.x) << " " << glm::sign(cameraForward.y) << " " << glm::sign(cameraForward.z) << "\n";
-        }
+        void update(World *world, Application* app, float deltaTime);
 
         void destroy();
 
         bool checkCollision(const glm::vec3 &box1_min, const glm::vec3 &box1_max,
                             const glm::vec3 &box2_min, const glm::vec3 &box2_max);
 
-        bool checkCollisionRayCasting();
 
         bool checkCollisionByPosition(const glm::vec3 &position, const glm::vec3 &box_max, const glm::vec3 &box_min);
 
@@ -131,10 +107,13 @@ namespace our {
         std::pair<glm::vec3, glm::vec3> getCollisionBox(Entity *entity);
 
         unsigned int  getCameraCollidedMesh(World *world, float deltaTime, float distance = 5.0f) ; // return mesh id that collided from camera within certain distance
+        unsigned int  getMouseCollidedMesh(World *world, Application* app, float deltaTime, float distance = 1000.0f);
         unsigned int  getPersonCollidedMesh(World *world, float deltaTime) ; // return mesh id that person collided with
         unsigned int  allowMoveOnGround(World *world, float deltaTime, float distance = 5.0f);
 
         bool isOpenDoor(Entity *);
+
+        void pickingPhaseRenderer(our::World *world, glm::ivec2 windowSize);
 
         void showGUI(World* world) {
 
@@ -148,6 +127,28 @@ namespace our {
             ImGui::InputInt("minus or plus", &minusOrPlus, 0.1, 0.2, 0);
             ImGui::End();
         }
+    
+    PixelInfo readPixel(unsigned int x, unsigned int y)
+    {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, castingFBO);
+
+        glReadBuffer(GL_COLOR_ATTACHMENT0);
+
+        PixelInfo Pixel;
+        glReadPixels(x, y, 1, 1, GL_RGB_INTEGER, GL_UNSIGNED_INT, &Pixel);
+
+        glReadBuffer(GL_NONE);
+
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+        return Pixel;
+    }
+
+    private:
+        void initCastingBuffer();
+        void avoidCollision(World *world, Application* app, float deltaTime);
+        void updatePicking(World *world, Application* app, float deltaTime);
+
     };
 
 }   

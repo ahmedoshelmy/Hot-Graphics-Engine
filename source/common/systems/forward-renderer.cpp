@@ -157,10 +157,6 @@ namespace our {
             postprocessMaterial->pipelineState.depthTesting.enabled = false;
         }
 
-        
-
-        this->initCastingBuffer();
-
         currentTime = 0;
     }
 
@@ -191,20 +187,10 @@ namespace our {
             delete postprocessMaterial->shader;
             delete postprocessMaterial;
         }
-        glDeleteFramebuffers(1, &castingFBO);
-        glDeleteVertexArrays(1, &castingVAO);
-        delete primitiveCastingTarget;
-        delete depthCastingTarget;
-        delete castingMaterial->sampler;
-        delete castingMaterial->shader;
-        delete castingMaterial;
-
     }
 
-    void ForwardRenderer::render(World *world, std::string &pickedItem, double deltaTime) {
+    void ForwardRenderer::render(World *world, double deltaTime) {
         currentTime += deltaTime;
-        mp[0] = "NON-WORLD";
-        picked_item = "NON-WORLD";
         // First of all, we search for a camera and for all the mesh renderers
         CameraComponent *camera = nullptr;
         opaqueCommands.clear();
@@ -268,30 +254,23 @@ namespace our {
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
         glDepthMask(GL_TRUE);
 
-        // ============================= picking phase =====================
-        // bind casting frame buffer
-        pickingPhaseRenderer(camera);
-        // read pixel that camera point on (since camera always point to center)
-        PixelInfo pixel = readPixel(windowSize.x / 2, windowSize.y / 2);
-        // get picked entity name
-        picked_item = mp[pixel.ObjectID];
-        pickedItem = picked_item;
+       
         // ============================= renderer phase =====================
         rendererPhaseRenderer(camera);
         // ============================= debugging ImGUI phase =====================
         // if left click on entity
-        if(app->getMouse().justPressed(GLFW_MOUSE_BUTTON_2) ) {
-            // read mouse coords
-            // since opengl read y from (0_top) where opposite happen in renderer (0_bottom) we need to reverse directions
-            glm::vec2 mouse_coord = app->getMouse().getMousePosition();
-            mouse_coord.y = windowSize.y - mouse_coord.y;
-            // read pixel info
-            PixelInfo mouse_pixel = readPixel(mouse_coord.x, mouse_coord.y);
-            // get selected item with previouse
-            prevSelectedItem = selectedItem;
-            selectedItem = mp[mouse_pixel.ObjectID];
+        // if(app->getMouse().justPressed(GLFW_KEY_F10) ) {
+        //     // read mouse coords
+        //     // since opengl read y from (0_top) where opposite happen in renderer (0_bottom) we need to reverse directions
+        //     glm::vec2 mouse_coord = app->getMouse().getMousePosition();
+        //     mouse_coord.y = windowSize.y - mouse_coord.y;
+        //     // read pixel info
+        //     PixelInfo mouse_pixel = readPixel(mouse_coord.x, mouse_coord.y);
+        //     // get selected item with previouse
+        //     prevSelectedItem = selectedItem;
+        //     selectedItem = mp[mouse_pixel.ObjectID];
             
-        } 
+        // } 
     }
 
     void ForwardRenderer::showGUI(World *world) {
@@ -303,47 +282,16 @@ namespace our {
         ImGui::Begin("Entities");
         // loop on all entities and call it's gui
         for (auto entity: world->getEntities()) {
-            if(selectedItem == entity->name && prevSelectedItem == selectedItem) {
-                ImGui::SetNextTreeNodeOpen(false);
-                selectedItem = "NON-WORLD";
-            }
-            else if(selectedItem == entity->name)
-                ImGui::SetNextTreeNodeOpen(true);
+            // if(selectedItem == entity->name && prevSelectedItem == selectedItem) {
+            //     ImGui::SetNextTreeNodeOpen(false);
+            //     selectedItem = "NON-WORLD";
+            // }
+            // else if(selectedItem == entity->name)
+            //     ImGui::SetNextTreeNodeOpen(true);
             entity->showGUI(camera);
         }
         
         ImGui::End();
-    }
-
-   
-    void ForwardRenderer::pickingPhaseRenderer(CameraComponent *camera) {
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, castingFBO);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glm::mat4 VP = camera->getProjectionMatrix(windowSize) * camera->getViewMatrix();
-
-        // loop as it is and draw id to pixel
-        unsigned int gObjectIndex = 1;
-        //TODO: add alpha so the complete transparent not seen
-        for(auto command : opaqueCommands) {
-            castingMaterial->setup();
-            mp[gObjectIndex] = command.name;
-            castingMaterial->shader->set("gObjectIndex", gObjectIndex++);
-            castingMaterial->shader->set("transform", VP * command.localToWorld);
-            command.mesh->draw();
-            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void *) 0);
-
-        }
-
-        // for(auto command : transparentCommands) {
-        //     castingMaterial->setup();
-        //     castingMaterial->shader->set("gObjectIndex", gObjectIndex++);
-        //     castingMaterial->shader->set("transform", VP * command.localToWorld);
-        //     command.mesh->draw();
-        // }
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
     }
 
     void ForwardRenderer::rendererPhaseRenderer(CameraComponent *camera) {
@@ -441,22 +389,5 @@ namespace our {
 
 
     }
-
-    PixelInfo ForwardRenderer::readPixel(unsigned int x, unsigned int y)
-    {
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, castingFBO);
-
-        glReadBuffer(GL_COLOR_ATTACHMENT0);
-
-        PixelInfo Pixel;
-        glReadPixels(x, y, 1, 1, GL_RGB_INTEGER, GL_UNSIGNED_INT, &Pixel);
-
-        glReadBuffer(GL_NONE);
-
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-
-        return Pixel;
-    }
-
 
 }

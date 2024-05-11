@@ -34,16 +34,6 @@ namespace our
         LightType type;
         LightComponent* light;
     };
-    struct PixelInfo {
-        unsigned int ObjectID = 0;
-        unsigned int DrawID = 0;
-        unsigned int PrimID = 0;
-
-        void Print()
-        {
-            printf("Object %d draw %d prim %d\n", ObjectID, DrawID, PrimID);
-        }
-    };
     
 
     // A forward renderer is a renderer that draw the object final color directly to the framebuffer
@@ -74,73 +64,22 @@ namespace our
         GLuint postprocessFrameBuffer, postProcessVertexArray;
         Texture2D *colorTarget, *depthTarget;
         TexturedMaterial* postprocessMaterial;
-        // Objects for ray casting
-        GLuint castingFBO, castingVAO;
-        Texture2D* primitiveCastingTarget, *depthCastingTarget;
-        TexturedMaterial* castingMaterial;
-        std::map<unsigned int, std::string> mp;
+       
         // need application for picking objects
         Application* app;
         
     public:
-        std::string picked_item, selectedItem, prevSelectedItem = "NON-WORLD";
         // Initialize the renderer including the sky and the Postprocessing objects.
         // windowSize is the width & height of the window (in pixels).
         void initialize(glm::ivec2 windowSize, Application* app, const nlohmann::json& config);
         // Clean up the renderer
         void destroy();
         // This function should be called every frame to draw the given world
-        void render(World* world,std::string &,double);
+        void render(World* world, double);
 
         void showGUI(World* world);
 
-        void pickingComponent(World* world, CameraComponent* camera, glm::ivec2 windowSize);
-
-        void initCastingBuffer() {
-            glGenFramebuffers(1, &castingFBO);
-            glBindFramebuffer(GL_FRAMEBUFFER, castingFBO);
-
-            primitiveCastingTarget = texture_utils::empty(windowSize, GL_RGB32UI, GL_RGB_INTEGER, GL_UNSIGNED_INT);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, primitiveCastingTarget->getOpenGLName(), 0);
-
-            depthCastingTarget = our::texture_utils::empty(windowSize, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthCastingTarget->getOpenGLName(), 0);
-            // check status
-            if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-                std::cerr << "ERROR:: CASTING FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
-            }
-
-            //Unbind the framebuffer and texture just to be safe
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            // Create a sampler to use for sampling the scene texture in the post processing shader
-            glGenVertexArrays(1, &castingVAO);
-
-            Sampler* castingSampler = new Sampler();
-            castingSampler->set(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            castingSampler->set(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            castingSampler->set(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            castingSampler->set(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-            // Create the post processing shader
-            ShaderProgram* castingShader = new ShaderProgram();
-            castingShader->attach("assets/shaders/textured.vert", GL_VERTEX_SHADER);
-            castingShader->attach("assets/shaders/picking.frag", GL_FRAGMENT_SHADER);
-            castingShader->link();
-
-            // Create a post processing material
-            castingMaterial = new TexturedMaterial();
-            castingMaterial->shader = castingShader;
-            castingMaterial->texture = primitiveCastingTarget;
-            castingMaterial->sampler = castingSampler;
-            // The default options are fine but we don't need to interact with the depth buffer
-            // so it is more performant to disable the depth mask
-            // castingMaterial->pipelineState.depthMask = false;
-            // castingMaterial->pipelineState.depthTesting.enabled = false;
-
-        }
-        void pickingPhaseRenderer(CameraComponent *camera) ;
         void rendererPhaseRenderer(CameraComponent *camera) ;
-        PixelInfo readPixel(unsigned int x, unsigned int y);
 
     private:
        

@@ -38,6 +38,7 @@ class Playstate: public our::State {
     our::LockedAwaySystem lockedAwaySystem;
     bool showDemoWindow = false;
     std::string pickedItem ;
+    std::string pickedMouseItem ;
     std::string inHandItem;
     our::GameState gameState;
 
@@ -57,7 +58,7 @@ class Playstate: public our::State {
         cameraControllerFree.enter(getApp());
         cameraControllerFps.enter(getApp());
         // initalize physics
-        physicsSystem.initialize(&world);
+        physicsSystem.initialize(&world, getApp()->getWindowSize());
         // initalize lighting constants
         // Then we initialize the renderer
 
@@ -72,14 +73,17 @@ class Playstate: public our::State {
         movementSystem.update(&world, (float)deltaTime);
         cameraControllerFree.update(&world, (float)deltaTime);
         cameraControllerFps.update(&world, (float)deltaTime);
-        physicsSystem.update(&world, getApp(), (float)deltaTime);
         drawerOpenerSystem.update(&world, getApp(), pickedItem, inHandItem,&renderer, (float)deltaTime);
         lockedAwaySystem.update(&world, deltaTime, &gameState, &renderer);
         // And finally we use the renderer system to draw the scene
-        renderer.render(&world, pickedItem, deltaTime);
-        pickingSystem.update(&world, getApp(),pickedItem, inHandItem,&textRenderer);
+        physicsSystem.update(&world, getApp(), (float)deltaTime);
+        renderer.render(&world, deltaTime);
+        pickingSystem.update(&world, getApp(), pickedItem, inHandItem,&textRenderer);
         clockController.render(&textRenderer, deltaTime);
         textRenderer.render(deltaTime);
+
+        pickedItem = physicsSystem.cameraSelected;
+        pickedMouseItem = physicsSystem.mouseSelected;
 
         // Get a reference to the keyboard object
         auto& keyboard = getApp()->getKeyboard();

@@ -47,20 +47,19 @@ namespace our::physics_utils {
         - should be used for interacting with mouse
     */
     glm::vec3 getMouseWorldSpace(glm::vec2 MouseCoord, CameraComponent *camera, glm::ivec2 windowSize) {
-        glm::vec2 ray = MouseCoord;
 
-        glm::vec2 ndc =   (ray / glm::vec2(windowSize));
-                ndc = glm::vec2( 2.0f * ndc.x - 1.0f, 1.0f - 2.0f * ndc.y); // [-1, 1]
+        glm::vec2 ndc = glm::vec2(MouseCoord.x, windowSize.y - MouseCoord.y);
+                  ndc = ndc / glm::vec2(windowSize);
+                  ndc = glm::vec2( 2.0f * ndc.x - 1.0f, 2.0f * ndc.y - 1); // [-1, 1]
         // to homogoneouse clip (ray's z to point forwards)
         glm::vec4 ray_clip = glm::vec4(ndc, -1.0, 1.0);
         // to eye (camera) space (inverse of projection)
-        glm::mat4 inv_proj = glm::inverse(camera->getProjectionMatrix(windowSize));
-        glm::vec4 ray_eye = inv_proj * ray_clip;
+        glm::vec4 ray_eye = glm::inverse(camera->getProjectionMatrix(windowSize)) * ray_clip;
         ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);
         // to world coordinates (finally) (inverse of view)
-        glm::mat4 inv_view = glm::inverse(camera->getViewMatrix());
-        glm::vec3 ray_world = glm::vec3(inv_view * ray_eye);
+        glm::vec3 ray_world = glm::vec3(glm::inverse(camera->getViewMatrix()) * ray_eye);
         // ray_world = glm::normalize(ray_world);
+        std::cout << ray_world.x << " " << ray_world.y << " " << ray_world.z << " \n";
         return ray_world;
     }
 
