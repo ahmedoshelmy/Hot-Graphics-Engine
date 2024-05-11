@@ -3,6 +3,7 @@
 #include <iostream>
 #include "../components/pickable.hpp"
 #include "../components/mesh-renderer.hpp"
+
 namespace our {
 
 
@@ -27,11 +28,12 @@ namespace our {
 
     }
 
-    void PickingSystem::update(our::World *world, our::Application *app, std::string &inHandItem,
-                          TextRenderer *renderer, std::string & songName, float & songDuration ,
-                          double deltaTime) {
+    void PickingSystem::update(our::World *world, our::Application *app, TextRenderer *renderer, double deltaTime) {
         if (!this->renderer) this->renderer = renderer;
         currentTime += deltaTime;
+
+        pickedObject = app->pickedObject;
+        mousePickedObject = app->mousePickedObject;
 
         bool isEntityPickable = isPickable(pickedObject);
         // show text to help user
@@ -39,30 +41,29 @@ namespace our {
             renderer->addTextCommand("Right Click to Pick it", 0.05, 1500, 50, 0.6, glm::vec3(0.96, 1.0, 0.78), -1, 1);
         }
         // change highlight of crosshair
-        Entity* crosshair = world->getEntity("CrossHair");
-        if(crosshair) {
-            auto crossComponent  = crosshair->getComponent<MeshRendererComponent>();
-            auto crossMaterial   = dynamic_cast<TintedMaterial *>(crossComponent->material);
-            if(isEntityPickable)
+        Entity *crosshair = world->getEntity("CrossHair");
+        if (crosshair) {
+            auto crossComponent = crosshair->getComponent<MeshRendererComponent>();
+            auto crossMaterial = dynamic_cast<TintedMaterial *>(crossComponent->material);
+            if (isEntityPickable)
                 crossMaterial->tint = glm::vec4(0.45, 0.9, 0.5, 0.5);
             else
                 crossMaterial->tint = glm::vec4(0.45, 0.4, 0.5, 0.5);
-        }  
+        }
 
         // Check that the user clicked on P
         if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
             if (isEntityPickable) {
                 addToInventory(world, pickedObject);
                 lastTimePicked = currentTime;
-                songDuration = 1 ;
-                songName = "assets/music/Collect Item Sound Effect.mp3";
+                app->song.second = 1;
+                app->song = {"assets/music/Collect Item Sound Effect.mp3", 1};
             }
         }
         if (app->getKeyboard().isPressed(GLFW_KEY_I)) {
             showInventory(world);
             inventoryState = true;
-            songDuration = 1 ;
-            songName = "assets/music/inventory.mp3";
+            app->song = {"assets/music/inventory.mp3", 1};
         }
         if (app->getKeyboard().isPressed(GLFW_KEY_ESCAPE)) {
             hideInventory(world);
@@ -70,7 +71,8 @@ namespace our {
         }
         if (inventoryState) {
             if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1)) {
-                if (!mousePickedObject.empty() && isPickable(mousePickedObject) && currentTime - lastTimeInInventory > 0.5 && itemInRightHand != mousePickedObject) {
+                if (!mousePickedObject.empty() && isPickable(mousePickedObject) &&
+                    currentTime - lastTimeInInventory > 0.5 && itemInRightHand != mousePickedObject) {
                     // if(itemInRightHand == mousePickedObject)
                     if (!itemInRightHand.empty()) addToInventory(world, itemInRightHand);
                     pick(world, mousePickedObject);
@@ -78,7 +80,7 @@ namespace our {
                 }
             }
         }
-        inHandItem = itemInRightHand;
+        app->inHandItem = itemInRightHand;
 
 //        std::cout << mousePosition.x << " " << mousePosition.y << "\n";
 
@@ -93,7 +95,7 @@ namespace our {
 //            // Handle Logic of either picking it or adding it to the inventory
 //        }
     }
-  
+
     void PickingSystem::addToInventory(World *world, std::string item_name) {
         Entity *entity = world->getEntity(item_name);
         Entity *inventory = world->getEntity("Inventory");

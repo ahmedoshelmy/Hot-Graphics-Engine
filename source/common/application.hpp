@@ -74,6 +74,14 @@ namespace our {
         virtual void setupCallbacks();                              // Sets-up the window callback functions from GLFW to our (Mouse/Keyboard) classes.
 
     public:
+        // Common Variables between systems
+        std::string pickedObject ; // Item Picked by the Cross Hair
+        std::string mousePickedObject ; // Item Picked by the mouse
+        std::string inHandItem; // Item that user currently picks in hand
+        std::pair<std::string,float> song; // It contains the name of the song and the duration of the song
+
+
+
 
         // Create an application with following configuration
         Application(const nlohmann::json& app_config) : app_config(app_config) {}

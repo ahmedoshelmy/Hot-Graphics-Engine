@@ -39,11 +39,7 @@ class Playstate: public our::State {
     our::LockedAwaySystem lockedAwaySystem;
     our::AudioSystem audioSystem;
     bool showDemoWindow = false;
-    std::string inHandItem;
-    std::string song;
-    float songDuration ;
     our::GameState gameState;
-    audio_wrapper::MiniAudioWrapper audioPlayer;
 
 
     void onInitialize() override {
@@ -73,28 +69,21 @@ class Playstate: public our::State {
     }
 
     void onDraw(double deltaTime) override {
-        songDuration = 0 , song = "";
         // Here, we just run a bunch of systems to control the world logic
         movementSystem.update(&world, (float)deltaTime);
         cameraControllerFree.update(&world, (float)deltaTime);
         cameraControllerFps.update(&world, (float)deltaTime);
 
-        drawerOpenerSystem.update(&world, getApp(), pickingSystem.pickedObject, inHandItem, song, songDuration ,&renderer,(float)deltaTime);
+        drawerOpenerSystem.update(&world, getApp(),&renderer,(float)deltaTime);
         lockedAwaySystem.update(&world, deltaTime, &gameState, &renderer);
-        // And finally we use the renderer system to draw the scene
         physicsSystem.update(&world, getApp(), (float)deltaTime);
-
-
-
-        pickingSystem.pickedObject = physicsSystem.cameraSelected;
-        pickingSystem.mousePickedObject = physicsSystem.mouseSelected;
-        pickingSystem.update(&world, getApp(), inHandItem, &textRenderer, song, songDuration,deltaTime);
+        pickingSystem.update(&world, getApp(), &textRenderer,deltaTime);
         renderer.render(&world, deltaTime);
 
         // And finally we use the renderer system to draw the scene
         clockController.render(&textRenderer, deltaTime);
         textRenderer.render(deltaTime);
-        audioSystem.update(&world,deltaTime,song,songDuration);
+        audioSystem.update(&world,(float)deltaTime,getApp());
 
         
 

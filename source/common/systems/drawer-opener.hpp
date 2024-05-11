@@ -21,12 +21,10 @@ namespace our {
 
         // This should be called every frame to update all entities containing a CollisionComponent.
         void
-        update(World *world, Application *app, const std::string &pickedObject, const std::string &objectInHand,
-               std::string & songName, float & songDuration,  ForwardRenderer *renderer,
-               double deltaTime) {
+        update(World *world, Application *app, ForwardRenderer *renderer, double deltaTime) {
             // For each entity in the world
             currentTime += deltaTime;
-            Entity *entity = world->getEntity(pickedObject);
+            Entity *entity = world->getEntity(app->pickedObject);
             if (!entity)return;
             auto *knobComponent = entity->getComponent<KnobComponent>();
             if (!knobComponent) return;
@@ -40,24 +38,20 @@ namespace our {
                     rotation.y += glm::pi<float>() / 2.0;
                     knobComponent->open ^= 1;
                     prevTime = currentTime;
-                } else if (knobComponent->key == objectInHand) {
+                } else if (knobComponent->key == app->inHandItem) {
                     position.x += 2;
                     position.z += 2;
                     rotation.y -= glm::pi<float>() / 2.0;
                     knobComponent->open ^= 1;
                     prevTime = currentTime;
-                    if(entity->name == "door8" ||entity->name == "door6"  ){
-                        songName ="assets/music/Terror Transition.mp3";
-                        songDuration = 8;
-                    }else if(entity->name == "door3" || entity->name == "door4"){
-                        songName ="assets/music/JUMPSCARE.mp3";
-                        songDuration = 10;
-                    } else  if(entity->name == "door5" || entity->name == "door3"){
-                        songName ="assets/music/Scary scream.mp3";
-                        songDuration = 8;
-                    } else{
-                        songName ="assets/music/HORROR DOOR OPENING SOUND EFFECT.mp3";
-                        songDuration = 1.5;
+                    if (entity->name == "door8" || entity->name == "door6") {
+                        app->song = {"assets/music/Terror Transition.mp3", 8};
+                    } else if (entity->name == "door3" || entity->name == "door4") {
+                        app->song = {"assets/music/JUMPSCARE.mp3", 8};
+                    } else if (entity->name == "door5" || entity->name == "door3") {
+                        app->song = {"assets/music/Scary scream.mp3", 8};
+                    } else {
+                        app->song = {"assets/music/HORROR DOOR OPENING SOUND EFFECT.mp3", 1.5};
                     }
 
                 }

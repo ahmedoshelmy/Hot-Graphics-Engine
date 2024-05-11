@@ -90,6 +90,10 @@ namespace our {
         // get selected item with previouse
         prevMouseSelected = mouseSelected;
         mouseSelected = mapped_entities[mouse_pixel.ObjectID];
+
+        // Updating the global variables
+        app->pickedObject = cameraSelected;
+        app->mousePickedObject = mouseSelected;
     }
 
     void PhysicsSystem::avoidCollision(World *world, Application* app, float deltaTime) {
