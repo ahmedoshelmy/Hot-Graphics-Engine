@@ -39,8 +39,6 @@ class Playstate: public our::State {
     our::LockedAwaySystem lockedAwaySystem;
     our::AudioSystem audioSystem;
     bool showDemoWindow = false;
-    std::string pickedItem ;
-    std::string pickedMouseItem ;
     std::string inHandItem;
     std::string song;
     float songDuration ;
@@ -81,20 +79,25 @@ class Playstate: public our::State {
         cameraControllerFree.update(&world, (float)deltaTime);
         cameraControllerFps.update(&world, (float)deltaTime);
 
-        drawerOpenerSystem.update(&world, getApp(), pickedItem, inHandItem, song, songDuration ,&renderer,(float)deltaTime);
+        drawerOpenerSystem.update(&world, getApp(), pickingSystem.pickedObject, inHandItem, song, songDuration ,&renderer,(float)deltaTime);
         lockedAwaySystem.update(&world, deltaTime, &gameState, &renderer);
         // And finally we use the renderer system to draw the scene
         physicsSystem.update(&world, getApp(), (float)deltaTime);
+
+
+
+        pickingSystem.pickedObject = physicsSystem.cameraSelected;
+        pickingSystem.mousePickedObject = physicsSystem.mouseSelected;
+        std::cout << "Camera: " << pickingSystem.pickedObject << " Mouse: " << pickingSystem.mousePickedObject << "\n";
+        pickingSystem.update(&world, getApp(), inHandItem, &textRenderer, song, songDuration,deltaTime);
         renderer.render(&world, deltaTime);
-        pickingSystem.update(&world, getApp(),pickedItem, inHandItem,&textRenderer, song, songDuration,deltaTime);
 
         // And finally we use the renderer system to draw the scene
         clockController.render(&textRenderer, deltaTime);
         textRenderer.render(deltaTime);
         audioSystem.update(&world,deltaTime,song,songDuration);
 
-        pickedItem = physicsSystem.cameraSelected;
-        pickedMouseItem = physicsSystem.mouseSelected;
+        
 
         // Get a reference to the keyboard object
         auto& keyboard = getApp()->getKeyboard();

@@ -16,15 +16,15 @@ namespace audio_wrapper {
         (void)pInput;
     };
 
-    void MiniAudioWrapper::playSong(const char* path) {
+    void MiniAudioWrapper::playSong(const char* path, bool play_loop) {
         result = ma_decoder_init_file(path, NULL, &decoder);
         if (result != MA_SUCCESS) {
             printf("Could not load file: %s\n", path);
             return ;
         }
 
-
-        ma_data_source_set_looping(&decoder, MA_TRUE);
+        if(play_loop)
+            ma_data_source_set_looping(&decoder, MA_TRUE);
 
         deviceConfig = ma_device_config_init(ma_device_type_playback);
         deviceConfig.playback.format   = decoder.outputFormat;

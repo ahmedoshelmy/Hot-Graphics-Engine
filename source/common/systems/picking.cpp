@@ -27,8 +27,7 @@ namespace our {
 
     }
 
-    void
-    PickingSystem::update(our::World *world, our::Application *app, std::string pickedObject, std::string &inHandItem,
+    void PickingSystem::update(our::World *world, our::Application *app, std::string &inHandItem,
                           TextRenderer *renderer, std::string & songName, float & songDuration ,
                           double deltaTime) {
         if (!this->renderer) this->renderer = renderer;
@@ -71,13 +70,12 @@ namespace our {
         }
         if (inventoryState) {
             if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1)) {
-                glm::vec2 mousePosition = app->getMouse().getMousePosition();
-//                std::cout<<mousePosition.x<<" "<<mousePosition.y<<"\n";
-                std::string clickedItem = getClickedInventoryItem(world, mousePosition.x, mousePosition.y);
-                std::cout << clickedItem << " ";
-                if (!clickedItem.empty()) {
-                    if (!itemInRightHand.empty())addToInventory(world, itemInRightHand);
-                    pick(world, clickedItem);
+                std::cout << mousePickedObject << " ";
+                if (!mousePickedObject.empty() && isPickable(mousePickedObject) && currentTime - lastTimeInInventory > 0.5 && itemInRightHand != mousePickedObject) {
+                    // if(itemInRightHand == mousePickedObject)
+                    if (!itemInRightHand.empty()) addToInventory(world, itemInRightHand);
+                    pick(world, mousePickedObject);
+                    lastTimeInInventory = currentTime;
                 }
             }
         }

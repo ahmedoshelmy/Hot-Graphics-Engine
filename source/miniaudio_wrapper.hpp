@@ -13,7 +13,7 @@ namespace audio_wrapper {
         public:
        
 
-        void playSong(const char* path) ;
+        void playSong(const char* path, bool play_loop = false) ;
     
         void stopSong() ;
     };

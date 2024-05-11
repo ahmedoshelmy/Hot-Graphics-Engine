@@ -17,10 +17,16 @@ namespace our {
         std::string itemInRightHand;
         double currentTime = 0;
         double lastTimePicked = 0 ;
+        double lastTimeInInventory = 0 ;
     public:
+        std::string pickedObject;
+        std::string mousePickedObject;
+
         bool isPickable(std::string);
 
-        void update(World *world, Application *app, std::string,  std:: string & ,TextRenderer * renderer, std::string &, float&,double deltaTime);
+        void update(our::World *world, our::Application *app, std::string &inHandItem,
+                          TextRenderer *renderer, std::string & songName, float & songDuration ,
+                          double deltaTime);
 
         void pick(World *world, const std::string&);
 
