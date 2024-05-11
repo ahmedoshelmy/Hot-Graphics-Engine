@@ -70,7 +70,6 @@ namespace our {
         }
         if (inventoryState) {
             if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1)) {
-                std::cout << mousePickedObject << " ";
                 if (!mousePickedObject.empty() && isPickable(mousePickedObject) && currentTime - lastTimeInInventory > 0.5 && itemInRightHand != mousePickedObject) {
                     // if(itemInRightHand == mousePickedObject)
                     if (!itemInRightHand.empty()) addToInventory(world, itemInRightHand);

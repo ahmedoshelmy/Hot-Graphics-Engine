@@ -88,7 +88,6 @@ class Playstate: public our::State {
 
         pickingSystem.pickedObject = physicsSystem.cameraSelected;
         pickingSystem.mousePickedObject = physicsSystem.mouseSelected;
-        std::cout << "Camera: " << pickingSystem.pickedObject << " Mouse: " << pickingSystem.mousePickedObject << "\n";
         pickingSystem.update(&world, getApp(), inHandItem, &textRenderer, song, songDuration,deltaTime);
         renderer.render(&world, deltaTime);
 

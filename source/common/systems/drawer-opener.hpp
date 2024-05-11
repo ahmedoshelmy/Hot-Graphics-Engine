@@ -46,10 +46,16 @@ namespace our {
                     rotation.y -= glm::pi<float>() / 2.0;
                     knobComponent->open ^= 1;
                     prevTime = currentTime;
-                    if(entity->name == "door8"){
+                    if(entity->name == "door8" ||entity->name == "door6"  ){
                         songName ="assets/music/Terror Transition.mp3";
                         songDuration = 8;
-                    }else{
+                    }else if(entity->name == "door3" || entity->name == "door4"){
+                        songName ="assets/music/JUMPSCARE.mp3";
+                        songDuration = 10;
+                    } else  if(entity->name == "door5" || entity->name == "door3"){
+                        songName ="assets/music/Scary scream.mp3";
+                        songDuration = 8;
+                    } else{
                         songName ="assets/music/HORROR DOOR OPENING SOUND EFFECT.mp3";
                         songDuration = 1.5;
                     }
