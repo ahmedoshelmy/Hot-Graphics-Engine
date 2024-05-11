@@ -15,10 +15,12 @@ namespace our {
         std::vector<std::string> inventoryEntities = {"key1", "key2","key3","key4","key5","key6","key7","key8","key9"};
         std::vector<glm::vec3> inventoryPositions;
         std::string itemInRightHand;
+        double currentTime = 0;
+        double lastTimePicked = 0 ;
     public:
         bool isPickable(std::string);
 
-        void update(World *world, Application *app, std::string,  std:: string & ,TextRenderer * renderer);
+        void update(World *world, Application *app, std::string,  std:: string & ,TextRenderer * renderer, std::string &, float&,double deltaTime);
 
         void pick(World *world, const std::string&);
 

@@ -7,7 +7,6 @@ namespace our {
     void RigidBodyComponent::deserialize(const nlohmann::json &data) {
         if (!data.is_object()) return;
         std::string shape = data.value("shape", "");
-        std::cout<<shape<<"\n";
         if (shape == "Sphere") {
             rigidBodyShape = RigidBodyShape::Sphere;
             length = data.value("radius", 0);

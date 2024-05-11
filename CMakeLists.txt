@@ -168,6 +168,7 @@ set(COMMON_SYSTEMS_SOURCES
         source/common/systems/picking.hpp
         source/common/systems/drawer-opener.cpp
         source/common/systems/drawer-opener.hpp
+        source/common/systems/audio.hpp
         #        source/common/systems/movement.cpp
 )
 

@@ -27,8 +27,12 @@ namespace our {
 
     }
 
-    void PickingSystem::update(our::World *world, our::Application *app, std::string pickedObject,  std::string & inHandItem, TextRenderer * renderer) {
-        if(!this->renderer) this->renderer = renderer;
+    void
+    PickingSystem::update(our::World *world, our::Application *app, std::string pickedObject, std::string &inHandItem,
+                          TextRenderer *renderer, std::string & songName, float & songDuration ,
+                          double deltaTime) {
+        if (!this->renderer) this->renderer = renderer;
+        currentTime += deltaTime;
 
         bool isEntityPickable = isPickable(pickedObject);
         // show text to help user
@@ -50,11 +54,16 @@ namespace our {
         if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
             if (isEntityPickable) {
                 addToInventory(world, pickedObject);
+                lastTimePicked = currentTime;
+                songDuration = 1 ;
+                songName = "assets/music/Collect Item Sound Effect.mp3";
             }
         }
         if (app->getKeyboard().isPressed(GLFW_KEY_I)) {
             showInventory(world);
             inventoryState = true;
+            songDuration = 1 ;
+            songName = "assets/music/inventory.mp3";
         }
         if (app->getKeyboard().isPressed(GLFW_KEY_ESCAPE)) {
             hideInventory(world);
@@ -65,8 +74,8 @@ namespace our {
                 glm::vec2 mousePosition = app->getMouse().getMousePosition();
 //                std::cout<<mousePosition.x<<" "<<mousePosition.y<<"\n";
                 std::string clickedItem = getClickedInventoryItem(world, mousePosition.x, mousePosition.y);
-                std::cout<<clickedItem<<" ";
-                if (!clickedItem.empty() ) {
+                std::cout << clickedItem << " ";
+                if (!clickedItem.empty()) {
                     if (!itemInRightHand.empty())addToInventory(world, itemInRightHand);
                     pick(world, clickedItem);
                 }
@@ -102,7 +111,7 @@ namespace our {
         position = pickableComponent->inventoryPosition;
         rotation = pickableComponent->inventoryRotation;
         scale = pickableComponent->inventoryScale;
-        showMessage("You picked " + item_name + " Press I to to open the inventory ",5);
+        showMessage("You picked " + item_name + " Press I to to open the inventory ", 5);
     }
 
     void PickingSystem::showInventory(World *world) {
@@ -138,7 +147,7 @@ namespace our {
         int xStride = 100, yStride = 25;
         for (auto &entityName: inventoryEntities) {
             auto entity = world->getEntity(entityName);
-            if(!entity)continue;
+            if (!entity)continue;
             auto *pickableComponent = entity->getComponent<PickableComponent>();
             if (!pickableComponent)continue;
             if (mouseX >= pickableComponent->inventoryMousePosition.x - xStride &&

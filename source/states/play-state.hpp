@@ -14,6 +14,7 @@
 #include "mesh/mesh-utils.hpp"
 #include "systems/drawer-opener.hpp"
 #include "systems/locked-away.hpp"
+#include "systems/audio.hpp"
 #include <systems/physics.hpp>
 #include <systems/picking.hpp>
 #include <systems/clock-controller.hpp>
@@ -36,11 +37,16 @@ class Playstate: public our::State {
     our::PickingSystem pickingSystem;
     our::DrawerOpenerSystem drawerOpenerSystem;
     our::LockedAwaySystem lockedAwaySystem;
+    our::AudioSystem audioSystem;
     bool showDemoWindow = false;
     std::string pickedItem ;
     std::string pickedMouseItem ;
     std::string inHandItem;
+    std::string song;
+    float songDuration ;
     our::GameState gameState;
+    audio_wrapper::MiniAudioWrapper audioPlayer;
+
 
     void onInitialize() override {
         gameState = our::GameState::PLAY;
@@ -69,18 +75,23 @@ class Playstate: public our::State {
     }
 
     void onDraw(double deltaTime) override {
+        songDuration = 0 , song = "";
         // Here, we just run a bunch of systems to control the world logic
         movementSystem.update(&world, (float)deltaTime);
         cameraControllerFree.update(&world, (float)deltaTime);
         cameraControllerFps.update(&world, (float)deltaTime);
-        drawerOpenerSystem.update(&world, getApp(), pickedItem, inHandItem,&renderer, (float)deltaTime);
+
+        drawerOpenerSystem.update(&world, getApp(), pickedItem, inHandItem, song, songDuration ,&renderer,(float)deltaTime);
         lockedAwaySystem.update(&world, deltaTime, &gameState, &renderer);
         // And finally we use the renderer system to draw the scene
         physicsSystem.update(&world, getApp(), (float)deltaTime);
         renderer.render(&world, deltaTime);
-        pickingSystem.update(&world, getApp(), pickedItem, inHandItem,&textRenderer);
+        pickingSystem.update(&world, getApp(),pickedItem, inHandItem,&textRenderer, song, songDuration,deltaTime);
+
+        // And finally we use the renderer system to draw the scene
         clockController.render(&textRenderer, deltaTime);
         textRenderer.render(deltaTime);
+        audioSystem.update(&world,deltaTime,song,songDuration);
 
         pickedItem = physicsSystem.cameraSelected;
         pickedMouseItem = physicsSystem.mouseSelected;
