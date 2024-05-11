@@ -3,18 +3,23 @@
 #include  "miniaudio/miniaudio.h"
 
 namespace audio_wrapper {
-     void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount) ;
+    void data_callback(ma_device *pDevice, void *pOutput, const void *pInput, ma_uint32 frameCount);
 
-    class MiniAudioWrapper{
+
+    class MiniAudioWrapper {
         ma_result result;
         ma_decoder decoder;
         ma_device_config deviceConfig;
         ma_device device;
-        public:
-       
+        bool play_song = false;
 
-        void playSong(const char* path, bool play_loop = false) ;
-    
-        void stopSong() ;
+    public:
+
+
+        void playSong(const char *path, bool play_loop = false);
+
+        void stopSong();
+
+        ~MiniAudioWrapper();
     };
 }
