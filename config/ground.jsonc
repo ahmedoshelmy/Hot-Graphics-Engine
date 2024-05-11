@@ -159,7 +159,7 @@
         "rabbits_n": "assets/textures/Bunny/Bunny_n.png",
         "rabbits_r_ao_m": "assets/textures/Bunny/Bunny_r_ao_m.png",
 
-        "fps_arm_d": "assets/textures/Hands/Hand_Albedo(1).png",
+        "fps_arm_d": "assets/textures/Hands/Hand_Albedo(2).png",
         "fps_arm_n": "assets/textures/Hands/Hand_normals.png",
         "fps_arm_r_ao_m": "assets/textures/Hands/Hand_r_ao_m.png",
 
@@ -669,7 +669,7 @@
         "children": [
           {
             "name": "Flash Light",
-            "position": [0, 0, -1],
+            "position": [-1, -3, -1],
             "components": [
               {
                 "type": "Light Component",
@@ -677,9 +677,9 @@
                 "color": [0.1, 0.1, 0.6],
                 "cutOff": 30.0,
                 "outerCutOff": 35.0,
-                "attenuationConstant": 1.0,
-                "attenuationLinear": 0.07,
-                "attenuationQuadratic": 0.0014,
+                "attenuationConstant": 0,
+                "attenuationLinear": 0,
+                "attenuationQuadratic": 0.05,
                 "direction": [0, 0, -1],
                 "debug": true
               }
@@ -692,7 +692,7 @@
               {
                 "type": "Light Component",
                 "lightType": "directional",
-                "color": [0.3, 0.3, 0.3],
+                "color": [0, 0, 0],
                 "debug": true
               }
             ]
