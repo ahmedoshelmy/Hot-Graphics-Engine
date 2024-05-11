@@ -189,7 +189,15 @@
         "garage_box_d": "assets/textures/GarageBox/GarageBox_d.png",
         "garage_box_n": "assets/textures/GarageBox/GarageBox_n.png",
         "garage_box_r_ao_m": "assets/textures/GarageBox/GarageBox_r_ao_m.png",
-        "garage_box_mask": "assets/textures/GarageBox/GarageBox_mask.png"
+        "garage_box_mask": "assets/textures/GarageBox/GarageBox_mask.png",
+
+        "hospital_d": "assets/textures/Hospital_Props/Hospital_Props_BASE_1.png",
+        "hospital_n": "assets/textures/Hospital_Props/Hospital_Props_NM.png",
+        
+        "office_props_d": "assets/textures/Office_Props/Office_Props_ALB_1.png",
+        "office_props_n": "assets/textures/Office_Props/Office_Props_NM.png",
+
+        "midway_metallic": "assets/textures/midway_roughnes_r_ao_m.png"
       },
       "meshes": {
         "key": "assets/models/key.obj",
@@ -233,7 +241,18 @@
         "garage_box": "assets/models/garage_box.obj",
         "garage_box_empty": "assets/models/garaga_box_empty.obj",
         "garage_box_filled": "assets/models/garage_box_filled.obj",
-        "garage_box_cap": "assets/models/garage_box_cap.obj"
+        "garage_box_cap": "assets/models/garage_box_cap.obj",
+
+        "hospital_bed_covered": "assets/models/hospital/bed_covered.obj",
+        "hospital_bed_covered_1": "assets/models/hospital/bed_covered_1.obj",
+        "hospital_bed_uncovered_dirty_pillow": "assets/models/hospital/bed_uncovered_dirty_pillow.obj",
+        "hospital_bed_uncovered_dirty": "assets/models/hospital/bed_uncovered_dirtyobj.obj",
+        "med_kit": "assets/models/hospital/med_kit.obj",
+        "surgery_tray_smooth": "assets/models/hospital/surgery_tray_smooth.obj",
+        "surgery_tray_square_small": "assets/models/hospital/surgery_tray_square_small.obj",
+        "table_med_medium": "assets/models/hospital/table_med_medium.obj",
+        "table_med_small": "assets/models/hospital/table_med_small.obj",
+        "weight_group": "assets/models/hospital/weight_group.obj"
 
       },
       "samplers": {
@@ -613,6 +632,24 @@
           "r_ao_m_Map": "garage_box_r_ao_m",
           "colorMaskTexture": "garage_box_mask",
           "color1": [0.7, 0.102, 0.047],
+          "IOR": 0.5
+        },
+        "hospital_props": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "hospital_d",
+          "normalMap": "hospital_n",
+          "r_ao_m_Map": "midway_metallic",
+          "IOR": 0.5
+        },
+        "office_props": {
+          "type": "lit",
+          "shader": "light",
+          "sampler": "default",
+          "albedoMap": "office_props_d",
+          "normalMap": "office_props_n",
+          "r_ao_m_Map": "midway_metallic",
           "IOR": 0.5
         }
       }
@@ -1731,6 +1768,19 @@
             "handScale": [0.05,0.03, 0.05],
             "handRotation": [0, -17.7, -131.889],
             "handPosition": [0.033, -0.144, -0.7]
+          }
+        ]
+      },
+      {
+        "name": "Hospital Room",
+        "position": [-14.803, 14.469, 12.823],
+        "rotation": [0, 0, 0],
+        "scale": [3, 3, 3],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "hospital_bed_covered",
+            "material": "hospital_props"
           }
         ]
       }
