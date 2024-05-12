@@ -74,7 +74,7 @@ class Playstate: public our::State {
         cameraControllerFree.update(&world, (float)deltaTime);
         cameraControllerFps.update(&world, (float)deltaTime);
 
-        drawerOpenerSystem.update(&world, getApp(),&renderer,(float)deltaTime);
+        drawerOpenerSystem.update(&world, getApp(), &textRenderer, (float)deltaTime);
         lockedAwaySystem.update(&world, deltaTime, &gameState, &renderer);
         physicsSystem.update(&world, getApp(), (float)deltaTime);
         pickingSystem.update(&world, getApp(), &textRenderer,deltaTime);

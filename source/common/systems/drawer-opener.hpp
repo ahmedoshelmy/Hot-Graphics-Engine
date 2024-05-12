@@ -4,7 +4,7 @@
 #include "application.hpp"
 #include "components/knob-component.hpp"
 #include "forward-renderer.hpp"
-
+#include "../systems/text-renderer.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 #include <glm/trigonometric.hpp>
@@ -21,13 +21,24 @@ namespace our {
 
         // This should be called every frame to update all entities containing a CollisionComponent.
         void
-        update(World *world, Application *app, ForwardRenderer *renderer, double deltaTime) {
+        update(World *world, Application *app, TextRenderer *renderer, double deltaTime) {
             // For each entity in the world
             currentTime += deltaTime;
             Entity *entity = world->getEntity(app->pickedObject);
             if (!entity)return;
             auto *knobComponent = entity->getComponent<KnobComponent>();
             if (!knobComponent) return;
+
+            
+            renderer->addTextCommand("Right Click to Open it", 0.05, 1500, 100, 0.6, glm::vec3(0.96, 1.0, 0.78), -1, 1);
+            
+            // if (Entity *crosshair = world->getEntity("CrossHair"); crosshair) {
+            //     auto crossComponent = crosshair->getComponent<MeshRendererComponent>();
+            //     auto crossMaterial = dynamic_cast<TintedMaterial *>(crossComponent->material);
+            //         crossMaterial->tint = glm::vec4(0.45, 0.9, 0.5, 0.5);
+            //     else
+            //         crossMaterial->tint = glm::vec4(0.45, 0.4, 0.5, 0.5);
+            // }
             // Here there should be delay between opening and closing (Toggling effect) To make it more realistic
             if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_RIGHT) && prevTime + 2 < currentTime) {
                 auto &position = entity->localTransform.position;

@@ -20,8 +20,8 @@ namespace our {
         glm::mat4 transform; // contrain transform matrix of shader
 
         double currentTime;
-        double endSoonInterval = 0.2*60; 
-        double endGameInterval = 50*60;
+        double endSoonInterval = 0.4*60; 
+        double endGameInterval = 1*60;
 
     public:
         void initialize(glm::ivec2 windowSize) {
