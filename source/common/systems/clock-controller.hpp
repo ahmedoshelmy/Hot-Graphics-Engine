@@ -74,7 +74,7 @@ namespace our {
             int minutes = (endGameInterval - currentTime) / 60; 
             int seconds = ((int)endGameInterval - (int)currentTime) % 60;
             std::string showTime = "0" + std::to_string(minutes) + " : " + (seconds < 10 ? "0" : "") + std::to_string(seconds);
-            textRenderer->addTextCommand(showTime, 0.05, 1620, 1000, 1.2, glm::vec3(0.3, 0.3, 0.3), 1, 1);
+            textRenderer->addTextCommand(showTime, 0.05, 1620, 1000, 1.2, glm::vec3(0.7, 0.7, 0.7), 1, 1);
         }
 
         double getCurrentTime() const { return currentTime; }
