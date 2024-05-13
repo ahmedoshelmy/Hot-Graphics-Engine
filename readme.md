@@ -9,6 +9,11 @@
 ![img_2.png](img_2.png)
 ![img_3.png](img_3.png)
 
+## Link to the Game Trial Video 
+
+https://www.youtube.com/watch?v=B7hyZOUxibo
+
+
 ## Game Controls :
 
 **Movement:**
