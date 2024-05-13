@@ -1,10 +1,3 @@
-## Names
-
-- Ahmed Osama Helmy | Section 1 | BN 5
-- Aliaa Gheis | Section 1 | BN 26
-- Abdallah Ahmed | Section 1 | BN 24
-- Omar Mahmoud | Section 1 | BN 28
-
 ## Game Description
 
 ### The idea of the game is to escape from the horror house in the given time or you lose. To win you should search the house for the keys until you find the key of the main door of the house.
